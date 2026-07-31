@@ -839,6 +839,90 @@ svg {
   stroke: none;
 }
 
+.project-placeholder-grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.project-placeholder-card {
+  min-height: 280px;
+  padding: 28px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 1px dashed rgba(188, 211, 207, 0.25);
+  background:
+    linear-gradient(135deg, rgba(13, 27, 34, 0.94), rgba(9, 22, 28, 0.7)),
+    repeating-linear-gradient(
+      135deg,
+      transparent 0,
+      transparent 16px,
+      rgba(188, 211, 207, 0.035) 17px,
+      transparent 18px
+    );
+}
+
+.placeholder-topline {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--muted-dark);
+  font-family: var(--font-display), sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+}
+
+.placeholder-topline strong {
+  color: var(--accent);
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.06em;
+}
+
+.placeholder-mark {
+  width: 56px;
+  height: 56px;
+  margin: 42px 0 28px;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  opacity: 0.7;
+}
+
+.placeholder-mark span {
+  width: 8px;
+  height: 24px;
+  border: 1px solid var(--accent);
+}
+
+.placeholder-mark span:nth-child(2) {
+  height: 44px;
+  background: rgba(69, 239, 178, 0.12);
+}
+
+.placeholder-mark span:nth-child(3) {
+  height: 34px;
+}
+
+.project-placeholder-card h3 {
+  margin: 0;
+  color: var(--white);
+  font-family: var(--font-display), "Microsoft YaHei", sans-serif;
+  font-size: 24px;
+  line-height: 1.15;
+}
+
+.project-placeholder-card p {
+  max-width: 430px;
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
 .expertise-section {
   background: var(--paper);
   color: var(--ink);
@@ -1257,6 +1341,10 @@ footer {
   }
 
   .project-card {
+    grid-template-columns: 1fr;
+  }
+
+  .project-placeholder-grid {
     grid-template-columns: 1fr;
   }
 

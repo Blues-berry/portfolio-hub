@@ -140,6 +140,23 @@ export function HomePage({ locale }: { locale: Locale }) {
               </div>
             </div>
           </article>
+          <div className="project-placeholder-grid">
+            {t.projects.placeholders.map((project) => (
+              <article className="project-placeholder-card" key={project.index}>
+                <div className="placeholder-topline">
+                  <span>{project.status}</span>
+                  <strong>{project.index}</strong>
+                </div>
+                <div className="placeholder-mark" aria-hidden="true">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+                <h3>{project.title}</h3>
+                <p>{project.description}</p>
+              </article>
+            ))}
+          </div>
         </section>
 
         <section className="expertise-section" id="expertise">

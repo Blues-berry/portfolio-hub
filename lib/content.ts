@@ -32,6 +32,12 @@ export type Copy = {
       github: string;
       materials: string;
     };
+    placeholders: Array<{
+      index: string;
+      title: string;
+      status: string;
+      description: string;
+    }>;
   };
   expertise: {
     eyebrow: string;
@@ -105,6 +111,20 @@ const zh: Copy = {
       github: "GitHub",
       materials: "项目材料",
     },
+    placeholders: [
+      {
+        index: "02",
+        title: "下一个研究项目",
+        status: "占位项目",
+        description: "项目资料整理中，新的研究与原型将在这里展开。",
+      },
+      {
+        index: "03",
+        title: "实验性作品",
+        status: "占位项目",
+        description: "一个留给新问题、新模型与新交互的空间。",
+      },
+    ],
   },
   expertise: {
     eyebrow: "EXPERTISE",
@@ -235,6 +255,20 @@ const en: Copy = {
       github: "GitHub",
       materials: "Materials",
     },
+    placeholders: [
+      {
+        index: "02",
+        title: "Next research project",
+        status: "PLACEHOLDER",
+        description: "Project materials are being assembled for the next study and prototype.",
+      },
+      {
+        index: "03",
+        title: "Experimental work",
+        status: "PLACEHOLDER",
+        description: "A reserved space for new questions, models, and interactions.",
+      },
+    ],
   },
   expertise: {
     eyebrow: "EXPERTISE",
