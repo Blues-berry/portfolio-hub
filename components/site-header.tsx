@@ -7,11 +7,13 @@ export function SiteHeader({
   detail = false,
   projectPage = false,
   caseStudy = false,
+  directory = false,
 }: {
   locale: Locale;
   detail?: boolean;
   projectPage?: boolean;
   caseStudy?: boolean;
+  directory?: boolean;
 }) {
   const t = copy[locale];
   const alternate = locale === "zh" ? "en" : "zh";
@@ -21,7 +23,10 @@ export function SiteHeader({
   );
 
   return (
-    <header className="site-header" lang={locale === "en" ? "en" : "zh-CN"}>
+    <header
+      className={`site-header${directory ? " site-header-directory" : ""}`}
+      lang={locale === "en" ? "en" : "zh-CN"}
+    >
       <div className="header-inner">
         <Link className="brand" href={localePath(locale)}>
           <span className="brand-mark" aria-hidden="true">

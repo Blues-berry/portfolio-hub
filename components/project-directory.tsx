@@ -10,7 +10,7 @@ export function ProjectDirectory({ locale }: { locale: Locale }) {
 
   return (
     <>
-      <SiteHeader locale={locale} />
+      <SiteHeader locale={locale} directory />
       <main className="directory-main" lang={locale === "en" ? "en" : "zh-CN"}>
         <section className="directory-hero page-shell">
           <div className="directory-hero-copy">

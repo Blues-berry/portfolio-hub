@@ -2018,3 +2018,250 @@ footer {
     animation-iteration-count: 1 !important;
   }
 }
+
+/* The project index intentionally uses a brighter, playful visual language
+   than the dark Open-rPPG experience. */
+.site-header-directory {
+  --directory-ink: #201b38;
+  --directory-line: rgba(32, 27, 56, 0.14);
+  border-bottom-color: var(--directory-line);
+  color: var(--directory-ink);
+}
+
+.site-header-directory nav {
+  color: rgba(32, 27, 56, 0.7);
+}
+
+.site-header-directory nav a:hover {
+  color: #7764ff;
+}
+
+.site-header-directory .brand-mark {
+  color: #ff6b6b;
+}
+
+.site-header-directory .brand-mark i {
+  background: #ff6b6b;
+}
+
+.site-header-directory .language-link {
+  border-color: rgba(119, 100, 255, 0.3);
+  color: #7764ff !important;
+}
+
+.directory-main {
+  --directory-bg: #fff8ef;
+  --directory-ink: #201b38;
+  --directory-muted: #766f83;
+  --directory-purple: #7764ff;
+  --directory-coral: #ff6b6b;
+  --directory-yellow: #ffd166;
+  --directory-mint: #b9f2df;
+  min-height: 100vh;
+  color: var(--directory-ink);
+  background:
+    radial-gradient(circle at 10% 18%, rgba(255, 209, 102, 0.42), transparent 18%),
+    radial-gradient(circle at 90% 26%, rgba(185, 242, 223, 0.8), transparent 22%),
+    var(--directory-bg);
+}
+
+.directory-main .eyebrow {
+  color: var(--directory-purple);
+}
+
+.directory-main .eyebrow > span {
+  background: var(--directory-coral);
+}
+
+.directory-hero {
+  min-height: 570px;
+}
+
+.directory-hero::before {
+  opacity: 0.2;
+  background-image:
+    linear-gradient(rgba(119, 100, 255, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(119, 100, 255, 0.12) 1px, transparent 1px);
+  mask-image: linear-gradient(to right, transparent, #000 42%, transparent);
+}
+
+.directory-hero-copy {
+  transform: rotate(-1deg);
+}
+
+.directory-hero h1 {
+  color: var(--directory-ink);
+  text-wrap: balance;
+}
+
+.directory-description {
+  color: var(--directory-muted);
+}
+
+.directory-orbit {
+  width: min(100%, 470px);
+  border: 0;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255, 107, 107, 0.25), transparent 26%),
+    radial-gradient(circle at 50% 50%, rgba(119, 100, 255, 0.16), transparent 62%);
+  box-shadow: none;
+  animation: directory-bob 5s ease-in-out infinite;
+}
+
+.directory-orbit::before,
+.directory-orbit::after {
+  border-color: rgba(119, 100, 255, 0.26);
+}
+
+.directory-orbit::before {
+  border-style: solid;
+  transform: rotate(13deg) scaleX(1.16);
+}
+
+.directory-orbit::after {
+  border-color: rgba(255, 107, 107, 0.35);
+  transform: rotate(-22deg) scaleY(0.82);
+}
+
+.directory-orbit-core {
+  color: var(--directory-purple);
+  text-shadow: 6px 6px 0 rgba(255, 209, 102, 0.72);
+  transform: rotate(5deg);
+}
+
+.directory-orbit i {
+  background: var(--directory-coral);
+  box-shadow: 0 0 0 5px rgba(255, 107, 107, 0.14);
+}
+
+.directory-section-heading h2 {
+  color: var(--directory-ink);
+}
+
+.directory-count {
+  color: var(--directory-muted);
+}
+
+.directory-card {
+  border-color: rgba(32, 27, 56, 0.13);
+  border-radius: 24px;
+  color: var(--directory-ink);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 18px 50px rgba(71, 48, 110, 0.08);
+}
+
+.directory-card:hover {
+  border-color: var(--directory-purple);
+  transform: translateY(-8px) rotate(-0.6deg);
+  box-shadow: 0 24px 60px rgba(71, 48, 110, 0.16);
+}
+
+.directory-card-featured {
+  border-color: rgba(119, 100, 255, 0.28);
+  background:
+    radial-gradient(circle at 80% 30%, rgba(185, 242, 223, 0.9), transparent 30%),
+    linear-gradient(135deg, #fff 0%, #fff0e8 100%);
+}
+
+.directory-card-featured::before {
+  opacity: 0.35;
+  background-image:
+    linear-gradient(rgba(119, 100, 255, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(119, 100, 255, 0.12) 1px, transparent 1px);
+}
+
+.directory-card-meta {
+  color: var(--directory-purple);
+}
+
+.directory-card-meta svg {
+  transition: transform 220ms ease;
+}
+
+.directory-card:hover .directory-card-meta svg {
+  transform: translate(4px, -4px) rotate(-8deg);
+}
+
+.directory-card-signal span {
+  background: var(--directory-coral);
+  box-shadow: 0 0 10px rgba(255, 107, 107, 0.45);
+}
+
+.directory-card-signal::before {
+  background: rgba(255, 107, 107, 0.25);
+}
+
+.directory-card-copy p {
+  color: var(--directory-muted);
+}
+
+.directory-card-copy h3 {
+  color: var(--directory-ink);
+}
+
+.directory-card-copy > span {
+  color: var(--directory-purple);
+}
+
+.directory-card-placeholder {
+  border-color: rgba(32, 27, 56, 0.18);
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: none;
+}
+
+.directory-card-placeholder:hover {
+  border-color: rgba(255, 107, 107, 0.7);
+}
+
+.directory-card-placeholder .directory-card-meta,
+.directory-card-lock,
+.directory-card-placeholder .directory-card-copy > span {
+  color: var(--directory-muted);
+}
+
+.directory-placeholder-mark span {
+  border-color: var(--directory-yellow);
+}
+
+.directory-placeholder-mark span:nth-child(2) {
+  background: var(--directory-yellow);
+}
+
+.directory-footer {
+  color: var(--directory-muted);
+}
+
+body:has(.directory-main) {
+  background: #fff8ef;
+}
+
+body:has(.directory-main) footer {
+  color: var(--directory-ink);
+  background: #fff8ef;
+  border-top-color: rgba(32, 27, 56, 0.14);
+}
+
+.directory-main + footer {
+  color: #201b38;
+  background: #fff8ef;
+  border-top-color: rgba(32, 27, 56, 0.14);
+}
+
+body:has(.directory-main) .footer-inner {
+  color: var(--directory-muted);
+}
+
+@keyframes directory-bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-12px) rotate(2deg); }
+}
+
+@media (max-width: 760px) {
+  .directory-hero-copy {
+    transform: none;
+  }
+
+  .directory-card {
+    border-radius: 18px;
+  }
+}
