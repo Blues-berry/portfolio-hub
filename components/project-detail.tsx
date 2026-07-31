@@ -9,13 +9,13 @@ export function ProjectDetail({ locale }: { locale: Locale }) {
 
   return (
     <>
-      <SiteHeader locale={locale} detail />
+      <SiteHeader locale={locale} detail caseStudy />
       <main
         className="detail-main"
         lang={locale === "en" ? "en" : "zh-CN"}
       >
         <section className="detail-hero page-shell">
-          <Link className="back-link" href={localePath(locale)}>
+          <Link className="back-link" href={localePath(locale, "/projects/open-rppg")}>
             <ArrowIcon />
             {t.back}
           </Link>
@@ -147,7 +147,7 @@ export function ProjectDetail({ locale }: { locale: Locale }) {
       <footer lang={locale === "en" ? "en" : "zh-CN"}>
         <div className="page-shell footer-inner">
           <span>© {new Date().getFullYear()} BLUES‑BERRY</span>
-          <Link href={localePath(locale)}>
+            <Link href={localePath(locale, "/projects/open-rppg")}>
             {t.back}
             <ArrowIcon />
           </Link>

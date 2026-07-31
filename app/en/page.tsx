@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { HomePage } from "@/components/home-page";
+import { ProjectDirectory } from "@/components/project-directory";
 
 export const metadata: Metadata = {
   title: "Computer Vision & Web ML",
@@ -15,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function EnglishPage() {
-  return <HomePage locale="en" />;
+  return <ProjectDirectory locale="en" />;
 }

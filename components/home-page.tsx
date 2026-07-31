@@ -5,12 +5,12 @@ import { SiteHeader } from "./site-header";
 import { copy } from "@/lib/content";
 import { localePath, site, type Locale } from "@/lib/site";
 
-export function HomePage({ locale }: { locale: Locale }) {
+export function HomePage({ locale, projectPage = false }: { locale: Locale; projectPage?: boolean }) {
   const t = copy[locale];
 
   return (
     <>
-      <SiteHeader locale={locale} />
+      <SiteHeader locale={locale} projectPage={projectPage} />
       <main lang={locale === "en" ? "en" : "zh-CN"}>
         <section className="hero">
           <div className="hero-grid page-shell">
@@ -107,7 +107,7 @@ export function HomePage({ locale }: { locale: Locale }) {
               <div className="project-actions">
                 <Link
                   className="text-link"
-                  href={localePath(locale, "/projects/open-rppg")}
+                  href={localePath(locale, "/projects/open-rppg/case-study")}
                 >
                   {t.projects.openRppg.details}
                   <ArrowIcon />
@@ -132,7 +132,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                 </a>
                 <Link
                   className="project-action-link"
-                  href={`${localePath(locale, "/projects/open-rppg")}#materials`}
+                  href={`${localePath(locale, "/projects/open-rppg/case-study")}#materials`}
                 >
                   {t.projects.openRppg.materials}
                   <ArrowIcon />

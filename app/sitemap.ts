@@ -7,6 +7,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/en",
     "/projects/open-rppg",
     "/en/projects/open-rppg",
+    "/projects/open-rppg/case-study",
+    "/en/projects/open-rppg/case-study",
   ];
 
   return routes.map((route) => ({

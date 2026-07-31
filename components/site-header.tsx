@@ -5,15 +5,19 @@ import { localePath, type Locale } from "@/lib/site";
 export function SiteHeader({
   locale,
   detail = false,
+  projectPage = false,
+  caseStudy = false,
 }: {
   locale: Locale;
   detail?: boolean;
+  projectPage?: boolean;
+  caseStudy?: boolean;
 }) {
   const t = copy[locale];
   const alternate = locale === "zh" ? "en" : "zh";
   const alternatePath = localePath(
     alternate,
-    detail ? "/projects/open-rppg" : "/",
+    caseStudy || projectPage || detail ? "/projects/open-rppg" : "/",
   );
 
   return (

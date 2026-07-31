@@ -1,5 +1,5 @@
-import { HomePage } from "@/components/home-page";
+import { ProjectDirectory } from "@/components/project-directory";
 
 export default function Page() {
-  return <HomePage locale="zh" />;
+  return <ProjectDirectory locale="zh" />;
 }

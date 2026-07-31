@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { ProjectDetail } from "@/components/project-detail";
+import { HomePage } from "@/components/home-page";
 
 export const metadata: Metadata = {
-  title: "Open‑rPPG",
+  title: "Open‑rPPG Experience",
   description:
-    "Contactless heart-rate sensing in the browser with camera capture, FacePhys, and Workers.",
+    "Explore the complete Open‑rPPG browser experience, from camera capture to real-time physiology feedback.",
   alternates: {
     canonical: "/en/projects/open-rppg",
     languages: {
@@ -15,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function EnglishOpenRppgPage() {
-  return <ProjectDetail locale="en" />;
+  return <HomePage locale="en" projectPage />;
 }

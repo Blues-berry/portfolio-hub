@@ -39,6 +39,15 @@ export type Copy = {
       description: string;
     }>;
   };
+  directory: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    indexLabel: string;
+    openLabel: string;
+    placeholderLabel: string;
+    footer: string;
+  };
   expertise: {
     eyebrow: string;
     title: string;
@@ -125,6 +134,16 @@ const zh: Copy = {
         description: "一个留给新问题、新模型与新交互的空间。",
       },
     ],
+  },
+  directory: {
+    eyebrow: "PROJECT INDEX · 2026",
+    title: "把研究变成可进入的体验",
+    description:
+      "一个持续整理中的项目目录。选择一个项目，进入它的完整界面与实现脉络。",
+    indexLabel: "项目目录",
+    openLabel: "进入项目",
+    placeholderLabel: "即将开放",
+    footer: "更多项目正在形成中",
   },
   expertise: {
     eyebrow: "EXPERTISE",
@@ -269,6 +288,16 @@ const en: Copy = {
         description: "A reserved space for new questions, models, and interactions.",
       },
     ],
+  },
+  directory: {
+    eyebrow: "PROJECT INDEX · 2026",
+    title: "Turning research into experiences",
+    description:
+      "A growing index of projects. Choose one to enter its full interface and implementation story.",
+    indexLabel: "Project index",
+    openLabel: "Enter project",
+    placeholderLabel: "Coming soon",
+    footer: "More projects are taking shape",
   },
   expertise: {
     eyebrow: "EXPERTISE",
