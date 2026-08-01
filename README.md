@@ -28,8 +28,10 @@ live in `lib/site.ts`.
 
 - `/` — Chinese portfolio
 - `/en` — English portfolio
-- `/projects/open-rppg` — Chinese Open-rPPG case study
-- `/en/projects/open-rppg` — English Open-rPPG case study
+- The Open-rPPG project card opens the live experience directly at
+  `https://open-rppg-nu.vercel.app/#experience`.
+- Legacy `/projects/open-rppg` routes redirect to the live experience and are
+  intentionally excluded from the sitemap.
 
 ## Deploy to Vercel
 

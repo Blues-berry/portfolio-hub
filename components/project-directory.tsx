@@ -1,8 +1,7 @@
-import Link from "next/link";
 import { ArrowIcon } from "./icons";
 import { SiteHeader } from "./site-header";
 import { copy } from "@/lib/content";
-import { localePath, type Locale } from "@/lib/site";
+import { type Locale } from "@/lib/site";
 
 export function ProjectDirectory({ locale }: { locale: Locale }) {
   const t = copy[locale];
@@ -48,9 +47,9 @@ export function ProjectDirectory({ locale }: { locale: Locale }) {
           </div>
 
           <div className="directory-grid">
-            <Link
+            <a
               className="directory-card directory-card-featured"
-              href={localePath(locale, "/projects/open-rppg")}
+              href="https://open-rppg-nu.vercel.app/#experience"
             >
               <div className="directory-card-meta">
                 <span>01 · LIVE</span>
@@ -68,7 +67,7 @@ export function ProjectDirectory({ locale }: { locale: Locale }) {
                 <h3>{t.projects.openRppg.title}</h3>
                 <span>{directory.openLabel}</span>
               </div>
-            </Link>
+            </a>
 
             {t.projects.placeholders.map((project, index) => (
               <div className={`directory-card directory-card-placeholder directory-card-placeholder-${index + 1}`} key={project.index}>

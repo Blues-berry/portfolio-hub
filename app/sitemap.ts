@@ -5,16 +5,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
     "",
     "/en",
-    "/projects/open-rppg",
-    "/en/projects/open-rppg",
-    "/projects/open-rppg/case-study",
-    "/en/projects/open-rppg/case-study",
   ];
 
   return routes.map((route) => ({
     url: `${site.siteUrl}${route}`,
     lastModified: new Date(),
-    changeFrequency: route.includes("projects") ? "monthly" : "weekly",
+    changeFrequency: "weekly",
     priority: route === "" ? 1 : route === "/en" ? 0.9 : 0.8,
   }));
 }
