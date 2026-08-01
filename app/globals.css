@@ -2265,3 +2265,169 @@ body:has(.directory-main) .footer-inner {
     border-radius: 18px;
   }
 }
+
+/* Playful index motion: a centered two-line title, a moving light pass, and
+   small ambient particles. These styles are scoped to the directory so the
+   Open-rPPG experience keeps its precise blue/green visual language. */
+.directory-hero-copy {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.directory-hero-copy .eyebrow {
+  justify-content: center;
+}
+
+.directory-hero h1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.18em;
+  line-height: 1.12;
+}
+
+.directory-title-line {
+  display: block;
+  background: linear-gradient(
+    112deg,
+    var(--directory-ink) 0%,
+    var(--directory-ink) 38%,
+    #ff6b6b 47%,
+    #7764ff 52%,
+    var(--directory-ink) 62%,
+    var(--directory-ink) 100%
+  );
+  background-size: 240% 100%;
+  background-position: 100% 50%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: directory-text-sweep 5.5s cubic-bezier(0.2, 0.75, 0.25, 1) infinite;
+}
+
+.directory-title-line:nth-child(2) {
+  animation-delay: 1.2s;
+}
+
+.directory-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.directory-particles i {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--directory-coral);
+  box-shadow: 0 0 12px rgba(255, 107, 107, 0.6);
+  opacity: 0.7;
+  animation: directory-particle-float 5s ease-in-out infinite;
+}
+
+.directory-particles i:nth-child(3n) {
+  width: 3px;
+  height: 3px;
+  background: var(--directory-purple);
+  box-shadow: 0 0 10px rgba(119, 100, 255, 0.58);
+}
+
+.directory-particles i:nth-child(1) { left: 8%; top: 28%; animation-delay: -1s; }
+.directory-particles i:nth-child(2) { left: 18%; top: 62%; animation-delay: -3.8s; }
+.directory-particles i:nth-child(3) { left: 30%; top: 18%; animation-delay: -2.1s; }
+.directory-particles i:nth-child(4) { left: 42%; top: 48%; animation-delay: -4.4s; }
+.directory-particles i:nth-child(5) { left: 56%; top: 22%; animation-delay: -0.7s; }
+.directory-particles i:nth-child(6) { left: 70%; top: 58%; animation-delay: -2.8s; }
+.directory-particles i:nth-child(7) { left: 84%; top: 18%; animation-delay: -3.2s; }
+.directory-particles i:nth-child(8) { left: 92%; top: 70%; animation-delay: -1.8s; }
+.directory-particles i:nth-child(9) { left: 12%; top: 82%; animation-delay: -4.8s; }
+.directory-particles i:nth-child(10) { left: 25%; top: 42%; animation-delay: -2.6s; }
+.directory-particles i:nth-child(11) { left: 38%; top: 78%; animation-delay: -0.4s; }
+.directory-particles i:nth-child(12) { left: 50%; top: 12%; animation-delay: -3.6s; }
+.directory-particles i:nth-child(13) { left: 64%; top: 82%; animation-delay: -1.4s; }
+.directory-particles i:nth-child(14) { left: 76%; top: 38%; animation-delay: -4.1s; }
+.directory-particles i:nth-child(15) { left: 88%; top: 52%; animation-delay: -2.2s; }
+.directory-particles i:nth-child(16) { left: 4%; top: 54%; animation-delay: -3.1s; }
+.directory-particles i:nth-child(17) { left: 34%; top: 66%; animation-delay: -0.9s; }
+.directory-particles i:nth-child(18) { left: 82%; top: 84%; animation-delay: -4.6s; }
+
+.directory-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 260ms ease,
+    border-color 220ms ease;
+}
+
+.directory-card::after {
+  position: absolute;
+  inset: -30% auto -30% -25%;
+  z-index: -1;
+  width: 24%;
+  content: "";
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.72), transparent);
+  transform: translateX(-180%) rotate(18deg);
+  transition: transform 650ms ease;
+}
+
+.directory-card-featured:hover::after {
+  transform: translateX(760%) rotate(18deg);
+}
+
+.directory-card-placeholder-1 {
+  transform: rotate(-0.8deg);
+}
+
+.directory-card-placeholder-1:hover {
+  transform: translateY(-8px) rotate(1.4deg);
+  box-shadow: 0 24px 54px rgba(255, 107, 107, 0.16);
+}
+
+.directory-card-placeholder-2 {
+  transform: rotate(0.8deg);
+}
+
+.directory-card-placeholder-2:hover {
+  transform: translateY(-8px) rotate(-1.4deg);
+  box-shadow: 0 24px 54px rgba(119, 100, 255, 0.16);
+}
+
+.directory-card-placeholder-1 .directory-placeholder-mark span {
+  transform: skewY(-12deg);
+}
+
+.directory-card-placeholder-2 .directory-placeholder-mark span {
+  border-radius: 50%;
+}
+
+@keyframes directory-text-sweep {
+  0%, 24% { background-position: 100% 50%; }
+  55%, 72% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+@keyframes directory-particle-float {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(0.72); opacity: 0.3; }
+  50% { transform: translate3d(8px, -16px, 0) scale(1); opacity: 0.9; }
+}
+
+@media (max-width: 760px) {
+  .directory-hero-copy {
+    text-align: center;
+  }
+
+  .directory-hero h1 {
+    gap: 0.24em;
+  }
+
+  .directory-particles i:nth-child(n + 10) {
+    display: none;
+  }
+}

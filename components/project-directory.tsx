@@ -13,12 +13,18 @@ export function ProjectDirectory({ locale }: { locale: Locale }) {
       <SiteHeader locale={locale} directory />
       <main className="directory-main" lang={locale === "en" ? "en" : "zh-CN"}>
         <section className="directory-hero page-shell">
+          <div className="directory-particles" aria-hidden="true">
+            {Array.from({ length: 18 }, (_, index) => <i key={index} />)}
+          </div>
           <div className="directory-hero-copy">
             <p className="eyebrow">
               <span />
               {directory.eyebrow}
             </p>
-            <h1>{directory.title}</h1>
+            <h1 aria-label={directory.title}>
+              <span className="directory-title-line">{directory.titleLines[0]}</span>
+              <span className="directory-title-line">{directory.titleLines[1]}</span>
+            </h1>
             <p className="directory-description">{directory.description}</p>
           </div>
           <div className="directory-orbit" aria-hidden="true">
@@ -64,8 +70,8 @@ export function ProjectDirectory({ locale }: { locale: Locale }) {
               </div>
             </Link>
 
-            {t.projects.placeholders.map((project) => (
-              <div className="directory-card directory-card-placeholder" key={project.index}>
+            {t.projects.placeholders.map((project, index) => (
+              <div className={`directory-card directory-card-placeholder directory-card-placeholder-${index + 1}`} key={project.index}>
                 <div className="directory-card-meta">
                   <span>{project.index} · {directory.placeholderLabel}</span>
                   <span className="directory-card-lock">—</span>

@@ -42,6 +42,7 @@ export type Copy = {
   directory: {
     eyebrow: string;
     title: string;
+    titleLines: [string, string];
     description: string;
     indexLabel: string;
     openLabel: string;
@@ -138,6 +139,7 @@ const zh: Copy = {
   directory: {
     eyebrow: "PROJECT INDEX · 2026",
     title: "把研究变成可进入的体验",
+    titleLines: ["把研究变成", "可进入的体验"],
     description:
       "一个持续整理中的项目目录。选择一个项目，进入它的完整界面与实现脉络。",
     indexLabel: "项目目录",
@@ -292,6 +294,7 @@ const en: Copy = {
   directory: {
     eyebrow: "PROJECT INDEX · 2026",
     title: "Turning research into experiences",
+    titleLines: ["Turning research", "into experiences"],
     description:
       "A growing index of projects. Choose one to enter its full interface and implementation story.",
     indexLabel: "Project index",
