@@ -55,6 +55,10 @@ export function ProjectDirectory({ locale }: { locale: Locale }) {
                 <span>01 · LIVE</span>
                 <ArrowIcon />
               </div>
+              <span className="directory-rarity">SSR · GOLD</span>
+              <span className="directory-card-burst" aria-hidden="true">
+                {Array.from({ length: 8 }, (_, index) => <i key={index} />)}
+              </span>
               <div className="directory-card-signal" aria-hidden="true">
                 <span />
                 <span />
@@ -75,6 +79,7 @@ export function ProjectDirectory({ locale }: { locale: Locale }) {
                   <span>{project.index} · {directory.placeholderLabel}</span>
                   <span className="directory-card-lock">—</span>
                 </div>
+                <span className="directory-rarity directory-rarity-muted">LOCKED</span>
                 <div className="directory-placeholder-mark" aria-hidden="true">
                   <span />
                   <span />
