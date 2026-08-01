@@ -2378,20 +2378,7 @@ body:has(.directory-main) .footer-inner {
 }
 
 .directory-hero-copy::before {
-  position: absolute;
-  inset: 12px -8px;
-  z-index: -1;
-  border: 1px solid rgba(119, 100, 255, 0.12);
-  border-radius: 30px;
-  content: "";
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.24)),
-    radial-gradient(circle at 18% 12%, rgba(255, 209, 102, 0.3), transparent 36%);
-  box-shadow:
-    12px 14px 0 rgba(255, 209, 102, 0.14),
-    0 24px 60px rgba(71, 48, 110, 0.1),
-    inset 0 0 32px rgba(255, 255, 255, 0.35);
-  backdrop-filter: blur(8px);
+  display: none;
 }
 
 .directory-hero-copy .eyebrow {
@@ -2474,6 +2461,43 @@ body:has(.directory-main) .footer-inner {
 .directory-particles i:nth-child(17) { left: 34%; top: 66%; animation-delay: -0.9s; }
 .directory-particles i:nth-child(18) { left: 82%; top: 84%; animation-delay: -4.6s; }
 
+.directory-starfield {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.directory-starfield i {
+  position: absolute;
+  top: var(--star-top);
+  left: var(--star-left);
+  width: var(--star-size);
+  height: var(--star-size);
+  border-radius: 50%;
+  background: #7764ff;
+  box-shadow: 0 0 8px rgba(119, 100, 255, 0.52);
+  opacity: 0.28;
+  animation: directory-star-twinkle 3.8s ease-in-out infinite;
+  animation-delay: -1.2s;
+}
+
+.directory-starfield i:nth-child(4n) {
+  background: #ff6b6b;
+  box-shadow: 0 0 9px rgba(255, 107, 107, 0.5);
+}
+
+.directory-starfield i:nth-child(7n) {
+  background: #d29a23;
+  box-shadow: 0 0 10px rgba(210, 154, 35, 0.5);
+}
+
+.directory-starfield i:nth-child(5n) {
+  border-radius: 1px;
+  transform: rotate(45deg);
+}
+
 .directory-card {
   position: relative;
   isolation: isolate;
@@ -2534,6 +2558,11 @@ body:has(.directory-main) .footer-inner {
 @keyframes directory-particle-float {
   0%, 100% { transform: translate3d(0, 0, 0) scale(0.72); opacity: 0.3; }
   50% { transform: translate3d(8px, -16px, 0) scale(1); opacity: 0.9; }
+}
+
+@keyframes directory-star-twinkle {
+  0%, 100% { opacity: 0.18; transform: scale(0.7); }
+  50% { opacity: 0.78; transform: scale(1.35); }
 }
 
 @media (max-width: 760px) {

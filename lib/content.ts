@@ -138,8 +138,8 @@ const zh: Copy = {
   },
   directory: {
     eyebrow: "PROJECT INDEX · 2026",
-    title: "把研究变成可进入的体验",
-    titleLines: ["把研究变成", "可进入的体验"],
+    title: "把研究变成体验",
+    titleLines: ["把研究变成", "体验"],
     description:
       "一个持续整理中的项目目录。选择一个项目，进入它的完整界面与实现脉络。",
     indexLabel: "项目目录",

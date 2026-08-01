@@ -2,6 +2,15 @@ import { ArrowIcon } from "./icons";
 import { SiteHeader } from "./site-header";
 import { copy } from "@/lib/content";
 import { type Locale } from "@/lib/site";
+import type { CSSProperties } from "react";
+
+const starPositions = [
+  [5, 12, 2], [12, 31, 1], [18, 8, 1], [24, 46, 2], [31, 18, 1], [37, 66, 1],
+  [44, 11, 2], [51, 38, 1], [58, 74, 1], [64, 22, 2], [71, 54, 1], [78, 14, 1],
+  [85, 42, 2], [93, 76, 1], [8, 84, 1], [16, 62, 2], [28, 78, 1], [35, 92, 1],
+  [47, 58, 1], [55, 91, 2], [67, 88, 1], [74, 68, 1], [88, 90, 2], [97, 28, 1],
+  [3, 52, 1], [21, 96, 1], [41, 31, 2], [61, 6, 1], [82, 62, 1], [91, 8, 2],
+] as const;
 
 export function ProjectDirectory({ locale }: { locale: Locale }) {
   const t = copy[locale];
@@ -11,6 +20,14 @@ export function ProjectDirectory({ locale }: { locale: Locale }) {
     <>
       <SiteHeader locale={locale} directory />
       <main className="directory-main" lang={locale === "en" ? "en" : "zh-CN"}>
+        <div className="directory-starfield" aria-hidden="true">
+          {starPositions.map(([left, top, size], index) => (
+            <i
+              key={index}
+              style={{ "--star-left": `${left}%`, "--star-top": `${top}%`, "--star-size": `${size}px` } as CSSProperties}
+            />
+          ))}
+        </div>
         <section className="directory-hero page-shell">
           <div className="directory-particles" aria-hidden="true">
             {Array.from({ length: 18 }, (_, index) => <i key={index} />)}
