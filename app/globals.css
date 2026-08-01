@@ -1947,6 +1947,163 @@ footer {
   }
 }
 
+/* The supplied Uiverse star-field treatment, recolored for the portfolio. */
+.directory-main {
+  --directory-bg: #11111e;
+  --directory-ink: #f7f1ff;
+  --directory-muted: #b2a9c2;
+  --directory-purple: #a493ff;
+  --directory-coral: #ff8c8c;
+  --directory-yellow: #ffd166;
+  --directory-mint: #9debd5;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at bottom, #252344 0%, #11111e 58%, #0b0b14 100%);
+}
+
+.site-header-directory {
+  --directory-ink: #f7f1ff;
+  --directory-line: rgba(230, 221, 255, 0.2);
+  color: var(--directory-ink);
+}
+
+.site-header-directory nav {
+  color: rgba(247, 241, 255, 0.72);
+}
+
+.site-header-directory nav a:hover {
+  color: var(--directory-yellow);
+}
+
+.site-header-directory .brand-mark,
+.site-header-directory .brand-mark i {
+  color: var(--directory-yellow);
+  background: var(--directory-yellow);
+}
+
+.site-header-directory .language-link {
+  border-color: rgba(164, 147, 255, 0.42);
+  color: var(--directory-purple) !important;
+}
+
+.directory-hero::before {
+  opacity: 0.18;
+  background-image:
+    linear-gradient(rgba(164, 147, 255, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(164, 147, 255, 0.12) 1px, transparent 1px);
+}
+
+.directory-description {
+  color: var(--directory-muted);
+}
+
+.directory-starfield {
+  z-index: 0;
+  opacity: 0.92;
+}
+
+.directory-starfield i {
+  background: #fff;
+  box-shadow: 0 0 9px rgba(255, 255, 255, 0.8);
+  animation: directory-star-drift 50s linear infinite, directory-star-twinkle 4s ease-in-out infinite;
+}
+
+.directory-starfield i:nth-child(4n) {
+  background: #ffd9a0;
+  box-shadow: 0 0 10px rgba(255, 217, 160, 0.8);
+}
+
+.directory-starfield i:nth-child(7n) {
+  background: #bcb0ff;
+  box-shadow: 0 0 10px rgba(188, 176, 255, 0.8);
+}
+
+.directory-hero-copy,
+.directory-orbit,
+.directory-section,
+.directory-footer {
+  z-index: 1;
+}
+
+.directory-title-line {
+  background: linear-gradient(
+    112deg,
+    #f7f1ff 0%,
+    #f7f1ff 38%,
+    #ffd166 47%,
+    #a493ff 52%,
+    #f7f1ff 62%,
+    #f7f1ff 100%
+  );
+}
+
+.directory-section-heading h2 {
+  color: var(--directory-ink);
+}
+
+.directory-count,
+.directory-footer {
+  color: var(--directory-muted);
+}
+
+.directory-card {
+  border-color: rgba(230, 221, 255, 0.18);
+  color: var(--directory-ink);
+  background: rgba(25, 24, 45, 0.86);
+  box-shadow: 0 18px 50px rgba(4, 4, 12, 0.24);
+}
+
+.directory-card:hover {
+  border-color: var(--directory-purple);
+  box-shadow: 0 24px 64px rgba(4, 4, 12, 0.42);
+}
+
+.directory-card-featured {
+  border-color: rgba(255, 209, 102, 0.5);
+  background:
+    radial-gradient(circle at 78% 28%, rgba(164, 147, 255, 0.26), transparent 28%),
+    linear-gradient(135deg, rgba(44, 36, 73, 0.95), rgba(25, 24, 45, 0.9));
+}
+
+.directory-card-featured::before {
+  opacity: 0.25;
+  background-image:
+    linear-gradient(rgba(164, 147, 255, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(164, 147, 255, 0.16) 1px, transparent 1px);
+}
+
+.directory-card-copy p,
+.directory-card-placeholder .directory-card-copy > span {
+  color: var(--directory-muted);
+}
+
+.directory-card-copy h3 {
+  color: var(--directory-ink);
+}
+
+.directory-card-placeholder {
+  border-color: rgba(230, 221, 255, 0.16);
+  background: rgba(19, 19, 35, 0.78);
+}
+
+body:has(.directory-main),
+body:has(.directory-main) footer,
+.directory-main + footer {
+  color: var(--directory-ink);
+  background: #11111e;
+  border-top-color: rgba(230, 221, 255, 0.16);
+}
+
+body:has(.directory-main) .footer-inner {
+  color: var(--directory-muted);
+}
+
+@keyframes directory-star-drift {
+  from { transform: translateY(18vh); }
+  to { transform: translateY(-112vh); }
+}
+
 /* Gacha-inspired rarity reveal for project cards. */
 .directory-card-featured {
   border-color: rgba(238, 183, 72, 0.52);
