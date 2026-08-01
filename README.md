@@ -28,6 +28,9 @@ live in `lib/site.ts`.
 
 - `/` — Chinese portfolio
 - `/en` — English portfolio
+- `/projects/game-demos` — interactive game demo directory
+- `/projects/game-demos/office-cringe` — Office Cringe Simulator
+- `/projects/game-demos/beyond-the-rules` — Beyond the Rules
 - The Open-rPPG project card opens the live experience directly at
   `https://open-rppg-nu.vercel.app/#experience`.
 - Legacy `/projects/open-rppg` routes redirect to the live experience and are

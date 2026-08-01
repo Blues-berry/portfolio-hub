@@ -5,6 +5,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
     "",
     "/en",
+    "/projects/game-demos",
+    "/en/projects/game-demos",
+    "/projects/game-demos/office-cringe",
+    "/projects/game-demos/beyond-the-rules",
+    "/en/projects/game-demos/office-cringe",
+    "/en/projects/game-demos/beyond-the-rules",
   ];
 
   return routes.map((route) => ({

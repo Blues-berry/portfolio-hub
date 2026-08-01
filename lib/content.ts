@@ -37,6 +37,7 @@ export type Copy = {
       title: string;
       status: string;
       description: string;
+      href?: string;
     }>;
   };
   directory: {
@@ -124,9 +125,10 @@ const zh: Copy = {
     placeholders: [
       {
         index: "02",
-        title: "下一个研究项目",
-        status: "占位项目",
-        description: "项目资料整理中，新的研究与原型将在这里展开。",
+        title: "互动游戏 Demo",
+        status: "INTERACTIVE DEMO",
+        description: "两个可直接游玩的实验性游戏，探索社死、规则与选择。",
+        href: "/projects/game-demos",
       },
       {
         index: "03",
@@ -279,9 +281,10 @@ const en: Copy = {
     placeholders: [
       {
         index: "02",
-        title: "Next research project",
-        status: "PLACEHOLDER",
-        description: "Project materials are being assembled for the next study and prototype.",
+        title: "Interactive Game Demos",
+        status: "INTERACTIVE DEMO",
+        description: "Two playable experiments about social friction, rules, and choice.",
+        href: "/en/projects/game-demos",
       },
       {
         index: "03",

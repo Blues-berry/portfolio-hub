@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowIcon } from "./icons";
 import { SiteHeader } from "./site-header";
 import { copy } from "@/lib/content";
@@ -91,23 +92,15 @@ export function ProjectDirectory({ locale }: { locale: Locale }) {
             </a>
 
             {t.projects.placeholders.map((project, index) => (
-              <div className={`directory-card directory-card-placeholder directory-card-placeholder-${index + 1}`} key={project.index}>
-                <div className="directory-card-meta">
-                  <span>{project.index} · {directory.placeholderLabel}</span>
-                  <span className="directory-card-lock">—</span>
+              project.href ? (
+                <Link className={`directory-card directory-card-placeholder directory-card-placeholder-${index + 1}`} href={project.href} key={project.index}>
+                  <PlaceholderContent project={project} directory={directory} />
+                </Link>
+              ) : (
+                <div className={`directory-card directory-card-placeholder directory-card-placeholder-${index + 1}`} key={project.index}>
+                  <PlaceholderContent project={project} directory={directory} />
                 </div>
-                <span className="directory-rarity directory-rarity-muted">LOCKED</span>
-                <div className="directory-placeholder-mark" aria-hidden="true">
-                  <span />
-                  <span />
-                  <span />
-                </div>
-                <div className="directory-card-copy">
-                  <p>{project.status}</p>
-                  <h3>{project.title}</h3>
-                  <span>{project.description}</span>
-                </div>
-              </div>
+              )
             ))}
           </div>
         </section>
@@ -120,6 +113,36 @@ export function ProjectDirectory({ locale }: { locale: Locale }) {
           <span>{directory.footer}</span>
         </div>
       </footer>
+    </>
+  );
+}
+
+function PlaceholderContent({
+  project,
+  directory,
+}: {
+  project: (typeof copy.zh.projects.placeholders)[number];
+  directory: (typeof copy.zh.directory);
+}) {
+  return (
+    <>
+      <div className="directory-card-meta">
+        <span>{project.index} · {directory.placeholderLabel}</span>
+        <span className="directory-card-lock">{project.href ? "↗" : "—"}</span>
+      </div>
+      <span className={`directory-rarity ${project.href ? "directory-rarity-demo" : "directory-rarity-muted"}`}>
+        {project.href ? "PLAYABLE" : "LOCKED"}
+      </span>
+      <div className="directory-placeholder-mark" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="directory-card-copy">
+        <p>{project.status}</p>
+        <h3>{project.title}</h3>
+        <span>{project.description}</span>
+      </div>
     </>
   );
 }
