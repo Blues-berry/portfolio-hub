@@ -2218,7 +2218,7 @@ body:has(.directory-main) .footer-inner {
   position: absolute;
   bottom: -1px;
   left: 0;
-  width: 76px;
+  width: 190px;
   height: 2px;
   background: linear-gradient(90deg, #ff6e8a, #a493ff);
   box-shadow: 0 0 16px rgba(255, 110, 138, 0.7);

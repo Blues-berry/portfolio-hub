@@ -43,9 +43,9 @@ export function GameDemosHub({ locale }: { locale: Locale }) {
         </section>
 
         <nav className="game-hub-tabs page-shell" aria-label={isEnglish ? "Game demos" : "游戏 Demo"}>
-          <span className="game-hub-tab active">{isEnglish ? "All demos" : "全部 Demo"}</span>
-          <span className="game-hub-tab">{isEnglish ? "Playable" : "可游玩"}</span>
-          <span className="game-hub-tab">{isEnglish ? "Experiments" : "实验作品"}</span>
+          <Link className="game-hub-tab active" href={localePath(locale, games[0].href)}>{games[0].title}</Link>
+          <Link className="game-hub-tab" href={localePath(locale, games[1].href)}>{games[1].title}</Link>
+          <span className="game-hub-tab">{isEnglish ? "Next experiment" : "下一个实验"}</span>
           <span className="game-hub-tab-line" aria-hidden="true" />
         </nav>
 
