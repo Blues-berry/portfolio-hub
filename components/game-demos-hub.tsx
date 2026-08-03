@@ -38,14 +38,14 @@ export function GameDemosHub({ locale }: { locale: Locale }) {
             <ArrowIcon /> {isEnglish ? "Back to project index" : "返回项目目录"}
           </Link>
           <p className="game-hub-kicker">{isEnglish ? "INTERACTIVE LAB · 02" : "INTERACTIVE LAB · 02"}</p>
-          <h1>{isEnglish ? "Games that make the rules wobble." : "让规则开始摇晃的游戏。"}</h1>
+          <h1>{isEnglish ? "Imaginative experiments." : "奇思妙想。"}</h1>
           <p>{isEnglish ? "A small shelf of playable experiments, each with its own rhythm, interface, and kind of trouble." : "一组可以直接进入的互动实验，每个游戏都有自己的节奏、界面和麻烦。"}</p>
         </section>
 
         <nav className="game-hub-tabs page-shell" aria-label={isEnglish ? "Game demos" : "游戏 Demo"}>
           <Link className="game-hub-tab active" href={localePath(locale, games[0].href)}>{games[0].title}</Link>
           <Link className="game-hub-tab" href={localePath(locale, games[1].href)}>{games[1].title}</Link>
-          <span className="game-hub-tab">{isEnglish ? "Next experiment" : "下一个实验"}</span>
+          <span className="game-hub-tab">{isEnglish ? "Partially live" : "部分上线"}</span>
           <span className="game-hub-tab-line" aria-hidden="true" />
         </nav>
 
@@ -57,11 +57,14 @@ export function GameDemosHub({ locale }: { locale: Locale }) {
                 <ArrowIcon />
               </div>
               <div className="game-demo-art" aria-hidden="true">
-                <span className="game-demo-orbit" />
-                <span className="game-demo-core">{game.tone === "cringe" ? "!" : "RULE"}</span>
-                <span className="game-demo-spark spark-a" />
-                <span className="game-demo-spark spark-b" />
-                <span className="game-demo-spark spark-c" />
+                <iframe
+                  className="game-demo-cover-frame"
+                  src={game.tone === "cringe" ? "/games/office-cringe/index.html" : "/games/beyond-the-rules/index.html"}
+                  title={`${game.title} preview`}
+                  tabIndex={-1}
+                  loading="lazy"
+                />
+                <span className="game-demo-cover-label">LIVE PREVIEW</span>
               </div>
               <div className="game-demo-copy">
                 <h2>{game.tone === "rules" || isEnglish ? game.title : game.cnTitle}</h2>

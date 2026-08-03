@@ -2352,14 +2352,54 @@ body:has(.directory-main) .footer-inner {
 .game-demo-art {
   height: 245px;
   margin: 18px -24px 0;
-  display: grid;
-  place-items: center;
+  position: relative;
+  display: block;
   overflow: hidden;
   background: radial-gradient(circle, rgba(255, 92, 124, 0.18), transparent 48%);
 }
 
 .game-demo-card-rules .game-demo-art {
   background: radial-gradient(circle, rgba(116, 94, 255, 0.24), transparent 48%);
+}
+
+.game-demo-cover-frame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 238%;
+  height: 238%;
+  border: 0;
+  pointer-events: none;
+  background: #0a0a10;
+  transform: translate(-50%, -50%) scale(0.42);
+  transform-origin: center;
+  filter: saturate(0.92) contrast(1.06);
+}
+
+.game-demo-art::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(9, 8, 17, 0.1), rgba(9, 8, 17, 0.78)),
+    repeating-linear-gradient(0deg, transparent 0 5px, rgba(255, 255, 255, 0.06) 6px, transparent 7px);
+  mix-blend-mode: multiply;
+}
+
+.game-demo-cover-label {
+  position: absolute;
+  right: 20px;
+  bottom: 16px;
+  z-index: 2;
+  padding: 5px 8px;
+  border: 1px solid rgba(255, 209, 102, 0.58);
+  color: #ffe19a;
+  background: rgba(11, 10, 19, 0.72);
+  font-family: var(--font-display), sans-serif;
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  box-shadow: 0 0 15px rgba(255, 209, 102, 0.2);
 }
 
 .game-demo-orbit {
