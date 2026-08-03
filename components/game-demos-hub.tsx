@@ -38,7 +38,7 @@ export function GameDemosHub({ locale }: { locale: Locale }) {
             <ArrowIcon /> {isEnglish ? "Back to project index" : "返回项目目录"}
           </Link>
           <p className="game-hub-kicker">{isEnglish ? "INTERACTIVE LAB · 02" : "INTERACTIVE LAB · 02"}</p>
-          <h1>{isEnglish ? "Imaginative experiments." : "奇思妙想。"}</h1>
+          <h1>{isEnglish ? "Imaginative experiments." : "奇思妙想"}</h1>
           <p>{isEnglish ? "A small shelf of playable experiments, each with its own rhythm, interface, and kind of trouble." : "一组可以直接进入的互动实验，每个游戏都有自己的节奏、界面和麻烦。"}</p>
         </section>
 
