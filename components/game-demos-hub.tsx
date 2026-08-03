@@ -64,8 +64,8 @@ export function GameDemosHub({ locale }: { locale: Locale }) {
                 <span className="game-demo-spark spark-c" />
               </div>
               <div className="game-demo-copy">
-                <p>{isEnglish ? game.title : game.cnTitle}</p>
-                <h2>{isEnglish ? game.description : game.cnDescription}</h2>
+                <h2>{game.tone === "rules" || isEnglish ? game.title : game.cnTitle}</h2>
+                <p>{game.tone === "rules" || isEnglish ? game.description : game.cnDescription}</p>
                 <span className="game-demo-enter">{isEnglish ? "Enter game" : "进入游戏"} <ArrowIcon /></span>
               </div>
             </Link>
