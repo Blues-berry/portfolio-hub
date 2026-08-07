@@ -60,9 +60,11 @@
   place-items: center;
   opacity: .82;
   background: conic-gradient(from 0deg, #0b0b0b, #343434 9%, #111 18%, #525252 29%, #0a0a0a 41%, #696969 53%, #161616 66%, #3d3d3d 77%, #0a0a0a 90%, #0b0b0b);
-  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
   filter: contrast(1.15);
   animation: journeySpin 34s linear infinite;
+  contain: strict;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .journey-kaleidoscope-inner {
@@ -74,6 +76,8 @@
   background: conic-gradient(from 18deg, transparent 0 12%, rgba(255,255,255,.34) 13% 15%, transparent 16% 29%, rgba(160,160,160,.34) 30% 32%, transparent 33% 49%, rgba(255,255,255,.22) 50% 52%, transparent 53% 69%, rgba(185,185,185,.34) 70% 72%, transparent 73% 88%, rgba(255,255,255,.24) 89% 91%, transparent 92%);
   box-shadow: 0 0 42px rgba(255, 255, 255, .1), inset 0 0 48px rgba(255, 255, 255, .06);
   animation: journeySpinReverse 22s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .journey-ray {
@@ -108,6 +112,8 @@
   transform: rotate(18deg) skewX(-15deg);
   box-shadow: 0 0 24px rgba(255, 255, 255, .08);
   animation: journeyOrbit 26s linear infinite;
+  will-change: transform;
+  transform: translateZ(0) rotate(18deg) skewX(-15deg);
 }
 
 .journey-orbit i { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px 2px rgba(255, 255, 255, .65); }
@@ -156,6 +162,10 @@
 
 * {
   box-sizing: border-box;
+}
+
+body.journey-locked .directory-main * {
+  animation-play-state: paused !important;
 }
 
 html {
