@@ -1,27 +1,11 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { gsap } from "gsap";
 
 export function JourneyGate({ children }: { children: React.ReactNode }) {
   const gateRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
-
-  useLayoutEffect(() => {
-    const gate = gateRef.current;
-    if (!gate) return;
-
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const context = gsap.context(() => {
-      if (reduced) return;
-      gsap.to(".journey-kaleidoscope", { rotation: 360, duration: 30, repeat: -1, ease: "none" });
-      gsap.to(".journey-kaleidoscope-inner", { rotation: -360, duration: 18, repeat: -1, ease: "none" });
-      gsap.to(".journey-orbit", { rotation: -360, duration: 22, repeat: -1, ease: "none" });
-      gsap.fromTo(".journey-particle", { autoAlpha: 0.18, scale: 0.65 }, { autoAlpha: 0.9, scale: 1.35, duration: 1.8, repeat: -1, yoyo: true, stagger: { each: 0.16, from: "random" }, ease: "sine.inOut" });
-    }, gate);
-
-    return () => context.revert();
-  }, []);
 
   const enter = () => {
     if (open) return;

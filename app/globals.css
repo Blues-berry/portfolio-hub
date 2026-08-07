@@ -22,7 +22,7 @@
   place-items: center;
   overflow: hidden;
   isolation: isolate;
-  background: #050916;
+  background: #070707;
   color: #f4fbff;
 }
 
@@ -39,7 +39,7 @@
 
 .journey-noise {
   z-index: -1;
-  opacity: .25;
+  opacity: .16;
   background-image: radial-gradient(rgba(255,255,255,.2) .7px, transparent .7px);
   background-size: 5px 5px;
   mix-blend-mode: screen;
@@ -49,29 +49,31 @@
   z-index: -2;
   inset: 28% 28%;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(83, 190, 255, .52), rgba(127, 72, 255, .2) 34%, transparent 70%);
-  filter: blur(28px);
+  background: radial-gradient(circle, rgba(255, 255, 255, .16), rgba(160, 160, 160, .07) 34%, transparent 70%);
+  filter: blur(12px);
 }
 
 .journey-kaleidoscope {
   z-index: -3;
-  inset: -36vmax;
+  inset: -16vmin;
   display: grid;
   place-items: center;
   opacity: .82;
-  background: conic-gradient(from 0deg, #101b46, #382b77 9%, #0c708d 18%, #111a49 29%, #5b2e86 41%, #071c48 53%, #278ba4 66%, #1c1a59 77%, #552a80 90%, #101b46);
+  background: conic-gradient(from 0deg, #0b0b0b, #343434 9%, #111 18%, #525252 29%, #0a0a0a 41%, #696969 53%, #161616 66%, #3d3d3d 77%, #0a0a0a 90%, #0b0b0b);
   clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
-  filter: saturate(1.25);
+  filter: contrast(1.15);
+  animation: journeySpin 34s linear infinite;
 }
 
 .journey-kaleidoscope-inner {
   position: relative;
   width: 74vmin;
   height: 74vmin;
-  border: 1px solid rgba(168, 238, 255, .22);
+  border: 1px solid rgba(255, 255, 255, .2);
   border-radius: 50%;
-  background: conic-gradient(from 18deg, transparent 0 12%, rgba(125, 235, 255, .34) 13% 15%, transparent 16% 29%, rgba(193, 117, 255, .34) 30% 32%, transparent 33% 49%, rgba(105, 250, 211, .28) 50% 52%, transparent 53% 69%, rgba(125, 235, 255, .34) 70% 72%, transparent 73% 88%, rgba(193, 117, 255, .3) 89% 91%, transparent 92%);
-  box-shadow: 0 0 80px rgba(104, 178, 255, .25), inset 0 0 90px rgba(41, 231, 215, .14);
+  background: conic-gradient(from 18deg, transparent 0 12%, rgba(255,255,255,.34) 13% 15%, transparent 16% 29%, rgba(160,160,160,.34) 30% 32%, transparent 33% 49%, rgba(255,255,255,.22) 50% 52%, transparent 53% 69%, rgba(185,185,185,.34) 70% 72%, transparent 73% 88%, rgba(255,255,255,.24) 89% 91%, transparent 92%);
+  box-shadow: 0 0 42px rgba(255, 255, 255, .1), inset 0 0 48px rgba(255, 255, 255, .06);
+  animation: journeySpinReverse 22s linear infinite;
 }
 
 .journey-ray {
@@ -81,8 +83,8 @@
   width: 1px;
   height: 47%;
   transform-origin: 50% 0;
-  background: linear-gradient(to bottom, rgba(182, 244, 255, .8), transparent 80%);
-  box-shadow: 0 0 15px rgba(106, 225, 255, .85);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, .58), transparent 80%);
+  box-shadow: 0 0 9px rgba(255, 255, 255, .38);
 }
 
 .journey-ray:nth-child(1){transform:translate(-50%,-0%) rotate(0deg)}
@@ -101,21 +103,22 @@
 .journey-orbit {
   z-index: -1;
   inset: 17vmin;
-  border: 1px solid rgba(148, 232, 255, .32);
+  border: 1px solid rgba(255, 255, 255, .26);
   border-radius: 50%;
   transform: rotate(18deg) skewX(-15deg);
-  box-shadow: 0 0 40px rgba(107, 204, 255, .12);
+  box-shadow: 0 0 24px rgba(255, 255, 255, .08);
+  animation: journeyOrbit 26s linear infinite;
 }
 
-.journey-orbit i { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #a2f5ff; box-shadow: 0 0 18px 5px rgba(95, 218, 255, .8); }
+.journey-orbit i { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px 2px rgba(255, 255, 255, .65); }
 .journey-orbit i:nth-child(1){top:-4px;left:26%}.journey-orbit i:nth-child(2){right:12%;top:29%}.journey-orbit i:nth-child(3){bottom:4%;left:31%}.journey-orbit i:nth-child(4){left:7%;top:36%}
 
 .journey-particle i { position: absolute; }
-.journey-particle { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #d4fbff; box-shadow: 0 0 12px 2px rgba(110, 225, 255, .9); }
+.journey-particle { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #fff; box-shadow: 0 0 7px 1px rgba(255, 255, 255, .65); animation: journeyFlicker 2.8s ease-in-out infinite alternate; }
 .journey-particle:nth-child(1){left:8%;top:20%}.journey-particle:nth-child(2){left:14%;top:68%}.journey-particle:nth-child(3){left:24%;top:31%}.journey-particle:nth-child(4){left:32%;top:78%}.journey-particle:nth-child(5){left:40%;top:14%}.journey-particle:nth-child(6){left:48%;top:88%}.journey-particle:nth-child(7){left:56%;top:9%}.journey-particle:nth-child(8){left:65%;top:81%}.journey-particle:nth-child(9){left:74%;top:23%}.journey-particle:nth-child(10){left:84%;top:66%}.journey-particle:nth-child(11){left:92%;top:34%}.journey-particle:nth-child(12){left:18%;top:49%}.journey-particle:nth-child(13){left:28%;top:6%}.journey-particle:nth-child(14){left:36%;top:92%}.journey-particle:nth-child(15){left:44%;top:48%}.journey-particle:nth-child(16){left:53%;top:57%}.journey-particle:nth-child(17){left:61%;top:34%}.journey-particle:nth-child(18){left:69%;top:93%}.journey-particle:nth-child(19){left:78%;top:12%}.journey-particle:nth-child(20){left:87%;top:51%}.journey-particle:nth-child(21){left:5%;top:83%}.journey-particle:nth-child(22){left:11%;top:43%}.journey-particle:nth-child(23){left:22%;top:89%}.journey-particle:nth-child(24){left:71%;top:53%}.journey-particle:nth-child(25){left:81%;top:88%}.journey-particle:nth-child(26){left:95%;top:74%}.journey-particle:nth-child(27){left:89%;top:8%}.journey-particle:nth-child(28){left:47%;top:4%}
 
 .journey-corners { z-index: 1; inset: 25px; }
-.journey-corners i { position: absolute; width: 42px; height: 42px; border-color: rgba(164, 234, 255, .55); border-style: solid; }
+.journey-corners i { position: absolute; width: 42px; height: 42px; border-color: rgba(255, 255, 255, .5); border-style: solid; }
 .journey-corners i:nth-child(1){top:0;left:0;border-width:1px 0 0 1px}.journey-corners i:nth-child(2){top:0;right:0;border-width:1px 1px 0 0}.journey-corners i:nth-child(3){bottom:0;left:0;border-width:0 0 1px 1px}.journey-corners i:nth-child(4){right:0;bottom:0;border-width:0 1px 1px 0}
 
 .journey-label {
@@ -124,11 +127,11 @@
   min-width: 188px;
   min-height: 72px;
   padding: 0 30px;
-  border: 1px solid rgba(187, 246, 255, .72);
+  border: 1px solid rgba(255, 255, 255, .72);
   border-radius: 999px;
   color: #f5fdff;
-  background: rgba(8, 16, 38, .35);
-  box-shadow: 0 0 0 8px rgba(111, 200, 255, .04), 0 0 38px rgba(100, 211, 255, .34), inset 0 0 28px rgba(114, 170, 255, .16);
+  background: rgba(255, 255, 255, .04);
+  box-shadow: 0 0 0 8px rgba(255, 255, 255, .03), 0 0 30px rgba(255, 255, 255, .16), inset 0 0 22px rgba(255, 255, 255, .08);
   font-family: var(--font-display), "Microsoft YaHei", sans-serif;
   font-size: clamp(22px, 3vw, 32px);
   font-weight: 600;
@@ -137,7 +140,16 @@
   cursor: pointer;
   transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
 }
-.journey-label:hover,.journey-label:focus-visible { border-color: #fff; background: rgba(20, 57, 88, .55); box-shadow: 0 0 0 10px rgba(111, 200, 255, .07), 0 0 52px rgba(100, 211, 255, .58), inset 0 0 35px rgba(114, 170, 255, .26); outline: none; }
+.journey-label:hover,.journey-label:focus-visible { border-color: #fff; background: rgba(255, 255, 255, .12); box-shadow: 0 0 0 10px rgba(255, 255, 255, .05), 0 0 42px rgba(255, 255, 255, .3), inset 0 0 28px rgba(255, 255, 255, .14); outline: none; }
+.journey-gate.is-exiting .journey-kaleidoscope,
+.journey-gate.is-exiting .journey-kaleidoscope-inner,
+.journey-gate.is-exiting .journey-orbit,
+.journey-gate.is-exiting .journey-particle { animation-play-state: paused; }
+
+@keyframes journeySpin { to { transform: rotate(360deg); } }
+@keyframes journeySpinReverse { to { transform: rotate(-360deg); } }
+@keyframes journeyOrbit { to { transform: rotate(-360deg) skewX(-15deg); } }
+@keyframes journeyFlicker { from { opacity: .22; transform: scale(.7); } to { opacity: .8; transform: scale(1.25); } }
 
 @media (max-width: 600px) { .journey-corners { inset: 16px; }.journey-corners i { width: 30px; height: 30px; }.journey-orbit { inset: 11vmin; }.journey-kaleidoscope-inner { width: 92vmin; height: 92vmin; } }
 @media (prefers-reduced-motion: reduce) { .journey-gate * { animation: none !important; transition-duration: 0.01ms !important; } }
