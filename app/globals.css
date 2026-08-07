@@ -50,7 +50,7 @@
   inset: 28% 28%;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255, 255, 255, .16), rgba(160, 160, 160, .07) 34%, transparent 70%);
-  filter: blur(12px);
+  filter: none;
 }
 
 .journey-kaleidoscope {
@@ -60,8 +60,7 @@
   place-items: center;
   opacity: .82;
   background: conic-gradient(from 0deg, #0b0b0b, #343434 9%, #111 18%, #525252 29%, #0a0a0a 41%, #696969 53%, #161616 66%, #3d3d3d 77%, #0a0a0a 90%, #0b0b0b);
-  filter: contrast(1.15);
-  animation: journeySpin 34s linear infinite;
+  filter: none;
   contain: strict;
   will-change: transform;
   transform: translateZ(0);
@@ -75,7 +74,6 @@
   border-radius: 50%;
   background: conic-gradient(from 18deg, transparent 0 12%, rgba(255,255,255,.34) 13% 15%, transparent 16% 29%, rgba(160,160,160,.34) 30% 32%, transparent 33% 49%, rgba(255,255,255,.22) 50% 52%, transparent 53% 69%, rgba(185,185,185,.34) 70% 72%, transparent 73% 88%, rgba(255,255,255,.24) 89% 91%, transparent 92%);
   box-shadow: 0 0 42px rgba(255, 255, 255, .1), inset 0 0 48px rgba(255, 255, 255, .06);
-  animation: journeySpinReverse 22s linear infinite;
   will-change: transform;
   transform: translateZ(0);
 }
@@ -111,7 +109,6 @@
   border-radius: 50%;
   transform: rotate(18deg) skewX(-15deg);
   box-shadow: 0 0 24px rgba(255, 255, 255, .08);
-  animation: journeyOrbit 26s linear infinite;
   will-change: transform;
   transform: translateZ(0) rotate(18deg) skewX(-15deg);
 }
@@ -120,7 +117,7 @@
 .journey-orbit i:nth-child(1){top:-4px;left:26%}.journey-orbit i:nth-child(2){right:12%;top:29%}.journey-orbit i:nth-child(3){bottom:4%;left:31%}.journey-orbit i:nth-child(4){left:7%;top:36%}
 
 .journey-particle i { position: absolute; }
-.journey-particle { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #fff; box-shadow: 0 0 7px 1px rgba(255, 255, 255, .65); animation: journeyFlicker 2.8s ease-in-out infinite alternate; }
+.journey-particle { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #fff; box-shadow: 0 0 5px 1px rgba(255, 255, 255, .55); }
 .journey-particle:nth-child(1){left:8%;top:20%}.journey-particle:nth-child(2){left:14%;top:68%}.journey-particle:nth-child(3){left:24%;top:31%}.journey-particle:nth-child(4){left:32%;top:78%}.journey-particle:nth-child(5){left:40%;top:14%}.journey-particle:nth-child(6){left:48%;top:88%}.journey-particle:nth-child(7){left:56%;top:9%}.journey-particle:nth-child(8){left:65%;top:81%}.journey-particle:nth-child(9){left:74%;top:23%}.journey-particle:nth-child(10){left:84%;top:66%}.journey-particle:nth-child(11){left:92%;top:34%}.journey-particle:nth-child(12){left:18%;top:49%}.journey-particle:nth-child(13){left:28%;top:6%}.journey-particle:nth-child(14){left:36%;top:92%}.journey-particle:nth-child(15){left:44%;top:48%}.journey-particle:nth-child(16){left:53%;top:57%}.journey-particle:nth-child(17){left:61%;top:34%}.journey-particle:nth-child(18){left:69%;top:93%}.journey-particle:nth-child(19){left:78%;top:12%}.journey-particle:nth-child(20){left:87%;top:51%}.journey-particle:nth-child(21){left:5%;top:83%}.journey-particle:nth-child(22){left:11%;top:43%}.journey-particle:nth-child(23){left:22%;top:89%}.journey-particle:nth-child(24){left:71%;top:53%}.journey-particle:nth-child(25){left:81%;top:88%}.journey-particle:nth-child(26){left:95%;top:74%}.journey-particle:nth-child(27){left:89%;top:8%}.journey-particle:nth-child(28){left:47%;top:4%}
 
 .journey-corners { z-index: 1; inset: 25px; }
@@ -147,15 +144,11 @@
   transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
 }
 .journey-label:hover,.journey-label:focus-visible { border-color: #fff; background: rgba(255, 255, 255, .12); box-shadow: 0 0 0 10px rgba(255, 255, 255, .05), 0 0 42px rgba(255, 255, 255, .3), inset 0 0 28px rgba(255, 255, 255, .14); outline: none; }
-.journey-gate.is-exiting .journey-kaleidoscope,
-.journey-gate.is-exiting .journey-kaleidoscope-inner,
-.journey-gate.is-exiting .journey-orbit,
-.journey-gate.is-exiting .journey-particle { animation-play-state: paused; }
-
-@keyframes journeySpin { to { transform: rotate(360deg); } }
-@keyframes journeySpinReverse { to { transform: rotate(-360deg); } }
-@keyframes journeyOrbit { to { transform: rotate(-360deg) skewX(-15deg); } }
-@keyframes journeyFlicker { from { opacity: .22; transform: scale(.7); } to { opacity: .8; transform: scale(1.25); } }
+.journey-gate.is-exiting { opacity: 0; transition: opacity 720ms cubic-bezier(.22, .61, .36, 1); }
+.journey-gate.is-exiting .journey-kaleidoscope { transform: translateZ(0) scale(3.2) rotate(76deg); transition: transform 720ms cubic-bezier(.16, 1, .3, 1); }
+.journey-gate.is-exiting .journey-kaleidoscope-inner { transform: translateZ(0) scale(.72) rotate(-22deg); transition: transform 720ms cubic-bezier(.16, 1, .3, 1); }
+.journey-gate.is-exiting .journey-orbit { opacity: 0; transform: translateZ(0) scale(2.5) rotate(40deg); transition: opacity 420ms ease, transform 720ms cubic-bezier(.16, 1, .3, 1); }
+.journey-gate.is-exiting .journey-label { transform: scale(1.08); opacity: 0; transition: transform 260ms ease, opacity 260ms ease; }
 
 @media (max-width: 600px) { .journey-corners { inset: 16px; }.journey-corners i { width: 30px; height: 30px; }.journey-orbit { inset: 11vmin; }.journey-kaleidoscope-inner { width: 92vmin; height: 92vmin; } }
 @media (prefers-reduced-motion: reduce) { .journey-gate * { animation: none !important; transition-duration: 0.01ms !important; } }

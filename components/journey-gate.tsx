@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
 
 export function JourneyGate({ children }: { children: React.ReactNode }) {
   const gateRef = useRef<HTMLDivElement>(null);
@@ -23,13 +22,10 @@ export function JourneyGate({ children }: { children: React.ReactNode }) {
       gate.remove();
       return;
     }
-
-    gsap.timeline({ onComplete: () => { document.body.classList.remove("journey-locked"); gate.remove(); } })
-      .to(".journey-label", { scale: 1.15, duration: 0.25, ease: "power2.out" })
-      .to(".journey-kaleidoscope", { scale: 3.8, rotation: "+=130", duration: 1.15, ease: "expo.in" }, "<")
-      .to(".journey-orbit", { scale: 5, rotation: "+=210", duration: 1.05, ease: "expo.in" }, "<")
-      .to(".journey-glow", { scale: 7, autoAlpha: 0.9, duration: 0.8, ease: "power3.in" }, "<0.15")
-      .to(gate, { autoAlpha: 0, duration: 0.38, ease: "power2.in" }, "-=0.22");
+    window.setTimeout(() => {
+      document.body.classList.remove("journey-locked");
+      gate.remove();
+    }, 720);
   };
 
   return (
