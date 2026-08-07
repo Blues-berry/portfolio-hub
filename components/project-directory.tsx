@@ -4,6 +4,7 @@ import { SiteHeader } from "./site-header";
 import { copy } from "@/lib/content";
 import { type Locale } from "@/lib/site";
 import type { CSSProperties } from "react";
+import { JourneyGate } from "./journey-gate";
 
 const starPositions = [
   [5, 12, 2], [12, 31, 1], [18, 8, 1], [24, 46, 2], [31, 18, 1], [37, 66, 1],
@@ -18,7 +19,7 @@ export function ProjectDirectory({ locale }: { locale: Locale }) {
   const directory = t.directory;
 
   return (
-    <>
+    <JourneyGate>
       <SiteHeader locale={locale} directory />
       <main className="directory-main" lang={locale === "en" ? "en" : "zh-CN"}>
         <div className="directory-starfield" aria-hidden="true">
@@ -113,7 +114,7 @@ export function ProjectDirectory({ locale }: { locale: Locale }) {
           <span>{directory.footer}</span>
         </div>
       </footer>
-    </>
+    </JourneyGate>
   );
 }
 
