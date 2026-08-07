@@ -25,24 +25,12 @@ export function JourneyGate({ children }: { children: React.ReactNode }) {
     window.setTimeout(() => {
       document.body.classList.remove("journey-locked");
       gate.remove();
-    }, 720);
+    }, 260);
   };
 
   return (
     <>
       <div ref={gateRef} className={`journey-gate${open ? " is-exiting" : ""}`} role="dialog" aria-modal="true">
-        <div className="journey-noise" aria-hidden="true" />
-        <div className="journey-glow" aria-hidden="true" />
-        <div className="journey-kaleidoscope" aria-hidden="true">
-          <div className="journey-kaleidoscope-inner">
-            {Array.from({ length: 12 }, (_, index) => <i className="journey-ray" key={index} />)}
-          </div>
-        </div>
-        <div className="journey-orbit" aria-hidden="true"><i /><i /><i /><i /></div>
-        <div className="journey-particles" aria-hidden="true">
-          {Array.from({ length: 28 }, (_, index) => <i className="journey-particle" key={index} />)}
-        </div>
-        <div className="journey-corners" aria-hidden="true"><i /><i /><i /><i /></div>
         <button className="journey-label" type="button" onClick={enter} autoFocus>
           开启旅程
         </button>

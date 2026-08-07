@@ -153,6 +153,29 @@
 @media (max-width: 600px) { .journey-corners { inset: 16px; }.journey-corners i { width: 30px; height: 30px; }.journey-orbit { inset: 11vmin; }.journey-kaleidoscope-inner { width: 92vmin; height: 92vmin; } }
 @media (prefers-reduced-motion: reduce) { .journey-gate * { animation: none !important; transition-duration: 0.01ms !important; } }
 
+/* Ultra-light fallback: one static composite layer, no animated child geometry. */
+.journey-gate::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 46%, rgba(255,255,255,.11), transparent 21%),
+    repeating-conic-gradient(from 22deg at 50% 50%, rgba(255,255,255,.055) 0deg 2deg, transparent 2deg 18deg),
+    radial-gradient(ellipse at center, #202020 0%, #0b0b0b 54%, #050505 100%);
+}
+.journey-gate::after {
+  position: absolute;
+  inset: 20px;
+  content: "";
+  pointer-events: none;
+  border: 1px solid rgba(255,255,255,.24);
+  opacity: .7;
+}
+.journey-gate.is-exiting { opacity: 0; transition: opacity 260ms ease-out; }
+.journey-gate.is-exiting .journey-label { opacity: 0; transition: opacity 140ms ease-out; }
+.journey-label { z-index: 2; }
+
 * {
   box-sizing: border-box;
 }
