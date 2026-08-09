@@ -236,6 +236,51 @@
 .journey-signal i { position:absolute; top:50%; left:calc(14% + var(--signal-x)); width:1px; height:var(--signal-h); transform:translateY(-50%); background:#fff; box-shadow:0 0 8px rgba(255,255,255,.7); }
 .journey-signal i:nth-of-type(1){--signal-x:0%;--signal-h:4vmin}.journey-signal i:nth-of-type(2){--signal-x:8%;--signal-h:9vmin}.journey-signal i:nth-of-type(3){--signal-x:16%;--signal-h:3vmin}.journey-signal i:nth-of-type(4){--signal-x:24%;--signal-h:6vmin}.journey-signal i:nth-of-type(5){--signal-x:32%;--signal-h:18vmin}.journey-signal i:nth-of-type(6){--signal-x:40%;--signal-h:7vmin}.journey-signal i:nth-of-type(7){--signal-x:48%;--signal-h:4vmin}.journey-signal i:nth-of-type(8){--signal-x:56%;--signal-h:11vmin}.journey-signal i:nth-of-type(9){--signal-x:64%;--signal-h:3vmin}.journey-signal i:nth-of-type(10){--signal-x:72%;--signal-h:8vmin}
 
+/* Cinematic motion layers: a few transform-only elements, no particle swarm. */
+.journey-gate[data-variant="prism"]::before { animation: prismAtmosphere 8s ease-in-out infinite alternate; }
+.journey-gate[data-variant="prism"]::after { box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 0 80px rgba(0,0,0,.16); }
+.journey-monolith::before { box-shadow:0 0 0 1px rgba(0,0,0,.15),0 0 90px rgba(255,255,255,.65); animation: monolithDrift 9s ease-in-out infinite alternate; }
+.journey-monolith::after { animation: prismSweep 5s linear infinite; }
+.journey-gate[data-variant="prism"] .journey-label { position:relative; }
+.journey-gate[data-variant="prism"] .journey-label::before { position:absolute; inset:-9px; content:""; border:1px solid rgba(0,0,0,.5); transform:rotate(45deg); animation: labelSpin 8s linear infinite; }
+
+.journey-gate[data-variant="terminal"]::before { background:radial-gradient(circle at 50% 50%,#323232 0,#101010 35%,#020202 74%); }
+.journey-gate[data-variant="terminal"]::after { animation: terminalFlicker 3.8s steps(2,end) infinite; }
+.journey-radar::before { animation: radarBreath 3.6s ease-in-out infinite; }
+.journey-radar::after { transform-origin:50% 50%; animation: radarSweep 4.5s linear infinite; background:linear-gradient(90deg,transparent 45%,rgba(255,255,255,.8) 50%,transparent 55%); }
+.radar-core { animation: corePulse 2.4s ease-in-out infinite; }
+.journey-radar i { animation: blip 2.8s ease-in-out infinite; }.journey-radar i:nth-of-type(2){animation-delay:.7s}.journey-radar i:nth-of-type(3){animation-delay:1.4s}
+.journey-gate[data-variant="terminal"] .journey-label::after { position:absolute; inset:3px; content:""; border:1px solid rgba(255,255,255,.28); animation: terminalButton 1.8s ease-in-out infinite alternate; }
+
+.journey-gate[data-variant="eclipse"]::before { background:radial-gradient(circle at 50% 50%,#fff 0 4%,#aaa 4.4% 5%,#191919 5.5% 21%,#060606 22% 100%); animation:eclipseBreath 5s ease-in-out infinite alternate; }
+.journey-gate[data-variant="eclipse"]::after { animation:eclipseRings 12s linear infinite; }
+.journey-signal::before { animation:signalFrame 4s ease-in-out infinite alternate; }
+.journey-signal span { animation:signalGlow 2.2s ease-in-out infinite alternate; }
+.journey-signal i { animation:signalPulse 1.8s ease-in-out infinite alternate; }.journey-signal i:nth-of-type(2){animation-delay:.12s}.journey-signal i:nth-of-type(3){animation-delay:.24s}.journey-signal i:nth-of-type(4){animation-delay:.36s}.journey-signal i:nth-of-type(5){animation-delay:.48s}.journey-signal i:nth-of-type(6){animation-delay:.6s}.journey-signal i:nth-of-type(7){animation-delay:.72s}.journey-signal i:nth-of-type(8){animation-delay:.84s}.journey-signal i:nth-of-type(9){animation-delay:.96s}.journey-signal i:nth-of-type(10){animation-delay:1.08s}
+.journey-gate[data-variant="eclipse"] .journey-label { position:relative; }
+.journey-gate[data-variant="eclipse"] .journey-label::before { position:absolute; inset:-18px; content:""; border:1px solid rgba(255,255,255,.38); border-radius:50%; animation:haloSpin 10s linear infinite; }
+
+@keyframes prismAtmosphere { from{filter:contrast(1);transform:scale(1)} to{filter:contrast(1.16);transform:scale(1.035)} }
+@keyframes monolithDrift { from{transform:skewX(-18deg) rotate(0deg)} to{transform:skewX(-18deg) rotate(6deg)} }
+@keyframes prismSweep { from{transform:translateX(-12%)} to{transform:translateX(12%)} }
+@keyframes labelSpin { to{transform:rotate(405deg)} }
+@keyframes terminalFlicker { 0%,90%,100%{opacity:.3} 92%{opacity:.55} }
+@keyframes radarBreath { 50%{transform:translate(-50%,-50%) scale(1.05)} }
+@keyframes radarSweep { to{transform:rotate(360deg)} }
+@keyframes corePulse { 50%{box-shadow:0 0 0 16px rgba(255,255,255,.06),inset 0 0 0 8px #050505} }
+@keyframes blip { 0%,100%{opacity:.2;transform:scale(.7)} 50%{opacity:1;transform:scale(1.25)} }
+@keyframes terminalButton { to{inset:7px;opacity:.72} }
+@keyframes eclipseBreath { to{transform:scale(1.05)} }
+@keyframes eclipseRings { to{transform:rotate(360deg)} }
+@keyframes signalFrame { to{transform:translateY(-50%) scaleY(1.14)} }
+@keyframes signalGlow { to{opacity:.55;box-shadow:0 0 28px rgba(255,255,255,.8)} }
+@keyframes signalPulse { from{transform:translateY(-50%) scaleY(.48);opacity:.45} to{transform:translateY(-50%) scaleY(1.08);opacity:1} }
+@keyframes haloSpin { to{transform:rotate(360deg)} }
+
+@media (prefers-reduced-motion: reduce) {
+  .journey-gate[data-variant]::before,.journey-gate[data-variant]::after,.journey-gate[data-variant] * { animation:none !important; }
+}
+
 * {
   box-sizing: border-box;
 }
