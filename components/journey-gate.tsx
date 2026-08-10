@@ -38,10 +38,11 @@ export function JourneyGate({ children }: { children: React.ReactNode }) {
   return (
     <>
       <div ref={gateRef} data-variant={variant} className={`journey-gate${open ? " is-exiting" : ""}`} role="dialog" aria-modal="true">
+        <div className="journey-chrome" aria-hidden="true"><i /><i /><i /><i /></div>
         <div className="journey-variant-art" aria-hidden="true">
-          {variant === "prism" && <div className="journey-monolith"><i /><i /><i /><i /><i /></div>}
-          {variant === "terminal" && <div className="journey-radar"><span className="radar-core" /><i /><i /><i /><b /><b /></div>}
-          {variant === "eclipse" && <div className="journey-signal"><span /><i /><i /><i /><i /><i /><i /><i /><i /><i /></div>}
+          {variant === "prism" && <div className="journey-monolith"><span /><i /><i /><i /><i /><i /><b /><b /></div>}
+          {variant === "terminal" && <div className="journey-radar"><span className="radar-core" /><span className="radar-sweep" /><i /><i /><i /><b /><b /><em /><em /><em /><em /></div>}
+          {variant === "eclipse" && <div className="journey-signal"><span /><i /><i /><i /><i /><i /><i /><i /><i /><i /><b /><em /></div>}
         </div>
         <button className="journey-label" type="button" onClick={enter} autoFocus>
           开启旅程

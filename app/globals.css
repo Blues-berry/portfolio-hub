@@ -409,6 +409,34 @@
 .journey-gate[data-variant="eclipse"] .journey-label:hover,
 .journey-gate[data-variant="eclipse"] .journey-label:focus-visible { transform:scale(1.05); background:#fff; color:#080808; box-shadow:0 0 0 7px #080808,0 0 0 8px #fff,0 0 42px rgba(255,255,255,.4); }
 
+/* Integrated UI set: frame, aperture, sheen, reticle, sweep, blips, tracer, pulse. */
+.journey-chrome { position:absolute; inset:18px; z-index:1; pointer-events:none; }
+.journey-chrome i { position:absolute; width:68px; height:68px; border-color:rgba(255,255,255,.45); border-style:solid; opacity:.7; }
+.journey-chrome i:nth-child(1){left:0;top:0;border-width:1px 0 0 1px}.journey-chrome i:nth-child(2){right:0;top:0;border-width:1px 1px 0 0}.journey-chrome i:nth-child(3){left:0;bottom:0;border-width:0 0 1px 1px}.journey-chrome i:nth-child(4){right:0;bottom:0;border-width:0 1px 1px 0}
+.journey-gate[data-variant="prism"] .journey-chrome i { border-color:rgba(0,0,0,.48); }
+
+.journey-monolith > span { position:absolute; inset:25% 38%; background:linear-gradient(135deg,rgba(255,255,255,.9),rgba(255,255,255,.08)); border:1px solid #111; transform:skewX(-18deg); box-shadow:18px 18px 0 rgba(0,0,0,.08); animation:monolithAperture 5s ease-in-out infinite alternate; }
+.journey-monolith > b { position:absolute; top:0; bottom:0; width:18vw; background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent); opacity:.35; transform:skewX(-22deg); animation:monolithSheen 5.6s ease-in-out infinite; }
+.journey-monolith > b:nth-of-type(1){left:4%}.journey-monolith > b:nth-of-type(2){right:4%;animation-delay:-2.8s}
+
+.radar-sweep { position:absolute; left:50%; top:50%; width:min(37vw,370px); height:min(37vw,370px); transform-origin:0 0; border-radius:0 100% 0 0; background:conic-gradient(from 270deg,rgba(255,255,255,.2),transparent 24deg); animation:radarWedge 4.5s linear infinite; }
+.journey-radar em { position:absolute; left:50%; top:50%; width:1px; height:min(39vw,390px); transform-origin:0 0; background:linear-gradient(#fff,transparent); opacity:.2; }
+.journey-radar em:nth-of-type(1){transform:rotate(0deg)}.journey-radar em:nth-of-type(2){transform:rotate(90deg)}.journey-radar em:nth-of-type(3){transform:rotate(180deg)}.journey-radar em:nth-of-type(4){transform:rotate(270deg)}
+
+.journey-signal > b { position:absolute; top:50%; left:12%; width:12px; height:12px; margin-top:-6px; border-radius:50%; background:#fff; box-shadow:0 0 20px 6px rgba(255,255,255,.55); animation:signalTracer 3.4s ease-in-out infinite; }
+.journey-signal > em { position:absolute; inset:21vmin; border:1px solid rgba(255,255,255,.22); border-radius:50%; box-shadow:inset 0 0 40px rgba(255,255,255,.06); animation:signalHalo 6s ease-in-out infinite alternate; }
+
+.journey-label { overflow:visible; }
+.journey-label:active { transform:scale(.97)!important; transition-duration:80ms!important; }
+
+@keyframes monolithAperture { to{transform:skewX(-18deg) scale(.92);box-shadow:28px 28px 0 rgba(0,0,0,.12)} }
+@keyframes monolithSheen { 0%,15%{transform:translateX(-140%) skewX(-22deg);opacity:0} 45%{opacity:.35} 75%,100%{transform:translateX(140%) skewX(-22deg);opacity:0} }
+@keyframes radarWedge { to{transform:rotate(360deg)} }
+@keyframes signalTracer { 0%{left:12%;opacity:0} 12%{opacity:1} 88%{opacity:1} 100%{left:88%;opacity:0} }
+@keyframes signalHalo { to{transform:scale(1.08);opacity:.48} }
+
+@media (max-width:600px){.journey-chrome{inset:12px}.journey-chrome i{width:42px;height:42px}.journey-monolith > span{inset:30% 26%}.radar-sweep{width:38vmin;height:38vmin}.journey-signal > em{inset:32vmin}}
+
 * {
   box-sizing: border-box;
 }
