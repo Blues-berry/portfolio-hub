@@ -21,7 +21,12 @@ export function GamePlayer({ locale, game }: { locale: Locale; game: "cringe" | 
           <div><span className="game-player-label">{isCringe ? "01" : "02"} / PLAYABLE</span><h1>{title}</h1><p>{subtitle}</p></div>
         </div>
         <div className="game-player-stage page-shell">
-          <iframe src={src} title={title} allow="autoplay; fullscreen" />
+          <iframe
+            src={src}
+            title={title}
+            allow="autoplay; fullscreen"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock"
+          />
         </div>
       </main>
     </>

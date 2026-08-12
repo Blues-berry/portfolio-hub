@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowIcon } from "./icons";
 import { SiteHeader } from "./site-header";
 import { localePath, type Locale } from "@/lib/site";
@@ -57,12 +58,12 @@ export function GameDemosHub({ locale }: { locale: Locale }) {
                 <ArrowIcon />
               </div>
               <div className="game-demo-art" aria-hidden="true">
-                <iframe
+                <Image
                   className="game-demo-cover-frame"
-                  src={game.tone === "cringe" ? "/games/office-cringe/index.html" : "/games/beyond-the-rules/index.html"}
-                  title={`${game.title} preview`}
-                  tabIndex={-1}
-                  loading="lazy"
+                  src={game.tone === "cringe" ? "/games/office-cringe-cover.png" : "/games/beyond-the-rules-cover.png"}
+                  alt={`${game.title} preview`}
+                  fill
+                  sizes="(max-width: 900px) 100vw, 50vw"
                 />
                 <span className="game-demo-cover-label">LIVE PREVIEW</span>
               </div>
