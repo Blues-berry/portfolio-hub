@@ -53,7 +53,7 @@ export function JourneyGate({ children }: { children: ReactNode }) {
     } as CSSProperties);
     setPhase("launch"); clearTimers();
     timeline.forEach(([next, delay]) => timersRef.current.push(window.setTimeout(() => setPhase(next), delay)));
-    timersRef.current.push(window.setTimeout(() => { document.body.classList.remove("journey-locked"); document.body.classList.add("journey-complete"); setVisible(false); }, 2820));
+    timersRef.current.push(window.setTimeout(() => { document.body.classList.remove("journey-locked"); document.body.classList.add("journey-complete"); setVisible(false); }, 3420));
   };
 
   return <>
