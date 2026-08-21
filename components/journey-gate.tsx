@@ -53,7 +53,16 @@ export function JourneyGate({ children }: { children: ReactNode }) {
     } as CSSProperties);
     setPhase("launch"); clearTimers();
     timeline.forEach(([next, delay]) => timersRef.current.push(window.setTimeout(() => setPhase(next), delay)));
-    timersRef.current.push(window.setTimeout(() => { document.body.classList.remove("journey-locked"); document.body.classList.add("journey-complete"); setVisible(false); }, 3420));
+    timersRef.current.push(window.setTimeout(() => {
+      document.documentElement.style.setProperty("--journey-arrival-from-x", `${planetX}px`);
+      document.documentElement.style.setProperty("--journey-arrival-from-y", `${planetY}px`);
+      document.documentElement.style.setProperty("--journey-arrival-to-x", `${endX}px`);
+      document.documentElement.style.setProperty("--journey-arrival-to-y", `${endY}px`);
+      document.body.classList.remove("journey-locked");
+      document.body.classList.add("journey-complete", "journey-arrival");
+      setVisible(false);
+      timersRef.current.push(window.setTimeout(() => document.body.classList.remove("journey-arrival"), 760));
+    }, 3420));
   };
 
   return <>
@@ -64,5 +73,6 @@ export function JourneyGate({ children }: { children: ReactNode }) {
       <button ref={buttonRef} className={styles.action} type="button" onClick={enter} autoFocus>开启旅程</button>
     </div>}
     {children}
+    <div className={styles.directoryArrivalShip} aria-hidden="true"><i /><b /></div>
   </>;
 }
