@@ -54,8 +54,8 @@ export function JourneyGate({ children }: { children: ReactNode }) {
     setPhase("launch"); clearTimers();
     timeline.forEach(([next, delay]) => timersRef.current.push(window.setTimeout(() => setPhase(next), delay)));
     timersRef.current.push(window.setTimeout(() => {
-      document.documentElement.style.setProperty("--journey-arrival-from-x", `${planetX}px`);
-      document.documentElement.style.setProperty("--journey-arrival-from-y", `${planetY}px`);
+      document.documentElement.style.setProperty("--journey-arrival-from-x", `${startX}px`);
+      document.documentElement.style.setProperty("--journey-arrival-from-y", `${startY}px`);
       document.documentElement.style.setProperty("--journey-arrival-to-x", `${endX}px`);
       document.documentElement.style.setProperty("--journey-arrival-to-y", `${endY}px`);
       document.body.classList.remove("journey-locked");
