@@ -16,7 +16,7 @@ export function JourneyGate({ children }: { children: ReactNode }) {
   const clearTimers = () => { timersRef.current.forEach((timer) => window.clearTimeout(timer)); timersRef.current = []; };
 
   useEffect(() => {
-    const directToDirectory = window.location.hash === "#project-directory";
+    const directToDirectory = window.location.hash === "#project-directory" || new URLSearchParams(window.location.search).has("skip-intro");
     let completed = directToDirectory;
     try {
       if (directToDirectory) window.sessionStorage.setItem(journeyStorageKey, "1");
@@ -53,7 +53,7 @@ export function JourneyGate({ children }: { children: ReactNode }) {
     } as CSSProperties);
     setPhase("launch"); clearTimers();
     timeline.forEach(([next, delay]) => timersRef.current.push(window.setTimeout(() => setPhase(next), delay)));
-    timersRef.current.push(window.setTimeout(() => { document.body.classList.remove("journey-locked"); document.body.classList.add("journey-complete"); setVisible(false); }, 3420));
+    timersRef.current.push(window.setTimeout(() => { document.body.classList.remove("journey-locked"); document.body.classList.add("journey-complete"); setVisible(false); }, 2820));
   };
 
   return <>
