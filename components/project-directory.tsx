@@ -50,6 +50,7 @@ export function ProjectDirectory({ locale }: { locale: Locale }) {
             <i />
             <i />
             <i />
+            <div className="directory-orbit-ship"><span /></div>
           </div>
         </section>
 

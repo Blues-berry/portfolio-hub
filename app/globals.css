@@ -3612,3 +3612,143 @@ body:has(.directory-main) .footer-inner {
     display: none;
   }
 }
+
+/* Starship entry: a single composited flight path, replacing the old gate variants. */
+.journey-gate {
+  background: #06070b;
+  transition: opacity 520ms cubic-bezier(.4, 0, .2, 1);
+}
+
+.journey-gate::before,
+.journey-gate::after {
+  display: none;
+}
+
+.journey-space,
+.journey-signal-field,
+.journey-planet,
+.journey-flash,
+.journey-flight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.journey-space {
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(255,255,255,.06), transparent 34%),
+    radial-gradient(ellipse at 50% 55%, #111319 0%, #07080b 58%, #030303 100%);
+  transition: background 740ms ease;
+}
+
+.journey-space i {
+  position: absolute;
+  left: var(--space-x);
+  top: var(--space-y);
+  width: var(--space-size);
+  height: var(--space-size);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 8px rgba(255,255,255,.74);
+  opacity: .56;
+}
+
+.journey-space i:nth-child(1){--space-x:8%;--space-y:15%;--space-size:2px}.journey-space i:nth-child(2){--space-x:19%;--space-y:72%;--space-size:1px}.journey-space i:nth-child(3){--space-x:31%;--space-y:26%;--space-size:2px}.journey-space i:nth-child(4){--space-x:42%;--space-y:84%;--space-size:1px}.journey-space i:nth-child(5){--space-x:53%;--space-y:9%;--space-size:2px}.journey-space i:nth-child(6){--space-x:65%;--space-y:66%;--space-size:1px}.journey-space i:nth-child(7){--space-x:78%;--space-y:20%;--space-size:2px}.journey-space i:nth-child(8){--space-x:91%;--space-y:78%;--space-size:1px}.journey-space i:nth-child(9){--space-x:14%;--space-y:43%;--space-size:1px}.journey-space i:nth-child(10){--space-x:37%;--space-y:56%;--space-size:2px}.journey-space i:nth-child(11){--space-x:72%;--space-y:43%;--space-size:1px}.journey-space i:nth-child(12){--space-x:88%;--space-y:54%;--space-size:2px}
+
+.journey-signal-field {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 4vw, 70px);
+  opacity: .9;
+  transition: opacity 330ms ease, transform 700ms ease;
+}
+
+.journey-signal-field::before,
+.journey-signal-field::after {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  content: "";
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.45) 18%, rgba(255,255,255,.86) 50%, rgba(255,255,255,.45) 82%, transparent);
+}
+
+.journey-signal-field::before { transform: translateY(-42px); }
+.journey-signal-field::after { transform: translateY(42px); }
+.journey-signal-field span { width: 1px; height: 28px; background: #fff; box-shadow: 0 0 12px rgba(255,255,255,.8); }
+.journey-signal-field span:nth-child(2), .journey-signal-field span:nth-child(4) { height: 62px; }
+.journey-signal-field span:nth-child(3) { height: 112px; }
+
+.journey-label {
+  z-index: 4;
+  min-width: 206px;
+  min-height: 68px;
+  border: 1px solid rgba(255,255,255,.8);
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(255,255,255,.04);
+  box-shadow: 0 0 0 7px rgba(255,255,255,.025), 0 0 28px rgba(255,255,255,.13);
+  transition: transform 240ms ease, opacity 220ms ease, background 220ms ease;
+}
+
+.journey-label:hover,
+.journey-label:focus-visible { transform: scale(1.04); color: #070708; background: #fff; outline: none; }
+
+.journey-flight { z-index: 6; overflow: visible; opacity: 0; }
+.journey-flight-vector { position: fixed; left: var(--launch-x); top: var(--launch-y); will-change: transform, opacity; transition: transform 860ms cubic-bezier(.22,.8,.22,1), opacity 220ms ease; }
+.journey-ship { position: relative; width: 38px; height: 18px; transform: translate(-50%, -50%) rotate(-22deg); border-radius: 82% 18% 48% 50%; background: linear-gradient(135deg, #fff 0 36%, #b9f2df 38% 55%, #7764ff 56% 100%); box-shadow: 0 0 14px rgba(185,242,223,.92); }
+.journey-ship::before { position:absolute; right:4px; top:4px; width:8px; height:8px; border-radius:50%; content:""; background:#201b38; box-shadow: inset 1px 1px 1px rgba(255,255,255,.4); }
+.journey-ship::after { position:absolute; left:-15px; top:6px; width:19px; height:6px; content:""; border-radius:50%; background:linear-gradient(90deg, transparent, #ffd166, rgba(255,107,107,.05)); transform:rotate(8deg); }
+.journey-ship i { position:absolute; right:5px; bottom:-7px; width:12px; height:10px; border-radius:0 0 12px 12px; background:#7764ff; transform:skewX(-25deg); }
+.journey-ship b { position:absolute; left:10px; top:-6px; width:8px; height:8px; border-radius:2px 8px 0 0; background:#ff6b6b; }
+.journey-ship em { display:none; }
+
+.journey-planet { z-index: 1; display:grid; place-items:center; opacity:0; transform:scale(.42); transition: opacity 380ms ease, transform 760ms cubic-bezier(.18,.84,.26,1); }
+.journey-planet::before { width:min(42vmin,420px); aspect-ratio:1; border-radius:50%; content:""; background:radial-gradient(circle at 30% 27%, #fff8ef 0 4%, #ffd166 11%, #ff6b6b 33%, #7764ff 68%, #201b38 100%); box-shadow: inset -34px -28px 58px rgba(32,27,56,.68), 0 0 70px rgba(119,100,255,.44); }
+.journey-planet::after { position:absolute; width:min(58vmin,580px); aspect-ratio:1 / .32; border:1px solid rgba(185,242,223,.78); border-radius:50%; content:""; transform:rotate(-17deg); box-shadow:0 0 15px rgba(185,242,223,.28); }
+
+.journey-flash { z-index: 8; background:#fff; opacity:0; transition:opacity 150ms ease; }
+.journey-phase-launch .journey-label,
+.journey-phase-cruise .journey-label,
+.journey-phase-jump .journey-label,
+.journey-phase-arrive .journey-label { opacity:0; transform:scale(.88); pointer-events:none; }
+.journey-phase-launch .journey-flight { opacity:1; }
+.journey-phase-cruise .journey-space { background:radial-gradient(ellipse at 50% 58%, rgba(119,100,255,.5), transparent 26%), linear-gradient(130deg, #071525, #1c1644 45%, #351c4c); }
+.journey-phase-cruise .journey-space i { animation: journey-star-streak 760ms cubic-bezier(.2,.75,.2,1) forwards; }
+.journey-phase-cruise .journey-signal-field { opacity:0; transform:scale(1.6); }
+.journey-phase-cruise .journey-flight { opacity:1; }
+.journey-phase-cruise .journey-flight-vector { transform:translate3d(var(--mid-x), var(--mid-y), 0) rotate(-14deg) scale(1.16); }
+.journey-phase-jump .journey-flight { opacity:1; }
+.journey-phase-jump .journey-flight-vector { transform:translate3d(var(--mid-x), var(--mid-y), 0) rotate(-14deg) scale(1.7); }
+.journey-phase-jump .journey-flash { opacity:1; }
+.journey-phase-arrive .journey-space { background:radial-gradient(ellipse at 50% 56%, rgba(255,209,102,.32), transparent 26%), radial-gradient(ellipse at 50% 61%, #343060, #15122d 56%, #07070f 100%); }
+.journey-phase-arrive .journey-flash { opacity:0; }
+.journey-phase-arrive .journey-planet { opacity:1; transform:scale(1); }
+.journey-phase-arrive .journey-flight { opacity:1; }
+.journey-phase-arrive .journey-flight-vector { transform:translate3d(var(--travel-x), var(--travel-y), 0) rotate(12deg) scale(.42); }
+.journey-phase-departing { opacity:0; }
+
+.directory-orbit-ship { position:absolute; z-index:3; top:50%; left:50%; width:18px; height:9px; margin:-4px 0 0 -9px; opacity:0; transform-origin:0 0; pointer-events:none; }
+.directory-orbit-ship::before { position:absolute; width:18px; height:9px; border-radius:80% 20% 50% 50%; content:""; background:linear-gradient(135deg,#fff 0 38%,var(--directory-mint) 40% 58%,var(--directory-purple) 60%); box-shadow:0 0 10px rgba(119,100,255,.65); }
+.directory-orbit-ship::after { position:absolute; left:-8px; top:3px; width:10px; height:3px; border-radius:50%; content:""; background:linear-gradient(90deg,transparent,var(--directory-yellow)); }
+body.journey-complete .directory-orbit-ship { opacity:1; animation:directory-orbit-ship 16s linear infinite; }
+
+@keyframes journey-star-streak { to { transform:translate3d(-38vw, 15vh, 0) scaleX(48); opacity:0; } }
+@keyframes directory-orbit-ship { from { transform:rotate(24deg) translateY(-208px) rotate(90deg) scale(.78); } to { transform:rotate(384deg) translateY(-208px) rotate(450deg) scale(.78); } }
+
+@media (max-width: 760px) {
+  .journey-planet::before { width:min(62vmin,360px); }
+  .journey-planet::after { width:min(78vmin,440px); }
+  .journey-signal-field::before { transform:translateY(-30px); }
+  .journey-signal-field::after { transform:translateY(30px); }
+  @keyframes directory-orbit-ship { from { transform:rotate(24deg) translateY(-145px) rotate(90deg) scale(.68); } to { transform:rotate(384deg) translateY(-145px) rotate(450deg) scale(.68); } }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journey-gate { display:none; }
+  body.journey-locked .directory-main * { animation-play-state:running !important; }
+  body:not(.journey-complete) .directory-orbit-ship { opacity:1; }
+  .directory-orbit-ship { animation:none !important; transform:rotate(24deg) translateY(-208px) rotate(90deg) scale(.78); }
+}
