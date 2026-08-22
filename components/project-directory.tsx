@@ -7,6 +7,7 @@ import { type Locale } from "@/lib/site";
 import type { CSSProperties } from "react";
 import { JourneyGate } from "./journey-gate";
 import { getProjectRegistry } from "@/lib/projects";
+import type { ProjectDefinition } from "@/lib/projects";
 
 const starPositions = [
   [5, 12, 2], [12, 31, 1], [18, 8, 1], [24, 46, 2], [31, 18, 1], [37, 66, 1],
@@ -52,6 +53,11 @@ export async function ProjectDirectory({ locale }: { locale: Locale }) {
               <span className="directory-title-line">{directory.titleLines[1]}</span>
             </h1>
             <p className="directory-description">{directory.description}</p>
+            <div className="directory-hero-data" aria-hidden="true">
+              <div className="directory-data-chip"><span>FIELD NOTE</span><b>026 / 2026</b></div>
+              <div className="directory-data-chip"><span>FLOW STATE</span><b>03.7 Hz</b></div>
+              <div className="directory-data-line"><i /><span>RESEARCH → EXPERIENCE</span><b>LIVE</b></div>
+            </div>
           </div>
           <div className="directory-orbit" aria-hidden="true">
             <div className="directory-orbit-core">03</div>
@@ -68,7 +74,7 @@ export async function ProjectDirectory({ locale }: { locale: Locale }) {
               </p>
               <h2 id="directory-title">{directory.indexLabel}</h2>
             </div>
-            <span className="directory-count">03 / 03</span>
+            <span className="directory-count">{String(projects.length).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
           </div>
 
           <div className="directory-grid">
@@ -104,16 +110,8 @@ export async function ProjectDirectory({ locale }: { locale: Locale }) {
               </div>
             </a>
 
-            {t.projects.placeholders.map((project, index) => (
-              project.href ? (
-                <Link className={`directory-card directory-card-placeholder directory-card-placeholder-${index + 1}`} href={project.href} key={project.index}>
-                  <PlaceholderContent project={project} directory={directory} />
-                </Link>
-              ) : (
-                <div className={`directory-card directory-card-placeholder directory-card-placeholder-${index + 1}`} key={project.index}>
-                  <PlaceholderContent project={project} directory={directory} />
-                </div>
-              )
+            {projects.filter((project) => !project.featured).map((project, index) => (
+              <DirectoryProjectCard key={project.id} project={project} locale={locale} index={index + 2} />
             ))}
           </div>
         </section>
@@ -130,44 +128,59 @@ export async function ProjectDirectory({ locale }: { locale: Locale }) {
   );
 }
 
-function PlaceholderContent({
+function DirectoryProjectCard({
   project,
-  directory,
+  locale,
+  index,
 }: {
-  project: (typeof copy.zh.projects.placeholders)[number];
-  directory: (typeof copy.zh.directory);
+  project: ProjectDefinition;
+  locale: Locale;
+  index: number;
 }) {
-  return (
+  const title = project.title[locale];
+  const description = project.description[locale];
+  const href = project.demoPath ?? project.caseStudyPath;
+  const status = project.presentation === "snapshot"
+    ? locale === "en" ? "SNAPSHOT" : "截图展示"
+    : project.presentation === "collection"
+      ? locale === "en" ? "COLLECTION" : "项目集合"
+      : locale === "en" ? "PLAYABLE" : "可试玩";
+
+  const content = (
     <>
       <div className="directory-card-meta">
-        <span>{project.index} · {directory.placeholderLabel}</span>
-        <span className="directory-card-lock">{project.href ? "↗" : "—"}</span>
+        <span>{String(index).padStart(2, "0")} · {status}</span>
+        <span className="directory-card-lock">{href ? "↗" : "—"}</span>
       </div>
-      <span className={`directory-rarity ${project.href ? "directory-rarity-demo" : "directory-rarity-muted"}`}>
-        {project.href ? "PLAYABLE" : "LOCKED"}
+      <span className={`directory-rarity ${project.presentation === "snapshot" ? "directory-rarity-muted" : "directory-rarity-demo"}`}>
+        {project.presentation === "collection" ? "6 AGENTS" : project.presentation === "snapshot" ? "VIEW" : "PLAY"}
       </span>
-      <div className="directory-placeholder-mark" aria-hidden="true">
-        <span />
-        <span />
-        <span />
+      <div className="directory-project-preview" aria-hidden="true">
+        {project.previewImage ? <Image src={project.previewImage} alt="" fill sizes="(max-width: 760px) 86vw, 32vw" /> : null}
+        <span>{project.presentation === "snapshot" ? "ARCHIVE / PREVIEW" : "OPEN / DEMO"}</span>
       </div>
-      {project.href ? (
-        <div className="directory-card-game-visual" aria-hidden="true">
-          <Image src="/games/office-cringe-cover.png" alt="" fill sizes="(max-width: 760px) 62vw, 28vw" />
-          <span>PLAY / 02</span>
-        </div>
-      ) : (
-        <div className="directory-card-lab-visual" aria-hidden="true">
-          <i /><i /><i />
-          <span>FIELD / 03</span>
-        </div>
-      )}
       <div className="directory-card-copy">
-        <p>{project.status}</p>
-        <h3>{project.title}</h3>
-        <span>{project.description}</span>
+        <p>{project.tags.slice(0, 3).join(" · ")}</p>
+        <h3>{title}</h3>
+        <span>{description}</span>
       </div>
     </>
+  );
+
+  return href ? (
+    project.demoPath ? (
+      <a className={`directory-card directory-card-placeholder directory-card-project-${index}`} href={project.demoPath} target="_blank" rel="noopener noreferrer">
+        {content}
+      </a>
+    ) : (
+      <Link className={`directory-card directory-card-placeholder directory-card-project-${index}`} href={project.caseStudyPath!}>
+        {content}
+      </Link>
+    )
+  ) : (
+    <div className={`directory-card directory-card-placeholder directory-card-project-${index}`}>
+      {content}
+    </div>
   );
 }
 

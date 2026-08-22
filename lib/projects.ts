@@ -6,12 +6,15 @@ export type ProjectDefinition = {
   id: string;
   order: number;
   repo: string;
-  status: "live" | "demo" | "coming-soon";
+  status: "live" | "demo" | "snapshot" | "collection";
+  presentation: "featured" | "demo" | "snapshot" | "collection";
   featured?: boolean;
   title: Record<ProjectLocale, string>;
   description: Record<ProjectLocale, string>;
   tags: string[];
   demoUrl?: string;
+  demoPath?: string;
+  previewImage?: string;
   caseStudyPath?: string;
 };
 
@@ -36,6 +39,7 @@ export const projectRegistry: ProjectDefinition[] = [
     order: 1,
     repo: "Blues-berry/open-rppg",
     status: "live",
+    presentation: "featured",
     featured: true,
     title: { zh: "Open‑rPPG", en: "Open‑rPPG" },
     description: {
@@ -51,6 +55,7 @@ export const projectRegistry: ProjectDefinition[] = [
     order: 2,
     repo: "Blues-berry/game",
     status: "demo",
+    presentation: "demo",
     title: { zh: "互动游戏 Demo", en: "Interactive Game Demos" },
     description: {
       zh: "两个可直接游玩的实验性游戏，探索社死、规则与选择。",
@@ -58,6 +63,96 @@ export const projectRegistry: ProjectDefinition[] = [
     },
     tags: ["HTML", "JavaScript", "Interactive Fiction"],
     caseStudyPath: "/projects/game-demos",
+  },
+  {
+    id: "xiulian",
+    order: 3,
+    repo: "Blues-berry/xiulian",
+    status: "demo",
+    presentation: "demo",
+    title: { zh: "修炼：规则协议", en: "Xiu Lian: Protocol" },
+    description: {
+      zh: "一款规则怪谈视觉小说，围绕调查、推理与多结局选择展开。",
+      en: "A rules-horror visual novel about investigation, deduction, and branching endings.",
+    },
+    tags: ["React", "Vite", "Visual Novel", "Interactive Fiction"],
+    demoPath: "/project-demos/xiulian/index.html",
+    previewImage: "/projects/previews/protocol-endgame.svg",
+  },
+  {
+    id: "game1",
+    order: 4,
+    repo: "Blues-berry/game1",
+    status: "demo",
+    presentation: "demo",
+    title: { zh: "进化战场", en: "Evolution Arena" },
+    description: {
+      zh: "浏览器里的波次战斗实验，包含技能、遗物、商店与成长选择。",
+      en: "A browser combat experiment with waves, skills, relics, shops, and progression choices.",
+    },
+    tags: ["React", "Vite", "Game", "Canvas"],
+    demoPath: "/project-demos/game1/index.html",
+    previewImage: "/projects/previews/evolution-arena.svg",
+  },
+  {
+    id: "game0",
+    order: 5,
+    repo: "local/game0",
+    status: "demo",
+    presentation: "demo",
+    title: { zh: "Game 0 · HTML 实验", en: "Game 0 · HTML Experiment" },
+    description: {
+      zh: "单文件 HTML 游戏原型，保留原始演示形态，打开即可体验。",
+      en: "A single-file HTML game prototype kept in its original, instantly playable form.",
+    },
+    tags: ["HTML", "JavaScript", "Prototype"],
+    demoPath: "/project-demos/game0/index.html",
+    previewImage: "/projects/previews/game0.svg",
+  },
+  {
+    id: "qifei",
+    order: 6,
+    repo: "local/qifei",
+    status: "snapshot",
+    presentation: "snapshot",
+    title: { zh: "终焉协议", en: "Protocol: Endgame" },
+    description: {
+      zh: "规则怪谈交互式视觉小说，探索信任、生存点与六种结局。",
+      en: "An interactive rules-horror visual novel built around trust, survival points, and six endings.",
+    },
+    tags: ["Next.js", "Visual Novel", "Branching Story"],
+    caseStudyPath: "/projects/qifei",
+    previewImage: "/projects/previews/protocol-endgame.svg",
+  },
+  {
+    id: "fde",
+    order: 7,
+    repo: "local/fde-radar",
+    status: "snapshot",
+    presentation: "snapshot",
+    title: { zh: "Amazon FDE 运营异常雷达", en: "Amazon FDE Operations Radar" },
+    description: {
+      zh: "本地优先的运营诊断与任务闭环工具，覆盖异常、证据、审批与复盘。",
+      en: "A local-first operations diagnosis tool connecting anomalies, evidence, approvals, and review.",
+    },
+    tags: ["Python", "Analytics", "Operations", "Local-first"],
+    caseStudyPath: "/projects/fde",
+    previewImage: "/projects/previews/fde-opportunity.png",
+  },
+  {
+    id: "workflow",
+    order: 8,
+    repo: "local/workflow",
+    status: "collection",
+    presentation: "collection",
+    title: { zh: "Workflow · Agent 项目集", en: "Workflow · Agent Collection" },
+    description: {
+      zh: "六个面向餐饮、医疗、物业、家政、财务与内容工作的 Agent 实验集合。",
+      en: "A collection of six Agent experiments for restaurants, clinics, property, home services, finance, and publishing.",
+    },
+    tags: ["Agents", "Automation", "Python", "Workflow"],
+    caseStudyPath: "/projects/workflow",
+    previewImage: "/projects/previews/workflow-agent.png",
   },
 ];
 
