@@ -3997,3 +3997,35 @@ body:has(#project-directory:target) {
 .directory-card-copy h3 { font-size:clamp(1.65rem,3vw,2.55rem); letter-spacing:-.06em; }
 @keyframes directory-leaf-drift { 0%{opacity:0;transform:translate3d(0,-8vh,0) rotate(var(--leaf-rotate))} 12%{opacity:.68} 50%{transform:translate3d(7vw,52vh,0) rotate(calc(var(--leaf-rotate) + 120deg))} 88%{opacity:.42} 100%{opacity:0;transform:translate3d(-5vw,112vh,0) rotate(calc(var(--leaf-rotate) + 260deg))} }
 @media (prefers-reduced-motion:reduce) { .directory-wind{display:none} .directory-card{transition:none} }
+
+/* A living sci-fi garden sits behind the archive, without competing with the cards. */
+.directory-scenery { position:absolute; z-index:0; inset:0; overflow:hidden; pointer-events:none; opacity:.82; mix-blend-mode:multiply; }
+.directory-scenery svg { position:absolute; width:max(100%,1200px); min-height:900px; right:50%; bottom:-180px; transform:translateX(50%); }
+.scenery-water { animation:scenery-water-flow 16s ease-in-out infinite alternate; }
+.windmill-blades { transform-origin:28px 0; animation:scenery-windmill 18s linear infinite; }
+.directory-orbit i { display:none; }
+.directory-orbit::before { border-style:solid; border-color:rgba(73,108,130,.24); }
+.directory-orbit::after { border-color:rgba(189,118,92,.28); }
+.directory-orbit-core { text-shadow:6px 6px 0 rgba(200,164,106,.42),0 0 22px rgba(73,108,130,.18); }
+.directory-card-hud { position:absolute; z-index:1; top:14%; right:8%; width:min(43%,255px); aspect-ratio:1; color:var(--directory-purple); }
+.hud-lens,.hud-ring,.hud-crosshair { position:absolute; inset:0; border:1px solid currentColor; border-radius:50%; opacity:.55; }
+.hud-lens { inset:22%; background:radial-gradient(circle at 40% 35%,rgba(255,255,255,.92) 0 3%,rgba(73,108,130,.25) 4% 18%,rgba(23,35,43,.84) 19% 45%,transparent 46%); box-shadow:0 0 0 9px rgba(200,221,211,.24),0 0 34px rgba(73,108,130,.18); animation:hud-breathe 4s ease-in-out infinite; }
+.hud-ring { border-style:dashed; animation:hud-rotate 18s linear infinite; }
+.hud-crosshair { inset:8%; border-color:rgba(189,118,92,.52); clip-path:polygon(49.5% 0,50.5% 0,50.5% 42%,100% 42%,100% 43%,50.5% 43%,50.5% 100%,49.5% 100%,49.5% 43%,0 43%,0 42%,49.5% 42%); }
+.hud-caption { position:absolute; bottom:-18px; left:50%; transform:translateX(-50%); width:max-content; color:rgba(73,108,130,.68); font:600 9px/1 var(--font-display),monospace; letter-spacing:.14em; }
+.directory-card-game-visual { position:absolute; right:0; bottom:0; width:53%; height:78%; overflow:hidden; opacity:.78; mask-image:linear-gradient(to right,transparent 0%,#000 38%); }
+.directory-card-game-visual::after { position:absolute; inset:0; content:""; background:linear-gradient(125deg,rgba(73,108,130,.55),transparent 58%),linear-gradient(to top,rgba(23,35,43,.5),transparent 55%); mix-blend-mode:multiply; }
+.directory-card-game-visual img { width:100%; height:100%; object-fit:cover; object-position:center; filter:saturate(.72) contrast(1.06); transform:scale(1.05); transition:transform 700ms cubic-bezier(.2,.8,.2,1),filter 500ms ease; }
+.directory-card:hover .directory-card-game-visual img { transform:scale(1.12); filter:saturate(1) contrast(1.1); }
+.directory-card-game-visual span,.directory-card-lab-visual span { position:absolute; z-index:2; right:18px; bottom:16px; color:#eff5ef; font:700 10px/1 var(--font-display),monospace; letter-spacing:.16em; }
+.directory-card-lab-visual { position:absolute; right:8%; bottom:12%; width:39%; aspect-ratio:1; border-radius:50%; border:1px dashed rgba(73,108,130,.32); }
+.directory-card-lab-visual i { position:absolute; top:50%; left:50%; width:10px; height:10px; margin:-5px; border-radius:50%; background:var(--directory-coral); box-shadow:0 0 0 5px rgba(189,118,92,.12); animation:lab-orbit 9s linear infinite; }
+.directory-card-lab-visual i:nth-child(1){transform:rotate(15deg) translateY(-74px)}.directory-card-lab-visual i:nth-child(2){transform:rotate(135deg) translateY(-74px);animation-delay:-3s;background:var(--directory-purple)}.directory-card-lab-visual i:nth-child(3){transform:rotate(255deg) translateY(-74px);animation-delay:-6s;background:var(--directory-yellow)}
+.directory-card-lab-visual::before,.directory-card-lab-visual::after { position:absolute; content:""; border-radius:50%; border:1px solid rgba(200,221,211,.55); inset:22%; }.directory-card-lab-visual::after { inset:38%; background:radial-gradient(circle,rgba(200,221,211,.74),rgba(73,108,130,.22) 45%,transparent 46%); }
+@keyframes scenery-water-flow { from{transform:translateX(-12px)} to{transform:translateX(18px)} }
+@keyframes scenery-windmill { to{transform:rotate(360deg)} }
+@keyframes hud-breathe { 0%,100%{transform:scale(.92);opacity:.58} 50%{transform:scale(1.05);opacity:1} }
+@keyframes hud-rotate { to{transform:rotate(360deg)} }
+@keyframes lab-orbit { to{transform:rotate(375deg) translateY(-74px)} }
+@media (max-width:760px) { .directory-scenery{opacity:.56}.directory-scenery svg{right:40%;bottom:-280px}.directory-card-hud{width:42%;right:5%;top:18%}.directory-card-game-visual{width:62%;opacity:.54}.directory-card-lab-visual{width:33%} }
+@media (prefers-reduced-motion:reduce) { .scenery-water,.windmill-blades,.hud-lens,.hud-ring,.directory-card-lab-visual i{animation:none} }

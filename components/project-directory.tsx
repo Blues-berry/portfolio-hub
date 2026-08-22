@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowIcon } from "./icons";
 import { SiteHeader } from "./site-header";
 import { copy } from "@/lib/content";
@@ -36,6 +37,7 @@ export async function ProjectDirectory({ locale }: { locale: Locale }) {
         <div className="directory-wind" aria-hidden="true">
           {Array.from({ length: 11 }, (_, index) => <i key={index} />)}
         </div>
+        <DirectoryScenery />
         <section className="directory-hero page-shell">
           <div className="directory-particles" aria-hidden="true">
             {Array.from({ length: 18 }, (_, index) => <i key={index} />)}
@@ -53,9 +55,6 @@ export async function ProjectDirectory({ locale }: { locale: Locale }) {
           </div>
           <div className="directory-orbit" aria-hidden="true">
             <div className="directory-orbit-core">03</div>
-            <i />
-            <i />
-            <i />
             <div className="directory-orbit-ship"><span /></div>
           </div>
         </section>
@@ -82,6 +81,12 @@ export async function ProjectDirectory({ locale }: { locale: Locale }) {
                 <ArrowIcon />
               </div>
               <span className="directory-rarity">SSR · GOLD</span>
+              <div className="directory-card-hud" aria-hidden="true">
+                <span className="hud-lens" />
+                <span className="hud-ring" />
+                <span className="hud-crosshair" />
+                <span className="hud-caption">FACEPHYS · LOCAL SIGNAL</span>
+              </div>
               <span className="directory-card-burst" aria-hidden="true">
                 {Array.from({ length: 8 }, (_, index) => <i key={index} />)}
               </span>
@@ -146,11 +151,57 @@ function PlaceholderContent({
         <span />
         <span />
       </div>
+      {project.href ? (
+        <div className="directory-card-game-visual" aria-hidden="true">
+          <Image src="/games/office-cringe-cover.png" alt="" fill sizes="(max-width: 760px) 62vw, 28vw" />
+          <span>PLAY / 02</span>
+        </div>
+      ) : (
+        <div className="directory-card-lab-visual" aria-hidden="true">
+          <i /><i /><i />
+          <span>FIELD / 03</span>
+        </div>
+      )}
       <div className="directory-card-copy">
         <p>{project.status}</p>
         <h3>{project.title}</h3>
         <span>{project.description}</span>
       </div>
     </>
+  );
+}
+
+function DirectoryScenery() {
+  return (
+    <div className="directory-scenery" aria-hidden="true">
+      <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="water" x1="0" x2="1"><stop stopColor="#6b9f9e" stopOpacity=".08" /><stop offset=".48" stopColor="#b1d8cf" stopOpacity=".58" /><stop offset="1" stopColor="#5e8294" stopOpacity=".1" /></linearGradient>
+          <linearGradient id="bridge" x1="0" x2="1"><stop stopColor="#496c82" stopOpacity=".1" /><stop offset=".55" stopColor="#bd765c" stopOpacity=".62" /><stop offset="1" stopColor="#496c82" stopOpacity=".12" /></linearGradient>
+          <radialGradient id="canopy"><stop stopColor="#c8ddd3" stopOpacity=".74" /><stop offset="1" stopColor="#496c82" stopOpacity=".04" /></radialGradient>
+        </defs>
+        <g className="scenery-water">
+          <path d="M-40 690 C200 610 355 765 590 690 S970 605 1480 720" fill="none" stroke="url(#water)" strokeWidth="44" />
+          <path d="M-40 720 C180 650 410 790 640 720 S1080 645 1480 755" fill="none" stroke="#d2eee4" strokeOpacity=".24" strokeWidth="2" />
+          <path d="M-30 760 C260 675 430 825 700 750 S1120 680 1480 790" fill="none" stroke="#6f9aa2" strokeOpacity=".22" strokeWidth="2" />
+        </g>
+        <g className="scenery-bridge">
+          <path d="M475 655 Q650 510 832 655" fill="none" stroke="url(#bridge)" strokeWidth="18" />
+          <path d="M475 655 Q650 510 832 655" fill="none" stroke="#f7eee0" strokeOpacity=".58" strokeWidth="2" strokeDasharray="4 11" />
+          <path d="M510 653v-66 M570 602v-49 M650 570v-43 M730 602v-49 M795 654v-66" stroke="#496c82" strokeOpacity=".42" strokeWidth="3" />
+        </g>
+        <g className="scenery-tree">
+          <path d="M165 705 C185 585 205 468 184 318" fill="none" stroke="#496c82" strokeOpacity=".56" strokeWidth="15" />
+          <path d="M188 500 C124 440 97 392 61 352 M190 458 C255 400 281 353 312 310 M178 414 C131 355 108 309 104 254" fill="none" stroke="#496c82" strokeOpacity=".42" strokeWidth="7" />
+          <circle cx="83" cy="285" r="112" fill="url(#canopy)" /><circle cx="242" cy="286" r="128" fill="url(#canopy)" /><circle cx="141" cy="394" r="105" fill="url(#canopy)" />
+          <path d="M70 299c22-38 67-59 112-52M185 260c35-22 73-15 111 11M106 376c25-22 55-28 91-15" fill="none" stroke="#c8ddd3" strokeOpacity=".32" strokeWidth="2" />
+        </g>
+        <g className="scenery-windmill" transform="translate(1210 505)">
+          <path d="M0 176 L28 0 L56 176 Z" fill="#496c82" fillOpacity=".34" />
+          <path d="M-12 176 H68" stroke="#bd765c" strokeOpacity=".66" strokeWidth="5" />
+          <g className="windmill-blades"><circle cx="28" cy="0" r="8" fill="#f6eee1" /><path d="M28 0 L28 -95 Q70 -67 63 -26 Z M28 0 L123 0 Q97 42 55 35 Z M28 0 L28 95 Q-14 68 -7 26 Z M28 0 L-67 0 Q-40 -42 1 -35 Z" fill="#c8ddd3" fillOpacity=".72" /></g>
+        </g>
+      </svg>
+    </div>
   );
 }
