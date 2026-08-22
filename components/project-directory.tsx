@@ -5,6 +5,7 @@ import { copy } from "@/lib/content";
 import { type Locale } from "@/lib/site";
 import type { CSSProperties } from "react";
 import { JourneyGate } from "./journey-gate";
+import { getProjectRegistry } from "@/lib/projects";
 
 const starPositions = [
   [5, 12, 2], [12, 31, 1], [18, 8, 1], [24, 46, 2], [31, 18, 1], [37, 66, 1],
@@ -14,14 +15,16 @@ const starPositions = [
   [3, 52, 1], [21, 96, 1], [41, 31, 2], [61, 6, 1], [82, 62, 1], [91, 8, 2],
 ] as const;
 
-export function ProjectDirectory({ locale }: { locale: Locale }) {
+export async function ProjectDirectory({ locale }: { locale: Locale }) {
   const t = copy[locale];
   const directory = t.directory;
+  const projects = await getProjectRegistry();
+  const featuredProject = projects.find((project) => project.featured);
 
   return (
     <JourneyGate>
       <SiteHeader locale={locale} directory />
-      <main className="directory-main" lang={locale === "en" ? "en" : "zh-CN"}>
+      <main id="project-directory" className="directory-main" lang={locale === "en" ? "en" : "zh-CN"}>
         <div className="directory-starfield" aria-hidden="true">
           {starPositions.map(([left, top, size], index) => (
             <i
@@ -29,6 +32,9 @@ export function ProjectDirectory({ locale }: { locale: Locale }) {
               style={{ "--star-left": `${left}%`, "--star-top": `${top}%`, "--star-size": `${size}px` } as CSSProperties}
             />
           ))}
+        </div>
+        <div className="directory-wind" aria-hidden="true">
+          {Array.from({ length: 11 }, (_, index) => <i key={index} />)}
         </div>
         <section className="directory-hero page-shell">
           <div className="directory-particles" aria-hidden="true">
@@ -69,10 +75,10 @@ export function ProjectDirectory({ locale }: { locale: Locale }) {
           <div className="directory-grid">
             <a
               className="directory-card directory-card-featured"
-              href="https://open-rppg-nu.vercel.app/#experience"
+              href={featuredProject?.demoUrl ?? "https://open-rppg-nu.vercel.app/#experience"}
             >
               <div className="directory-card-meta">
-                <span>01 · LIVE</span>
+                <span>01 · {featuredProject?.github?.archived ? "ARCHIVED" : "LIVE"}</span>
                 <ArrowIcon />
               </div>
               <span className="directory-rarity">SSR · GOLD</span>
