@@ -66,23 +66,8 @@ export const projectRegistry: ProjectDefinition[] = [
     caseStudyPath: "/projects/game-demos",
   },
   {
-    id: "xiulian",
-    order: 3,
-    repo: "Blues-berry/xiulian",
-    status: "demo",
-    presentation: "demo",
-    title: { zh: "修炼：规则协议", en: "Xiu Lian: Protocol" },
-    description: {
-      zh: "一款规则怪谈视觉小说，围绕调查、推理与多结局选择展开。",
-      en: "A rules-horror visual novel about investigation, deduction, and branching endings.",
-    },
-    tags: ["React", "Vite", "Visual Novel", "Interactive Fiction"],
-    demoPath: "/project-demos/xiulian/index.html",
-    previewImage: "/projects/previews/protocol-endgame.svg",
-  },
-  {
     id: "game1",
-    order: 4,
+    order: 3,
     repo: "Blues-berry/game1",
     status: "demo",
     presentation: "demo",
@@ -97,7 +82,7 @@ export const projectRegistry: ProjectDefinition[] = [
   },
   {
     id: "game0",
-    order: 5,
+    order: 4,
     repo: "local/game0",
     status: "demo",
     presentation: "demo",
@@ -112,7 +97,7 @@ export const projectRegistry: ProjectDefinition[] = [
   },
   {
     id: "qifei",
-    order: 6,
+    order: 5,
     repo: "local/qifei",
     status: "demo",
     presentation: "demo",
@@ -128,7 +113,7 @@ export const projectRegistry: ProjectDefinition[] = [
   },
   {
     id: "fde",
-    order: 7,
+    order: 6,
     repo: "local/fde-radar",
     status: "snapshot",
     presentation: "snapshot",

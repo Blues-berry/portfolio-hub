@@ -29,18 +29,6 @@ const games = [
   },
   {
     number: "03",
-    title: "Xiu Lian: Protocol",
-    cnTitle: "修炼：规则协议",
-    description: "A rules-horror visual novel about investigation, deduction, and branching endings.",
-    cnDescription: "一款围绕调查、推理与多结局选择展开的规则怪谈视觉小说。",
-    href: "/project-demos/xiulian/index.html",
-    tone: "protocol",
-    label: "DEMO AVAILABLE",
-    image: "/projects/previews/protocol-endgame.svg",
-    external: true,
-  },
-  {
-    number: "04",
     title: "星核熔炉 · STELLAR FORGE",
     cnTitle: "星核熔炉 · STELLAR FORGE",
     description: "A browser strategy game blending fusion puzzles, roguelike progression, and tower defense.",
@@ -52,7 +40,7 @@ const games = [
     external: true,
   },
   {
-    number: "05",
+    number: "04",
     title: "WITHERROOT",
     cnTitle: "WITHERROOT",
     description: "A post-apocalyptic root-growth puzzle about decay, memory, and rebirth.",
@@ -64,7 +52,7 @@ const games = [
     external: true,
   },
   {
-    number: "06",
+    number: "05",
     title: "Protocol: Endgame",
     cnTitle: "终焉协议",
     description: "An interactive rules-horror visual novel built around trust, survival points, and six endings.",
