@@ -8,6 +8,7 @@ import type { CSSProperties } from "react";
 import { JourneyGate } from "./journey-gate";
 import { getProjectRegistry } from "@/lib/projects";
 import type { ProjectDefinition } from "@/lib/projects";
+import { GalaxyCursorNebula } from "./galaxy-cursor-nebula";
 
 const starPositions = [
   [5, 12, 2], [12, 31, 1], [18, 8, 1], [24, 46, 2], [31, 18, 1], [37, 66, 1],
@@ -28,6 +29,7 @@ export async function ProjectDirectory({ locale }: { locale: Locale }) {
     <JourneyGate>
       <SiteHeader locale={locale} directory />
       <main id="project-directory" className="directory-main" lang={locale === "en" ? "en" : "zh-CN"}>
+        <GalaxyCursorNebula />
         <div className="directory-starfield" aria-hidden="true">
           {starPositions.map(([left, top, size], index) => (
             <i
@@ -60,10 +62,7 @@ export async function ProjectDirectory({ locale }: { locale: Locale }) {
               <div className="directory-data-line"><i /><span>RESEARCH → EXPERIENCE</span><b>LIVE</b></div>
             </div>
           </div>
-          <div className="directory-orbit" aria-hidden="true">
-            <div className="directory-orbit-core">03</div>
-            <div className="directory-orbit-ship"><span /></div>
-          </div>
+          <DirectoryGalaxy />
         </section>
 
         <section className="directory-section page-shell" aria-labelledby="directory-title">
@@ -243,6 +242,28 @@ function DirectoryScenery() {
           <g className="windmill-blades"><circle cx="28" cy="0" r="8" fill="#f6eee1" /><path d="M28 0 L28 -95 Q70 -67 63 -26 Z M28 0 L123 0 Q97 42 55 35 Z M28 0 L28 95 Q-14 68 -7 26 Z M28 0 L-67 0 Q-40 -42 1 -35 Z" fill="#c8ddd3" fillOpacity=".72" /></g>
         </g>
       </svg>
+    </div>
+  );
+}
+
+function DirectoryGalaxy() {
+  const armStars = Array.from({ length: 42 }, (_, index) => index);
+  return (
+    <div className="directory-galaxy" aria-hidden="true">
+      <div className="directory-galaxy-orbit directory-galaxy-orbit-inner"><i /><i /></div>
+      <div className="directory-galaxy-orbit directory-galaxy-orbit-outer"><i /><i /></div>
+      <div className="directory-galaxy-arm directory-galaxy-arm-a">
+        {armStars.map((index) => <i key={index} style={{ "--star-y": `${(index - 21) * 1.1}%`, "--star-x": `${index * 0.93}%`, "--star-size": `${Math.max(2, 5 - index * 0.07)}px`, "--star-opacity": Math.max(0.35, 0.95 - index * 0.012), "--star-delay": `${-(index * 0.12)}s` } as CSSProperties} />)}
+      </div>
+      <div className="directory-galaxy-arm directory-galaxy-arm-b">
+        {armStars.map((index) => <i key={index} style={{ "--star-y": `${(index - 21) * 1.1}%`, "--star-x": `${index * 0.93}%`, "--star-size": `${Math.max(2, 5 - index * 0.07)}px`, "--star-opacity": Math.max(0.35, 0.95 - index * 0.012), "--star-delay": `${-(index * 0.12)}s` } as CSSProperties} />)}
+      </div>
+      <div className="directory-galaxy-core">
+        <span className="directory-galaxy-pulse-ring" />
+        <span className="directory-galaxy-pulse-ring directory-galaxy-pulse-ring-delay" />
+        <span className="directory-galaxy-core-light" />
+        <span className="directory-galaxy-core-point" />
+      </div>
     </div>
   );
 }

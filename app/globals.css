@@ -4129,3 +4129,616 @@ body:has(#project-directory:target) {
 @keyframes directory-data-scan { 0%{transform:translateX(0)} 100%{transform:translateX(540%)} }
 @media (max-width:760px) { .directory-hero-data{margin:24px auto 0; transform:scale(.92); transform-origin:top center} }
 @media (prefers-reduced-motion:reduce) { .directory-data-line i::after{animation:none;transform:translateX(300%)} }
+
+/* ============================================
+   星河 · 时光斑驳 — 主页背景覆盖样式
+   仅修改背景视觉，布局与交互保持不变
+   目标页面：#project-directory（项目目录主页）
+   使用方式：将本文件 import 到全局布局，或在页面组件中引入
+   ============================================ */
+
+/* ---------- 0. 全局底色：防止滚动露白 ---------- */
+html,
+body {
+  background: #070716 !important;
+  color: #e8e8f0;
+}
+
+/* ---------- 1. 主容器：深空 + 银河光带 + 双色星云 ---------- */
+#project-directory.directory-main {
+  position: relative;
+  background:
+    /* 银河斜向光带 */
+    linear-gradient(
+      118deg,
+      transparent 0%,
+      transparent 32%,
+      rgba(157, 123, 201, 0.18) 38%,
+      rgba(201, 123, 138, 0.13) 45%,
+      rgba(232, 232, 240, 0.07) 50%,
+      rgba(201, 123, 138, 0.13) 55%,
+      rgba(157, 123, 201, 0.18) 62%,
+      transparent 70%,
+      transparent 100%
+    ),
+    /* 玫瑰色星云 */
+    radial-gradient(ellipse 600px 420px at 15% 22%, rgba(201, 123, 138, 0.16), transparent 70%),
+    /* 紫罗兰星云 */
+    radial-gradient(ellipse 540px 380px at 85% 68%, rgba(123, 94, 167, 0.16), transparent 70%),
+    /* 底部淡紫光晕 */
+    radial-gradient(ellipse 450px 320px at 50% 95%, rgba(157, 123, 201, 0.09), transparent 70%),
+    /* 深空底色 */
+    linear-gradient(180deg, #0a0e27 0%, #0d1230 45%, #070716 100%);
+}
+
+/* ---------- 2. 隐藏原有的水面/桥/树/风车 SVG 风景 ---------- */
+#project-directory .directory-scenery {
+  display: none !important;
+}
+
+/* ---------- 3. 星点：增亮 + 光晕 + 三色闪烁 ---------- */
+#project-directory .directory-starfield i {
+  background: #e8e8f0 !important;
+  border-radius: 50%;
+  box-shadow:
+    0 0 3px rgba(232, 232, 240, 0.9),
+    0 0 7px rgba(232, 232, 240, 0.5);
+  animation: galaxy-twinkle 3.5s ease-in-out infinite;
+}
+#project-directory .directory-starfield i:nth-child(odd) {
+  animation-duration: 4.5s;
+  animation-delay: -1.8s;
+}
+/* 每 3 颗星偏玫瑰色 */
+#project-directory .directory-starfield i:nth-child(3n) {
+  background: #c97b8a !important;
+  box-shadow: 0 0 3px rgba(201, 123, 138, 0.9), 0 0 8px rgba(201, 123, 138, 0.45);
+}
+/* 每 4 颗星偏紫罗兰色 */
+#project-directory .directory-starfield i:nth-child(4n) {
+  background: #9d7bc9 !important;
+  box-shadow: 0 0 3px rgba(157, 123, 201, 0.9), 0 0 8px rgba(157, 123, 201, 0.45);
+}
+
+@keyframes galaxy-twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.75); }
+  50%      { opacity: 1;    transform: scale(1.15); }
+}
+
+/* ---------- 4. 风/光线条 → 流星划过 ---------- */
+#project-directory .directory-wind i {
+  height: 1px !important;
+  width: 70px !important;
+  background: linear-gradient(90deg, transparent, rgba(232, 232, 240, 0.7), transparent) !important;
+  opacity: 0;
+  animation: galaxy-meteor 7s linear infinite;
+}
+#project-directory .directory-wind i:nth-child(1) { top: 12%; animation-delay: 0s;   }
+#project-directory .directory-wind i:nth-child(2) { top: 30%; animation-delay: 2.5s; }
+#project-directory .directory-wind i:nth-child(3) { top: 52%; animation-delay: 5s;   }
+#project-directory .directory-wind i:nth-child(4) { top: 22%; animation-delay: 1.2s; }
+#project-directory .directory-wind i:nth-child(5) { top: 68%; animation-delay: 3.8s; }
+#project-directory .directory-wind i:nth-child(6) { top: 42%; animation-delay: 6.2s; }
+/* 多余的风元素隐藏，只留 6 颗流星 */
+#project-directory .directory-wind i:nth-child(n+7) {
+  display: none;
+}
+
+@keyframes galaxy-meteor {
+  0%   { transform: translate(-10vw, 0) rotate(-18deg); opacity: 0; }
+  4%   { opacity: 1; }
+  22%  { opacity: 1; }
+  30%  { transform: translate(115vw, -35vh) rotate(-18deg); opacity: 0; }
+  100% { transform: translate(115vw, -35vh) rotate(-18deg); opacity: 0; }
+}
+
+/* ---------- 5. 粒子：微调为星尘质感 ---------- */
+#project-directory .directory-particles i {
+  background: rgba(232, 232, 240, 0.45) !important;
+  box-shadow: 0 0 5px rgba(232, 232, 240, 0.25);
+}
+
+/* ---------- 6. 时光斑驳：胶片噪点颗粒层 ---------- */
+#project-directory::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+
+/* ---------- 7. 时光斑驳：褪色斑块（极缓慢漂移，模拟时光流转） ---------- */
+#project-directory::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    radial-gradient(ellipse 280px 190px at 12% 18%, rgba(201, 123, 138, 0.05), transparent 70%),
+    radial-gradient(ellipse 230px 170px at 72% 38%, rgba(123, 94, 167, 0.06), transparent 70%),
+    radial-gradient(ellipse 190px 140px at 38% 78%, rgba(232, 232, 240, 0.035), transparent 70%),
+    radial-gradient(ellipse 320px 230px at 86% 72%, rgba(201, 123, 138, 0.04), transparent 70%);
+  animation: galaxy-drift 40s ease-in-out infinite alternate;
+}
+
+@keyframes galaxy-drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-2%, 1.5%) scale(1.03); }
+}
+
+/* ---------- 8. 暗角 vignette：老照片边缘压暗 ---------- */
+#project-directory .directory-hero::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background: radial-gradient(ellipse at center, transparent 45%, rgba(5, 5, 16, 0.55) 100%);
+}
+
+/* ---------- 9. 层级保障：内容层抬升，不被斑驳层遮挡 ---------- */
+#project-directory .directory-hero,
+#project-directory .directory-section,
+#project-directory .directory-footer,
+.site-header,
+footer {
+  position: relative;
+  z-index: 3;
+}
+
+/* 纯背景装饰层沉到最底 */
+#project-directory .directory-starfield,
+#project-directory .directory-wind {
+  z-index: 0;
+}
+
+/* ---------- 10. 深空主题的文字、导航与内容层 ---------- */
+.site-header.site-header-directory {
+  color: #e8e8f0;
+  border-bottom-color: rgba(232, 232, 240, 0.08);
+  background: rgba(7, 7, 22, 0.62);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.site-header.site-header-directory .brand span {
+  color: #e8e8f0 !important;
+}
+
+.site-header.site-header-directory .brand-mark i {
+  background: #9d7bc9 !important;
+  box-shadow: 0 0 6px rgba(157, 123, 201, 0.5);
+}
+
+.site-header.site-header-directory nav a {
+  color: rgba(232, 232, 240, 0.6) !important;
+}
+
+.site-header.site-header-directory nav a:hover {
+  color: #e8e8f0 !important;
+}
+
+.site-header.site-header-directory nav .language-link {
+  color: #c9b4e8 !important;
+  border-color: rgba(157, 123, 201, 0.4) !important;
+}
+
+#project-directory .directory-hero .eyebrow,
+#project-directory .directory-section-heading .eyebrow {
+  color: rgba(232, 232, 240, 0.55) !important;
+}
+
+#project-directory .directory-hero .eyebrow span {
+  background: #c97b8a !important;
+  box-shadow: 0 0 6px rgba(201, 123, 138, 0.5);
+}
+
+#project-directory .directory-section-heading .eyebrow span {
+  background: #9d7bc9 !important;
+}
+
+#project-directory .directory-hero h1,
+#project-directory .directory-hero h1 .directory-title-line {
+  color: #e8e8f0 !important;
+  text-shadow: 0 0 30px rgba(157, 123, 201, 0.3);
+}
+
+#project-directory .directory-description {
+  color: rgba(232, 232, 240, 0.6) !important;
+}
+
+#project-directory .directory-section-heading h2 {
+  color: #e8e8f0 !important;
+}
+
+#project-directory .directory-count,
+#project-directory .directory-footer {
+  color: rgba(232, 232, 240, 0.4) !important;
+}
+
+/* Hero 数据卡片 */
+#project-directory .directory-data-chip {
+  background: rgba(232, 232, 240, 0.06) !important;
+  border: 1px solid rgba(232, 232, 240, 0.12) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+#project-directory .directory-data-chip span,
+#project-directory .directory-data-line {
+  color: rgba(232, 232, 240, 0.5) !important;
+}
+
+#project-directory .directory-data-chip b {
+  color: #e8e8f0 !important;
+}
+
+#project-directory .directory-data-line b {
+  color: #e8b4bc !important;
+}
+
+#project-directory .directory-data-line i {
+  background: rgba(201, 123, 138, 0.6) !important;
+  box-shadow: 0 0 8px rgba(201, 123, 138, 0.4);
+}
+
+#project-directory .directory-orbit-core {
+  color: rgba(232, 232, 240, 0.18) !important;
+  border-color: rgba(232, 232, 240, 0.1) !important;
+}
+
+/* ---------- 11. 深色半透明玻璃拟态卡片 ---------- */
+#project-directory .directory-card {
+  color: #e8e8f0 !important;
+  background: rgba(13, 18, 48, 0.55) !important;
+  border: 1px solid rgba(232, 232, 240, 0.1) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(232, 232, 240, 0.06) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+#project-directory .directory-card:hover,
+#project-directory .directory-card:focus-visible {
+  border-color: rgba(201, 123, 138, 0.55) !important;
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.42), 0 0 28px rgba(157, 123, 201, 0.12) !important;
+}
+
+#project-directory .directory-card.directory-card-featured {
+  background: radial-gradient(ellipse at 72% 38%, rgba(201, 123, 138, 0.12), transparent 60%), rgba(13, 18, 48, 0.55) !important;
+  border-color: rgba(201, 123, 138, 0.3) !important;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35), 0 0 60px rgba(201, 123, 138, 0.08), inset 0 1px 0 rgba(232, 232, 240, 0.08) !important;
+}
+
+#project-directory .directory-card-meta span,
+#project-directory .directory-card-lock,
+#project-directory .directory-card-copy p,
+#project-directory .directory-card-copy > span:last-child {
+  color: rgba(232, 232, 240, 0.55) !important;
+}
+
+#project-directory .directory-card-meta svg path {
+  stroke: rgba(232, 232, 240, 0.5) !important;
+}
+
+#project-directory .directory-card-copy h3 {
+  color: #e8e8f0 !important;
+}
+
+#project-directory .directory-card-featured .directory-card-copy > span:last-child {
+  color: #e8b4bc !important;
+}
+
+/* 稀有度：玫瑰 / 淡紫 / 银灰 */
+#project-directory .directory-rarity {
+  background: rgba(201, 123, 138, 0.15) !important;
+  color: #e8b4bc !important;
+  border: 1px solid rgba(201, 123, 138, 0.3) !important;
+}
+
+#project-directory .directory-rarity-demo {
+  background: rgba(157, 123, 201, 0.15) !important;
+  color: #c9b4e8 !important;
+  border: 1px solid rgba(157, 123, 201, 0.3) !important;
+}
+
+#project-directory .directory-rarity-muted {
+  background: rgba(232, 232, 240, 0.08) !important;
+  color: rgba(232, 232, 240, 0.6) !important;
+  border: 1px solid rgba(232, 232, 240, 0.15) !important;
+}
+
+#project-directory .directory-card-featured .hud-ring,
+#project-directory .directory-card-featured .hud-lens,
+#project-directory .directory-card-featured .hud-crosshair {
+  border-color: rgba(232, 232, 240, 0.15) !important;
+}
+
+#project-directory .directory-card-featured .hud-caption {
+  color: rgba(232, 232, 240, 0.35) !important;
+}
+
+#project-directory .directory-card-featured .directory-card-signal span {
+  background: rgba(201, 123, 138, 0.5) !important;
+  box-shadow: 0 0 6px rgba(201, 123, 138, 0.3);
+}
+
+#project-directory .directory-card-featured .directory-card-burst i {
+  background: linear-gradient(90deg, rgba(232, 232, 240, 0.3), transparent) !important;
+}
+
+#project-directory .directory-project-preview {
+  background: rgba(10, 14, 39, 0.4) !important;
+}
+
+#project-directory .directory-project-preview img {
+  opacity: 0.75 !important;
+  filter: saturate(0.85) brightness(0.9);
+}
+
+#project-directory .directory-project-preview span {
+  color: rgba(232, 232, 240, 0.5) !important;
+  background: rgba(10, 14, 39, 0.6) !important;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* 页脚不能继承旧的浅色目录背景。 */
+body:has(#project-directory),
+body:has(#project-directory) footer,
+#project-directory + footer {
+  color: #e8e8f0 !important;
+  background: #070716 !important;
+  border-top-color: rgba(232, 232, 240, 0.08) !important;
+}
+
+body:has(#project-directory) .footer-inner,
+#project-directory + footer .footer-inner {
+  color: rgba(232, 232, 240, 0.4) !important;
+  border-top-color: rgba(232, 232, 240, 0.08) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #project-directory .directory-starfield i,
+  #project-directory .directory-wind i,
+  #project-directory::after {
+    animation: none;
+  }
+}
+
+/* ---------- 银河鼠标星云与 HUD 居中修正 ---------- */
+#project-directory .directory-orbit {
+  display: none !important;
+}
+
+.galaxy-cursor-nebula {
+  position: fixed;
+  z-index: 1;
+  width: 340px;
+  height: 340px;
+  pointer-events: none;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background:
+    radial-gradient(ellipse 42% 52% at 38% 44%, rgba(255, 205, 118, 0.34), transparent 60%),
+    radial-gradient(ellipse 38% 48% at 64% 56%, rgba(201, 123, 138, 0.28), transparent 60%),
+    radial-gradient(ellipse 32% 42% at 50% 50%, rgba(255, 243, 203, 0.16), transparent 55%),
+    radial-gradient(ellipse 46% 36% at 28% 62%, rgba(157, 123, 201, 0.22), transparent 60%);
+  filter: blur(22px);
+  mix-blend-mode: screen;
+  animation: galaxy-nebula-spin 14s linear infinite, galaxy-nebula-pulse 7s ease-in-out infinite;
+  will-change: transform, left, top;
+}
+
+@keyframes galaxy-nebula-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes galaxy-nebula-pulse {
+  0%, 100% { opacity: 0.65; }
+  50% { opacity: 1; }
+}
+
+#project-directory .directory-card-featured .directory-card-hud {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#project-directory .directory-card-featured .directory-card-hud .hud-lens,
+#project-directory .directory-card-featured .directory-card-hud .hud-ring,
+#project-directory .directory-card-featured .directory-card-hud .hud-crosshair {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  margin: 0 !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+#project-directory .directory-card-featured .directory-card-hud .hud-lens {
+  inset: auto !important;
+  width: 56% !important;
+  height: 56% !important;
+  animation: hud-breathe-centered 4s ease-in-out infinite !important;
+}
+
+#project-directory .directory-card-featured .directory-card-hud .hud-ring {
+  inset: auto !important;
+  width: 100% !important;
+  height: 100% !important;
+  animation: hud-rotate-centered 18s linear infinite !important;
+}
+
+#project-directory .directory-card-featured .directory-card-hud .hud-crosshair {
+  inset: auto !important;
+  width: 84% !important;
+  height: 84% !important;
+  animation: none !important;
+}
+
+@keyframes hud-breathe-centered {
+  0%, 100% { transform: translate(-50%, -50%) scale(0.92) !important; opacity: 0.58; }
+  50% { transform: translate(-50%, -50%) scale(1.05) !important; opacity: 1; }
+}
+
+@keyframes hud-rotate-centered {
+  from { transform: translate(-50%, -50%) rotate(0deg) !important; }
+  to { transform: translate(-50%, -50%) rotate(360deg) !important; }
+}
+
+/* ---------- 右侧脉冲星核螺旋星系 ---------- */
+.directory-galaxy {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  right: 2%;
+  width: min(42vw, 500px);
+  aspect-ratio: 1.15;
+  transform: translateY(-50%) rotate(-10deg) skewX(-8deg);
+  opacity: 0.82;
+  pointer-events: none;
+  animation: directory-galaxy-drift 28s linear infinite;
+}
+
+.directory-galaxy::before {
+  position: absolute;
+  inset: 16% 8%;
+  content: "";
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(157, 123, 201, 0.14), transparent 68%);
+  filter: blur(20px);
+}
+
+.directory-galaxy-core,
+.directory-galaxy-orbit,
+.directory-galaxy-arm {
+  position: absolute;
+  inset: 0;
+}
+
+.directory-galaxy-core {
+  top: 50%;
+  left: 50%;
+  width: 78px;
+  height: 78px;
+  inset: auto;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 5%, #fff5cf 8%, #e8b4bc 28%, rgba(201, 123, 138, 0.55) 48%, transparent 72%);
+  box-shadow: 0 0 18px rgba(255, 243, 203, 0.95), 0 0 46px rgba(201, 123, 138, 0.72), 0 0 82px rgba(157, 123, 201, 0.38);
+  animation: directory-galaxy-core-breathe 3s ease-in-out infinite;
+}
+
+.directory-galaxy-core-light,
+.directory-galaxy-core-point,
+.directory-galaxy-pulse-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.directory-galaxy-core-light {
+  width: 42px;
+  height: 42px;
+  background: radial-gradient(circle, #fffdf0 0 12%, rgba(255, 239, 189, 0.82) 34%, transparent 72%);
+}
+
+.directory-galaxy-core-point {
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  box-shadow: 0 0 12px 4px #fff;
+}
+
+.directory-galaxy-pulse-ring {
+  width: 84px;
+  height: 84px;
+  border: 1px solid rgba(232, 180, 188, 0.7);
+  animation: directory-galaxy-pulse-ring 3s ease-out infinite;
+}
+
+.directory-galaxy-pulse-ring-delay { animation-delay: 1.5s; }
+
+.directory-galaxy-orbit {
+  transform: rotate(-10deg) scaleY(0.42);
+  border: 1px solid rgba(201, 180, 232, 0.2);
+  border-radius: 50%;
+}
+
+.directory-galaxy-orbit-inner { inset: 15% 8%; animation: directory-galaxy-orbit 8s linear infinite; }
+.directory-galaxy-orbit-outer { inset: 4% -3%; opacity: 0.7; animation: directory-galaxy-orbit 15s linear infinite reverse; }
+
+.directory-galaxy-orbit i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 8px 2px rgba(232, 232, 240, 0.9);
+}
+
+.directory-galaxy-orbit i:first-child { transform: translate(-50%, -50%) translateX(150px); }
+.directory-galaxy-orbit i:last-child { transform: translate(-50%, -50%) translateX(-150px); opacity: 0.65; }
+.directory-galaxy-orbit-outer i:first-child { transform: translate(-50%, -50%) translateX(215px); }
+.directory-galaxy-orbit-outer i:last-child { transform: translate(-50%, -50%) translateX(-215px); opacity: 0.55; }
+
+.directory-galaxy-arm {
+  transform: rotate(-16deg);
+}
+
+.directory-galaxy-arm-b { transform: rotate(164deg) scaleY(0.92); }
+
+.directory-galaxy-arm i {
+  position: absolute;
+  top: calc(50% + var(--star-y));
+  left: calc(50% + var(--star-x));
+  width: var(--star-size);
+  height: var(--star-size);
+  border-radius: 50%;
+  background: #eef1ee;
+  box-shadow: 0 0 7px 1px rgba(232, 232, 240, 0.65);
+  opacity: var(--star-opacity);
+  animation: directory-galaxy-star 3.5s ease-in-out infinite alternate;
+  animation-delay: var(--star-delay);
+}
+
+.directory-galaxy-arm i:nth-child(5n) { background: #e8b4bc; box-shadow: 0 0 8px 2px rgba(201, 123, 138, 0.65); }
+.directory-galaxy-arm i:nth-child(7n) { background: #c9b4e8; box-shadow: 0 0 8px 2px rgba(157, 123, 201, 0.65); }
+
+@keyframes directory-galaxy-core-breathe {
+  0%, 100% { transform: translate(-50%, -50%) scale(0.92); opacity: 0.72; }
+  50% { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
+}
+
+@keyframes directory-galaxy-pulse-ring {
+  0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+}
+
+@keyframes directory-galaxy-orbit { to { transform: rotate(360deg) scaleY(0.42); } }
+@keyframes directory-galaxy-star { from { opacity: 0.34; } to { opacity: 0.9; } }
+@keyframes directory-galaxy-drift { to { transform: translateY(-50%) rotate(350deg) skewX(-8deg); } }
+
+@media (max-width: 760px) {
+  .directory-galaxy { right: -12%; width: 68vw; opacity: 0.54; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .directory-galaxy,
+  .directory-galaxy-core,
+  .directory-galaxy-pulse-ring,
+  .directory-galaxy-orbit,
+  .directory-galaxy-arm i { animation: none !important; }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .galaxy-cursor-nebula { display: none !important; }
+}

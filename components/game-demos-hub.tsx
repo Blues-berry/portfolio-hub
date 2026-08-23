@@ -14,6 +14,7 @@ const games = [
     href: "/projects/game-demos/office-cringe",
     tone: "cringe",
     label: "PLAYABLE NOW",
+    artLabel: "START / STORY",
     image: "/games/office-cringe-cover.png",
   },
   {
@@ -25,6 +26,7 @@ const games = [
     href: "/projects/game-demos/beyond-the-rules",
     tone: "rules",
     label: "PLAYABLE NOW",
+    artLabel: "ENTER / RULES",
     image: "/games/beyond-the-rules-cover.png",
   },
   {
@@ -35,8 +37,9 @@ const games = [
     cnDescription: "融合消除、Roguelike 与塔防机制的轻量策略游戏。",
     href: "/project-demos/game1/index.html",
     tone: "evolution",
-    label: "DEMO AVAILABLE",
-    image: "/projects/previews/evolution-arena.svg",
+    label: "PLAYABLE NOW",
+    artLabel: "START / FORGE",
+    image: "/projects/covers/stellar-forge.png",
     external: true,
   },
   {
@@ -48,7 +51,8 @@ const games = [
     href: "/project-demos/game0/index.html",
     tone: "html",
     label: "PLAYABLE NOW",
-    image: "/projects/previews/game0.svg",
+    artLabel: "ENTER / ROOTS",
+    image: "/projects/covers/witherroot.png",
     external: true,
   },
   {
@@ -60,7 +64,8 @@ const games = [
     href: "/project-demos/qifei/index.html",
     tone: "endgame",
     label: "PLAYABLE NOW",
-    image: "/projects/previews/protocol-endgame.svg",
+    artLabel: "START / PROTOCOL",
+    image: "/projects/covers/protocol-endgame.png",
     external: true,
   },
 ];
@@ -111,7 +116,7 @@ export function GameDemosHub({ locale }: { locale: Locale }) {
                   fill
                   sizes="(max-width: 900px) 100vw, 50vw"
                 />
-                <span className="game-demo-cover-label">LIVE PREVIEW</span>
+                <span className="game-demo-cover-label">{game.artLabel}</span>
               </div>
               <div className="game-demo-copy">
                 <h2>{game.tone === "rules" || isEnglish ? game.title : game.cnTitle}</h2>
