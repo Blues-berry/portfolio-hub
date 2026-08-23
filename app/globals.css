@@ -2959,6 +2959,24 @@ body:has(.directory-main) .footer-inner {
   background: radial-gradient(circle, rgba(116, 94, 255, 0.24), transparent 48%);
 }
 
+.game-demo-card-protocol .game-demo-art,
+.game-demo-card-endgame .game-demo-art {
+  background: radial-gradient(circle, rgba(0, 255, 157, 0.18), transparent 48%);
+}
+
+.game-demo-card-evolution .game-demo-art {
+  background: radial-gradient(circle, rgba(98, 230, 255, 0.2), transparent 48%);
+}
+
+.game-demo-card-html .game-demo-art {
+  background: radial-gradient(circle, rgba(255, 207, 114, 0.2), transparent 48%);
+}
+
+.game-demo-card-protocol:hover,
+.game-demo-card-endgame:hover { border-color: #45efb2; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.46), 0 0 0 2px rgba(69, 239, 178, 0.12); }
+.game-demo-card-evolution:hover { border-color: #62e6ff; }
+.game-demo-card-html:hover { border-color: #ffcf72; }
+
 .game-demo-cover-frame {
   position: absolute;
   inset: 0;

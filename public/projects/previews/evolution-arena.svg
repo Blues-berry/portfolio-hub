@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480">
+  <rect width="900" height="480" fill="#101421"/>
+  <path d="M0 360L130 230l100 80 120-150 120 110 120-170 210 190V480H0Z" fill="#27365d"/>
+  <circle cx="630" cy="170" r="70" fill="#ffb020" fill-opacity=".24" stroke="#ffb020" stroke-width="3"/>
+  <path d="M120 350h520M120 350l90-140 75 70 100-180 100 120" fill="none" stroke="#62e6ff" stroke-width="4"/>
+  <text x="44" y="58" fill="#62e6ff" font-family="monospace" font-size="18" letter-spacing="5">EVOLUTION ARENA</text>
+  <text x="44" y="430" fill="#ffb020" font-family="monospace" font-size="14" letter-spacing="3">WAVE / RELIC / BOSS</text>
+</svg>

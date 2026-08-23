@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480">
+  <rect width="900" height="480" fill="#07070c"/>
+  <path d="M0 92h900M0 170h900M0 248h900M0 326h900M0 404h900" stroke="#22333a"/>
+  <path d="M120 0v480M240 0v480M360 0v480M480 0v480M600 0v480M720 0v480" stroke="#18282e"/>
+  <circle cx="450" cy="240" r="120" fill="none" stroke="#00ff9d" stroke-opacity=".55"/>
+  <circle cx="450" cy="240" r="72" fill="none" stroke="#ff2d4a" stroke-opacity=".75"/>
+  <path d="M180 280h72l18-40 22 86 24-124 28 78 36-20h70l28-55 20 92 32-60 24 43h86" fill="none" stroke="#00ff9d" stroke-width="4"/>
+  <text x="48" y="64" fill="#00ff9d" font-family="monospace" font-size="18" letter-spacing="5">PROTOCOL: ENDGAME</text>
+  <text x="48" y="430" fill="#ff2d4a" font-family="monospace" font-size="14" letter-spacing="3">RULES / TRUST / SURVIVAL</text>
+</svg>

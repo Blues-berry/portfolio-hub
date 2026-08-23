@@ -9,8 +9,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/en/projects/game-demos",
     "/projects/game-demos/office-cringe",
     "/projects/game-demos/beyond-the-rules",
+    "/projects/qifei",
+    "/projects/fde",
     "/en/projects/game-demos/office-cringe",
     "/en/projects/game-demos/beyond-the-rules",
+    "/en/projects/qifei",
+    "/en/projects/fde",
   ];
 
   return routes.map((route) => ({

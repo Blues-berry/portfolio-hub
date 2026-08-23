@@ -17,10 +17,12 @@ export function SiteHeader({
 }) {
   const t = copy[locale];
   const alternate = locale === "zh" ? "en" : "zh";
-  const alternatePath = localePath(
+  const homeHref = `${localePath(locale)}#project-directory`;
+  const alternatePathBase = localePath(
     alternate,
     caseStudy || projectPage || detail ? "/projects/open-rppg" : "/",
   );
+  const alternatePath = directory ? `${alternatePathBase}#project-directory` : alternatePathBase;
 
   return (
     <header
@@ -28,14 +30,17 @@ export function SiteHeader({
       lang={locale === "en" ? "en" : "zh-CN"}
     >
       <div className="header-inner">
-        <Link className="brand" href={localePath(locale)}>
-          <span className="brand-mark" aria-hidden="true">
-            <i />
-            <i />
-            <i />
-          </span>
-          <span>BLUES‑BERRY</span>
-        </Link>
+        {directory ? (
+          <a className="brand" href={homeHref}>
+            <span className="brand-mark" aria-hidden="true"><i /><i /><i /></span>
+            <span>BLUES‑BERRY</span>
+          </a>
+        ) : (
+          <Link className="brand" href={homeHref}>
+            <span className="brand-mark" aria-hidden="true"><i /><i /><i /></span>
+            <span>BLUES‑BERRY</span>
+          </Link>
+        )}
         <nav aria-label={locale === "zh" ? "主导航" : "Primary navigation"}>
           {!detail && (
             <>

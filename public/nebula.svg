@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="deep" cx="50%" cy="50%" r="75%"><stop stop-color="#28234d"/><stop offset=".52" stop-color="#0e1830"/><stop offset="1" stop-color="#03050b"/></radialGradient>
+    <radialGradient id="cloudA"><stop stop-color="#7764ff" stop-opacity=".58"/><stop offset=".55" stop-color="#5c3d99" stop-opacity=".24"/><stop offset="1" stop-color="#11152c" stop-opacity="0"/></radialGradient>
+    <radialGradient id="cloudB"><stop stop-color="#b9f2df" stop-opacity=".46"/><stop offset=".55" stop-color="#3b8d9b" stop-opacity=".18"/><stop offset="1" stop-color="#11152c" stop-opacity="0"/></radialGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="38"/></filter>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#deep)"/>
+  <ellipse cx="430" cy="360" rx="420" ry="180" fill="url(#cloudA)" filter="url(#soft)" transform="rotate(-18 430 360)"/>
+  <ellipse cx="1180" cy="650" rx="500" ry="210" fill="url(#cloudB)" filter="url(#soft)" transform="rotate(-20 1180 650)"/>
+  <path d="M-80 760C330 410 530 860 900 540s470-120 820-410" fill="none" stroke="#a493ff" stroke-opacity=".16" stroke-width="90" filter="url(#soft)"/>
+  <g fill="#fff" opacity=".8">
+    <circle cx="100" cy="150" r="2"/><circle cx="224" cy="744" r="1.5"/><circle cx="398" cy="110" r="2"/><circle cx="604" cy="820" r="1.4"/><circle cx="760" cy="246" r="1.8"/><circle cx="930" cy="112" r="1.3"/><circle cx="1110" cy="470" r="2"/><circle cx="1310" cy="180" r="1.5"/><circle cx="1490" cy="770" r="2"/><circle cx="1540" cy="380" r="1.2"/>
+  </g>
+</svg>

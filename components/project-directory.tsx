@@ -22,6 +22,7 @@ export async function ProjectDirectory({ locale }: { locale: Locale }) {
   const directory = t.directory;
   const projects = await getProjectRegistry();
   const featuredProject = projects.find((project) => project.featured);
+  const interactiveProject = projects.find((project) => project.id === "game-demos");
 
   return (
     <JourneyGate>
@@ -74,7 +75,7 @@ export async function ProjectDirectory({ locale }: { locale: Locale }) {
               </p>
               <h2 id="directory-title">{directory.indexLabel}</h2>
             </div>
-            <span className="directory-count">{String(projects.length).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
+            <span className="directory-count">03 / 03</span>
           </div>
 
           <div className="directory-grid">
@@ -110,9 +111,8 @@ export async function ProjectDirectory({ locale }: { locale: Locale }) {
               </div>
             </a>
 
-            {projects.filter((project) => !project.featured).map((project, index) => (
-              <DirectoryProjectCard key={project.id} project={project} locale={locale} index={index + 2} />
-            ))}
+            {interactiveProject ? <DirectoryProjectCard project={interactiveProject} locale={locale} index={2} /> : null}
+            <DirectoryPlaceholderCard project={t.projects.placeholders[1]} directory={directory} />
           </div>
         </section>
 
@@ -126,6 +126,34 @@ export async function ProjectDirectory({ locale }: { locale: Locale }) {
       </footer>
     </JourneyGate>
   );
+}
+
+function DirectoryPlaceholderCard({
+  project,
+  directory,
+}: {
+  project: (typeof copy.zh.projects.placeholders)[number];
+  directory: typeof copy.zh.directory;
+}) {
+  const content = (
+    <>
+      <div className="directory-card-meta">
+        <span>{project.index} · {directory.placeholderLabel}</span>
+        <span className="directory-card-lock">—</span>
+      </div>
+      <span className="directory-rarity directory-rarity-muted">LOCKED</span>
+      <div className="directory-placeholder-mark" aria-hidden="true">
+        <span /><span /><span />
+      </div>
+      <div className="directory-card-copy">
+        <p>{project.status}</p>
+        <h3>{project.title}</h3>
+        <span>{project.description}</span>
+      </div>
+    </>
+  );
+
+  return <div className="directory-card directory-card-placeholder directory-card-placeholder-2">{content}</div>;
 }
 
 function DirectoryProjectCard({

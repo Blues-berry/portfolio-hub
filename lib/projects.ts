@@ -62,6 +62,7 @@ export const projectRegistry: ProjectDefinition[] = [
       en: "Two playable experiments about social friction, rules, and choice.",
     },
     tags: ["HTML", "JavaScript", "Interactive Fiction"],
+    previewImage: "/games/office-cringe-cover.png",
     caseStudyPath: "/projects/game-demos",
   },
   {
@@ -113,14 +114,15 @@ export const projectRegistry: ProjectDefinition[] = [
     id: "qifei",
     order: 6,
     repo: "local/qifei",
-    status: "snapshot",
-    presentation: "snapshot",
+    status: "demo",
+    presentation: "demo",
     title: { zh: "终焉协议", en: "Protocol: Endgame" },
     description: {
       zh: "规则怪谈交互式视觉小说，探索信任、生存点与六种结局。",
       en: "An interactive rules-horror visual novel built around trust, survival points, and six endings.",
     },
     tags: ["Next.js", "Visual Novel", "Branching Story"],
+    demoPath: "/project-demos/qifei/index.html",
     caseStudyPath: "/projects/qifei",
     previewImage: "/projects/previews/protocol-endgame.svg",
   },
@@ -138,21 +140,6 @@ export const projectRegistry: ProjectDefinition[] = [
     tags: ["Python", "Analytics", "Operations", "Local-first"],
     caseStudyPath: "/projects/fde",
     previewImage: "/projects/previews/fde-opportunity.png",
-  },
-  {
-    id: "workflow",
-    order: 8,
-    repo: "local/workflow",
-    status: "collection",
-    presentation: "collection",
-    title: { zh: "Workflow · Agent 项目集", en: "Workflow · Agent Collection" },
-    description: {
-      zh: "六个面向餐饮、医疗、物业、家政、财务与内容工作的 Agent 实验集合。",
-      en: "A collection of six Agent experiments for restaurants, clinics, property, home services, finance, and publishing.",
-    },
-    tags: ["Agents", "Automation", "Python", "Workflow"],
-    caseStudyPath: "/projects/workflow",
-    previewImage: "/projects/previews/workflow-agent.png",
   },
 ];
 

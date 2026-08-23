@@ -17,6 +17,10 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.siteUrl),
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
   title: {
     default: "Blues-berry · Computer Vision & Web ML",
     template: "%s · Blues-berry",
