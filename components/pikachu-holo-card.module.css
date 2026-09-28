@@ -1,0 +1,108 @@
+:global(#project-directory .directory-hero) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(230px, 300px);
+  gap: clamp(28px, 7vw, 104px);
+  text-align: left;
+}
+
+:global(#project-directory .directory-hero-copy) { margin-inline: 0; }
+:global(#project-directory .directory-hero .eyebrow) { justify-content: flex-start; }
+:global(#project-directory .directory-hero h1) { margin-inline: 0; }
+:global(#project-directory .directory-hero-data) { margin-inline: 0; }
+
+.card {
+  position: relative;
+  min-height: 410px;
+  aspect-ratio: 2 / 3;
+  padding: 18px;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(255, 244, 188, .72);
+  border-radius: 20px;
+  color: #fffdf1;
+  background: linear-gradient(145deg, #24213a 0%, #131525 48%, #0c101b 100%);
+  box-shadow: 0 22px 70px rgba(0,0,0,.36), 0 0 34px rgba(255,199,96,.16), inset 0 0 0 5px rgba(255,255,255,.08);
+  transform: perspective(1200px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateZ(0);
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 420ms cubic-bezier(.2,.8,.2,1), box-shadow 420ms ease;
+}
+
+.card:hover {
+  box-shadow: 0 30px 80px rgba(0,0,0,.46), 0 0 44px rgba(255,205,104,.3), inset 0 0 0 5px rgba(255,255,255,.1);
+}
+
+.card::before {
+  position: absolute;
+  inset: 8px;
+  z-index: 4;
+  content: "";
+  border: 1px solid rgba(255,255,255,.38);
+  border-radius: 14px;
+  pointer-events: none;
+}
+
+.foil, .grid, .sheen { position: absolute; inset: 0; pointer-events: none; }
+.foil {
+  z-index: -1;
+  background:
+    linear-gradient(115deg, transparent 12%, rgba(255,111,196,.28) 27%, rgba(255,237,117,.4) 38%, rgba(122,231,255,.32) 52%, transparent 69%),
+    radial-gradient(circle at var(--card-x) var(--card-y), rgba(255,255,255,.3), transparent 34%);
+  background-size: 220% 220%, 100% 100%;
+  mix-blend-mode: screen;
+  animation: foil-drift 8s ease-in-out infinite alternate;
+}
+
+.grid {
+  z-index: -1;
+  opacity: .24;
+  background-image: linear-gradient(rgba(255,255,255,.28) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.28) 1px, transparent 1px);
+  background-size: 23px 23px;
+  mask-image: linear-gradient(145deg, transparent 18%, #000 45%, transparent 88%);
+}
+
+.sheen {
+  z-index: 5;
+  width: 45%;
+  left: -70%;
+  transform: skewX(-18deg);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.6), transparent);
+  opacity: 0;
+  transition: left 700ms ease, opacity 300ms ease;
+}
+
+.card:hover .sheen { left: 125%; opacity: .8; }
+.header, .stats, .copy { position: relative; z-index: 3; font-family: var(--font-display), monospace; }
+.header, .stats { display: flex; justify-content: space-between; color: rgba(255,250,218,.76); font-size: 8px; font-weight: 700; letter-spacing: .14em; }
+.subject { position: absolute; z-index: 2; top: 48px; right: 0; left: 0; height: 285px; transform: translateZ(30px); filter: drop-shadow(0 12px 12px rgba(0,0,0,.32)); }
+.subject img { object-fit: contain; object-position: center; }
+.copy { position: absolute; right: 20px; bottom: 48px; left: 20px; transform: translateZ(18px); }
+.kicker { color: #ffe27e; font-size: 8px; font-weight: 800; letter-spacing: .16em; }
+.copy h2 { margin: 4px 0 1px; color: #fffbe8; font-size: clamp(32px,5vw,48px); line-height: .9; letter-spacing: -.08em; text-shadow: 0 3px 14px rgba(255,190,62,.38); }
+.copy p { margin: 0; color: rgba(255,250,218,.68); font-size: 10px; }
+.stats { position: absolute; right: 20px; bottom: 20px; left: 20px; padding-top: 9px; border-top: 1px solid rgba(255,255,255,.22); font-size: 7px; transform: translateZ(12px); }
+
+@keyframes foil-drift {
+  from { background-position: 0% 12%, 50% 50%; }
+  to { background-position: 100% 88%, 62% 42%; }
+}
+
+@media (max-width: 760px) {
+  :global(#project-directory .directory-hero) { grid-template-columns: 1fr; gap: 28px; text-align: center; }
+  :global(#project-directory .directory-hero .eyebrow), :global(#project-directory .directory-hero-data) { margin-inline: auto; }
+  :global(#project-directory .directory-hero .eyebrow) { justify-content: center; }
+  :global(#project-directory .directory-hero h1) { margin-inline: auto; }
+  .card { width: min(270px, 72vw); min-height: 360px; margin-inline: auto; }
+  .subject { height: 250px; }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .card { transform: none; will-change: auto; }
+  .sheen { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .foil { animation: none; }
+  .card, .sheen { transition: none; }
+  .card:hover .sheen { left: -70%; opacity: 0; }
+}

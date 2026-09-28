@@ -9,6 +9,7 @@ import { JourneyGate } from "./journey-gate";
 import { getProjectRegistry } from "@/lib/projects";
 import type { ProjectDefinition } from "@/lib/projects";
 import { GalaxyCursorNebula } from "./galaxy-cursor-nebula";
+import { PikachuHoloCard } from "./pikachu-holo-card";
 
 const starPositions = [
   [5, 12, 2], [12, 31, 1], [18, 8, 1], [24, 46, 2], [31, 18, 1], [37, 66, 1],
@@ -62,6 +63,7 @@ export async function ProjectDirectory({ locale }: { locale: Locale }) {
               <div className="directory-data-line"><i /><span>RESEARCH → EXPERIENCE</span><b>LIVE</b></div>
             </div>
           </div>
+          <PikachuHoloCard locale={locale} />
           <DirectoryGalaxy />
         </section>
 
