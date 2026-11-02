@@ -13,7 +13,6 @@ const games = [
     cnDescription: "在每一个选择都可能变成新型社死的办公室里，试着活过今天。",
     href: "/projects/game-demos/office-cringe",
     tone: "cringe",
-    label: "PLAYABLE NOW",
     artLabel: "START / STORY",
     image: "/games/office-cringe-cover.png",
   },
@@ -25,45 +24,17 @@ const games = [
     cnDescription: "七天、七条规则，以及一个谎言。观察、推理，或者打破游戏。",
     href: "/projects/game-demos/beyond-the-rules",
     tone: "rules",
-    label: "PLAYABLE NOW",
     artLabel: "ENTER / RULES",
     image: "/games/beyond-the-rules-cover.png",
   },
   {
     number: "03",
-    title: "星核熔炉 · STELLAR FORGE",
-    cnTitle: "星核熔炉 · STELLAR FORGE",
-    description: "A browser strategy game blending fusion puzzles, roguelike progression, and tower defense.",
-    cnDescription: "融合消除、Roguelike 与塔防机制的轻量策略游戏。",
-    href: "/project-demos/game1/index.html",
-    tone: "evolution",
-    label: "PLAYABLE NOW",
-    artLabel: "START / FORGE",
-    image: "/projects/covers/stellar-forge.png",
-    external: true,
-  },
-  {
-    number: "04",
-    title: "WITHERROOT",
-    cnTitle: "WITHERROOT",
-    description: "A post-apocalyptic root-growth puzzle about decay, memory, and rebirth.",
-    cnDescription: "一款关于凋零、记忆与重生的末世根系生长解谜游戏。",
-    href: "/project-demos/game0/index.html",
-    tone: "html",
-    label: "PLAYABLE NOW",
-    artLabel: "ENTER / ROOTS",
-    image: "/projects/covers/witherroot.png",
-    external: true,
-  },
-  {
-    number: "05",
     title: "Protocol: Endgame",
     cnTitle: "终焉协议",
-    description: "An interactive rules-horror visual novel built around trust, survival points, and six endings.",
-    cnDescription: "围绕信任、生存点与六种结局展开的规则怪谈交互式视觉小说。",
+    description: "An interactive rules-horror visual novel built around trust, survival points, and seven endings.",
+    cnDescription: "围绕信任、生存点与七种结局展开的规则怪谈交互式视觉小说。",
     href: "/project-demos/qifei/index.html",
     tone: "endgame",
-    label: "PLAYABLE NOW",
     artLabel: "START / PROTOCOL",
     image: "/projects/covers/protocol-endgame.png",
     external: true,
@@ -89,7 +60,7 @@ export function GameDemosHub({ locale }: { locale: Locale }) {
           </a>
           <p className="game-hub-kicker">{isEnglish ? "INTERACTIVE LAB · 02" : "INTERACTIVE LAB · 02"}</p>
           <h1>{isEnglish ? "Imaginative experiments." : "奇思妙想"}</h1>
-          <p>{isEnglish ? "A small shelf of playable experiments, each with its own rhythm, interface, and kind of trouble." : "一组可以直接进入的互动实验，每个游戏都有自己的节奏、界面和麻烦。"}</p>
+          <p>{isEnglish ? "Three selected games are open to play, each with its own rhythm, interface, and kind of trouble." : "三款精选游戏现已开放试玩，每个游戏都有自己的节奏、界面和麻烦。"}</p>
         </section>
 
         <nav className="game-hub-tabs page-shell" aria-label={isEnglish ? "Game demos" : "游戏 Demo"}>
@@ -105,7 +76,7 @@ export function GameDemosHub({ locale }: { locale: Locale }) {
             const content = (
               <>
               <div className="game-demo-card-top">
-                <span>{game.number} · {game.label}</span>
+                <span>{game.number} · {isEnglish ? "PLAYABLE NOW" : "现已开放"}</span>
                 <ArrowIcon />
               </div>
               <div className="game-demo-art" aria-hidden="true">
@@ -130,7 +101,7 @@ export function GameDemosHub({ locale }: { locale: Locale }) {
         </section>
       </main>
       <footer className="game-hub-footer">
-        <div className="page-shell footer-inner"><span>BLUES‑BERRY / INTERACTIVE LAB</span><span>{isEnglish ? "Six interactive experiments" : "六个互动实验"}</span></div>
+        <div className="page-shell footer-inner"><span>BLUES‑BERRY / INTERACTIVE LAB</span><span>{isEnglish ? "Three games now playable" : "三款游戏现已开放"}</span></div>
       </footer>
     </>
   );

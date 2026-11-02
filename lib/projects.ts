@@ -58,8 +58,8 @@ export const projectRegistry: ProjectDefinition[] = [
     presentation: "demo",
     title: { zh: "互动游戏 Demo", en: "Interactive Game Demos" },
     description: {
-      zh: "两个可直接游玩的实验性游戏，探索社死、规则与选择。",
-      en: "Two playable experiments about social friction, rules, and choice.",
+      zh: "三款现已开放试玩的独立游戏，涵盖职场荒诞、规则怪谈与多结局生存。",
+      en: "Three playable games spanning workplace comedy, rule horror, and branching survival fiction.",
     },
     tags: ["HTML", "JavaScript", "Interactive Fiction"],
     previewImage: "/games/office-cringe-cover.png",
@@ -103,8 +103,8 @@ export const projectRegistry: ProjectDefinition[] = [
     presentation: "demo",
     title: { zh: "终焉协议", en: "Protocol: Endgame" },
     description: {
-      zh: "规则怪谈交互式视觉小说，探索信任、生存点与六种结局。",
-      en: "An interactive rules-horror visual novel built around trust, survival points, and six endings.",
+      zh: "规则怪谈交互式视觉小说，探索信任、生存点与七种结局。",
+      en: "An interactive rules-horror visual novel built around trust, survival points, and seven endings.",
     },
     tags: ["Next.js", "Visual Novel", "Branching Story"],
     demoPath: "/project-demos/qifei/index.html",

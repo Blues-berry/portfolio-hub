@@ -127,7 +127,7 @@ const zh: Copy = {
         index: "02",
         title: "互动游戏 Demo",
         status: "INTERACTIVE DEMO",
-        description: "两个可直接游玩的实验性游戏，探索社死、规则与选择。",
+        description: "三款精选游戏现已开放试玩，涵盖职场荒诞、规则怪谈与多结局生存。",
         href: "/projects/game-demos",
       },
       {
@@ -283,7 +283,7 @@ const en: Copy = {
         index: "02",
         title: "Interactive Game Demos",
         status: "INTERACTIVE DEMO",
-        description: "Two playable experiments about social friction, rules, and choice.",
+        description: "Three selected games are now playable, spanning workplace comedy, rule horror, and branching survival fiction.",
         href: "/en/projects/game-demos",
       },
       {
