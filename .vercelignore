@@ -1,0 +1,14 @@
+.env*
+!.env.example
+.git
+.playwright-mcp/
+.next
+.vercel
+node_modules/
+**/node_modules/
+games/
+reports/
+tmp/
+deploy/
+build_resume_0803.py
+homepage*.png
