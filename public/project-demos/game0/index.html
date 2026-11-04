@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<link rel="icon" href="/projects/covers/witherroot.png" type="image/png" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#0a0a12" />
 <title>WITHERROOT - Decay to Rebirth</title>
-<meta name="description" content="WITHERROOT - A post-apocalyptic root growth puzzle. Grow roots through ash, harvest memory nodes before frost consumes the heart. Decay becomes resource." />
+<meta name="description" content="WITHERROOT：在灰烬中生长、循环利用衰败，并逐步守护最后的根系花园。" />
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -13,7 +14,7 @@
     font-family: 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif;
     background: radial-gradient(ellipse at top, #1a1410 0%, #0a0a12 60%, #050508 100%);
     color: #e8e0d0; user-select: none; -webkit-user-select: none;
-    touch-action: none;
+    touch-action: auto;
   }
   #app { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
   #game-wrap {
@@ -31,27 +32,28 @@
   }
   /* HUD */
   #hud {
-    flex: 0 0 auto;
-    padding: 14px 18px 6px;
-    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    position: relative; flex: 0 0 auto;
+    padding: 8px 10px 4px;
+    display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 4px;
   }
   .logo {
-    font-weight: 800; font-size: 18px; letter-spacing: 1.5px;
+    display: flex; align-items: center; min-height: 44px; padding-right: 98px;
+    font-weight: 800; font-size: 16px; letter-spacing: 1.2px;
     background: linear-gradient(90deg, #c87a3a, #e8a05a, #8ad1ff, #c0d8ff);
     -webkit-background-clip: text; background-clip: text; color: transparent;
     text-shadow: 0 0 20px rgba(200,120,60,0.25);
   }
-  .scores { display: flex; gap: 8px; }
+  .scores { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); width: 100%; min-width: 0; gap: 4px; }
   .score-box {
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(200,160,100,0.12);
-    border-radius: 10px; padding: 4px 10px; min-width: 64px; text-align: center;
+    border-radius: 8px; padding: 3px 2px; min-width: 0; text-align: center;
   }
   .score-box .label {
-    font-size: 8px; letter-spacing: 1.3px; color: #9a8a70; text-transform: uppercase;
+    font-size: 7px; letter-spacing: .2px; color: #9a8a70; text-transform: uppercase;
   }
   .score-box .value {
-    font-size: 16px; font-weight: 800; color: #ffd9a0; line-height: 1.1;
+    font-size: 14px; font-weight: 800; color: #ffd9a0; line-height: 1.1;
     text-shadow: 0 0 8px rgba(220,140,60,0.4);
   }
   /* Vitality bar */
@@ -80,12 +82,66 @@
     background: linear-gradient(90deg, #aa3030, #d04040);
     box-shadow: 0 0 12px rgba(220,60,60,0.6);
   }
+  /* Early-route objective: stable height prevents the board from jumping when copy changes. */
+  #objective-panel {
+    flex: 0 0 auto; min-height: 52px; margin: 0 18px 4px; padding: 7px 10px;
+    border: 1px solid rgba(140,220,255,0.2); border-radius: 10px;
+    background: rgba(140,220,255,0.055); color: #c0d8e8;
+    transition: border-color .2s, background .2s;
+  }
+  #objective-panel.complete {
+    border-color: rgba(140,255,170,0.4); background: rgba(140,255,170,0.08);
+  }
+  #objective-panel.hidden { display: none !important; }
+  .objective-label {
+    color: #8ad1ff; font-size: 9px; letter-spacing: 1.3px;
+    text-transform: uppercase; margin-bottom: 3px;
+  }
+  .objective-row { display: flex; align-items: center; gap: 7px; min-width: 0; }
+  .objective-icon { flex: 0 0 auto; color: #ffd080; font-size: 15px; line-height: 1; }
+  #objective-text { flex: 1 1 auto; min-width: 0; font-size: 11px; line-height: 1.35; overflow-wrap: anywhere; }
+  #objective-progress {
+    flex: 0 0 auto; min-width: 40px; padding: 2px 7px; border-radius: 10px;
+    color: #ffd9a0; background: rgba(255,200,120,0.12); font-size: 10px; font-weight: 800; text-align: center;
+  }
+  #objective-panel.complete #objective-icon { color: #8affae; }
+  #objective-panel.complete #objective-progress { color: #aaffc8; background: rgba(140,255,170,0.15); }
+  #objective-note { min-height: 12px; margin-top: 3px; color: #9aaeb8; font-size: 10px; line-height: 1.3; }
+  /* Campaign card: one clear promise, one next action, and a visible progress cue. */
+  #campaign-card {
+    width: min(360px, 100%); margin: 6px 0 10px; padding: 14px 16px;
+    border: 1px solid rgba(200,160,100,0.28); border-radius: 14px;
+    background: linear-gradient(145deg, rgba(200,120,60,0.12), rgba(140,90,130,0.10));
+    text-align: left; box-shadow: inset 0 1px rgba(255,255,255,0.04);
+  }
+  .campaign-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  #campaign-stage-label { color: #9ebed0; font-size: 10px; font-weight: 800; letter-spacing: 1.2px; }
+  #campaign-stage-progress { color: #ffd9a0; font-size: 10px; font-weight: 700; }
+  #campaign-title { margin: 7px 0 4px; color: #ffe0b2; font-size: 18px; line-height: 1.25; }
+  #campaign-description { min-height: 36px; color: #c0b8aa; font-size: 12px; line-height: 1.5; }
+  #campaign-reward-status { margin-top: 10px; color: #a6d8bd; font-size: 11px; line-height: 1.4; }
+  #campaign-progress-track { height: 5px; margin-top: 10px; overflow: hidden; border-radius: 5px; background: rgba(255,255,255,0.08); }
+  #campaign-progress-fill { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg,#c87a3a,#ffd9a0); transition: width .25s ease; }
+  #start-more-options {
+    width: min(360px, 100%); margin: 8px 0 2px; border: 1px solid rgba(200,160,100,.2);
+    border-radius: 14px; background: rgba(255,255,255,.025); text-align: left;
+  }
+  #start-more-options > summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    min-height: 46px; padding: 10px 13px; color: #d8c8a0; font-size: 12px;
+    font-weight: 700; cursor: pointer; list-style: none;
+  }
+  #start-more-options > summary::-webkit-details-marker { display: none; }
+  #start-more-options > summary::after { content: '＋'; color: #ffd9a0; font-size: 15px; }
+  #start-more-options[open] > summary::after { content: '−'; }
+  #start-more-options .more-options-body { display: flex; flex-direction: column; align-items: center; padding: 0 12px 12px; }
   /* Board area */
   #board-area {
     flex: 1 1 auto; position: relative;
     display: flex; align-items: center; justify-content: center;
     padding: 4px;
   }
+  #game:focus-visible { outline: 2px solid #8ad1ff; outline-offset: 2px; }
   canvas#game {
     display: block; touch-action: none;
     background: radial-gradient(circle at center, rgba(40,28,20,0.5), rgba(10,8,12,0.8));
@@ -107,6 +163,11 @@
     transition: transform .15s, background .15s;
     flex: 0 0 auto;
   }
+  #btn-language, #btn-settings { position: absolute; top: 8px; z-index: 1; width: 44px !important; height: 44px !important; margin: 0; }
+  #btn-settings { right: 10px; }
+  #btn-language { right: 60px; }
+  .start-tools { width: min(100%, 560px); display: flex; justify-content: flex-end; margin-bottom: 2px; }
+  #btn-start-language { width: 44px !important; height: 44px !important; font-size: 11px; }
   .btn-icon:active { transform: scale(0.9); background: rgba(255,255,255,0.12); }
   /* Power-up bar */
   #powerups {
@@ -158,7 +219,14 @@
     position: absolute; inset: 0; z-index: 10;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     background: rgba(8,6,12,0.78); backdrop-filter: blur(6px);
-    padding: 24px; text-align: center;
+    padding: 24px; text-align: center; overflow-y: auto; overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch; touch-action: pan-y;
+  }
+  /* The home content is taller than a phone viewport. Keep the first action
+     visible and allow the overlay itself to scroll on touch screens. */
+  #overlay-start {
+    justify-content: flex-start;
+    padding: max(12px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
   }
   .overlay h1 {
     font-size: 36px; font-weight: 900; letter-spacing: 2px; margin-bottom: 6px;
@@ -183,16 +251,20 @@
   .btn-primary {
     background: linear-gradient(135deg, #c87a3a, #e8a05a);
     color: #1a1208; border: none; cursor: pointer;
-    padding: 13px 32px; border-radius: 30px;
+    min-height: 44px; padding: 13px 32px; border-radius: 30px;
     font-size: 15px; font-weight: 800; letter-spacing: 1px;
     box-shadow: 0 6px 24px rgba(200,120,60,0.5);
     transition: transform .15s, box-shadow .15s;
   }
   .btn-primary:active { transform: scale(0.96); box-shadow: 0 3px 12px rgba(200,120,60,0.4); }
+  .btn-primary:focus-visible, .btn-secondary:focus-visible, .btn-icon:focus-visible,
+  .mode-btn:focus-visible, .evolution-card:focus-visible, .echo-choice:focus-visible {
+    outline: 2px solid #8ad1ff; outline-offset: 3px;
+  }
   .btn-secondary {
     background: rgba(255,255,255,0.06); color: #d8c8a0;
     border: 1px solid rgba(200,160,100,0.2);
-    cursor: pointer; padding: 11px 22px; border-radius: 30px;
+    min-height: 44px; cursor: pointer; padding: 11px 22px; border-radius: 30px;
     font-size: 13px; font-weight: 600;
     margin-top: 10px;
   }
@@ -217,17 +289,17 @@
     color: #c0b89c;
   }
   .lb-row.me { background: rgba(255,217,160,0.12); color: #ffd9a0; font-weight: 700; }
-  .how-to { font-size: 11px; color: #7a6a50; margin-top: 8px; line-height: 1.6; max-width: 320px; }
+  .how-to { font-size: 12px; color: #b9aa93; margin-top: 8px; line-height: 1.6; max-width: 320px; }
   .how-to b { color: #ffd9a0; }
   .hidden { display: none !important; }
   /* Mode selector */
   .mode-select {
-    display: flex; gap: 8px; margin-bottom: 12px;
+    display: flex; width: min(360px, 100%); gap: 8px; margin-bottom: 12px;
     background: rgba(0,0,0,0.3); padding: 4px; border-radius: 24px;
     border: 1px solid rgba(200,160,100,0.15);
   }
   .mode-btn {
-    flex: 1; padding: 8px 16px; border: none; cursor: pointer;
+    flex: 1; min-width: 0; min-height: 44px; padding: 8px 10px; border: none; cursor: pointer;
     background: transparent; color: #8a7a60;
     font-size: 11px; font-weight: 700; letter-spacing: 1.2px;
     border-radius: 20px; transition: all .2s;
@@ -236,7 +308,14 @@
     background: linear-gradient(135deg, rgba(200,120,60,0.4), rgba(232,160,90,0.3));
     color: #ffd9a0; box-shadow: 0 2px 12px rgba(200,120,60,0.3);
   }
+  .mode-btn.first-run-locked {
+    opacity: 0.38; cursor: not-allowed;
+  }
   .mode-btn:active { transform: scale(0.96); }
+  #difficulty-note {
+    min-height: 30px; width: min(360px, 100%); margin: 0 auto 8px;
+    color: #9a8a70; font-size: 11px; line-height: 1.45;
+  }
   /* Run highlights on Game Over */
   .run-highlights {
     width: 100%; max-width: 360px; margin: 6px 0 12px;
@@ -511,12 +590,12 @@
   #onboarding-tooltip .ob-btn-next {
     background: linear-gradient(135deg, #c87a3a, #e8a05a);
     border: none; color: #1a1410; font-weight: 700;
-    padding: 6px 14px; border-radius: 6px; font-size: 11px;
+    min-height: 44px; padding: 9px 14px; border-radius: 6px; font-size: 11px;
     cursor: pointer; letter-spacing: 0.5px;
   }
   #onboarding-tooltip .ob-btn-skip {
     background: transparent; border: 1px solid rgba(255,160,140,0.3);
-    color: #ffaaaa; padding: 6px 12px; border-radius: 6px; font-size: 11px;
+    color: #ffaaaa; min-height: 44px; padding: 9px 12px; border-radius: 6px; font-size: 11px;
     cursor: pointer;
   }
   #onboarding-arrow {
@@ -804,14 +883,14 @@
     display: flex; flex-direction: column; gap: 10px;
   }
   .evolution-card {
-    display: grid; grid-template-columns: 40px 1fr auto;
+    display: grid; grid-template-columns: 36px minmax(0, 1fr) auto;
     align-items: center; gap: 10px;
     padding: 12px 16px;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(180, 140, 255, 0.25);
     border-radius: 8px; cursor: pointer;
     transition: all 0.2s ease;
-    text-align: left;
+    text-align: left; min-width: 0; min-height: 44px;
     color: #d0c0e0;
   }
   .evolution-card:hover {
@@ -819,17 +898,117 @@
     border-color: rgba(180, 140, 255, 0.6);
     transform: translateX(2px);
   }
-  .evo-icon { font-size: 26px; text-align: center; }
+  .evo-icon { grid-column: 1; grid-row: 1 / 3; font-size: 26px; text-align: center; }
   .evo-name {
     font-size: 14px; font-weight: 700; color: #ffd0a0;
-    display: block; margin-bottom: 2px;
+    display: block; grid-column: 2; grid-row: 1; margin-bottom: 2px;
   }
-  .evo-desc { font-size: 11px; color: #a090c0; display: block; }
+  .evo-desc { grid-column: 2 / 4; grid-row: 2; font-size: 12px; color: #b8abc9; display: block; line-height: 1.45; }
+  .evo-name, .evo-desc { min-width: 0; overflow-wrap: break-word; word-break: normal; }
   .evo-type {
+    grid-column: 3; grid-row: 1; justify-self: end;
     font-size: 10px; color: #8090a0;
     padding: 3px 8px; border-radius: 10px;
     background: rgba(180, 200, 220, 0.1);
     border: 1px solid rgba(180, 200, 220, 0.2);
+  }
+  #overlay-stuck .btn-primary, #overlay-stuck .btn-secondary {
+    width: min(300px, 100%); min-height: 44px;
+  }
+  /* Casual level-clear sheet: reward first, then an explicit next/retry choice. */
+  #overlay-level-complete, #overlay-relics { z-index: 230; }
+  #overlay-gameover.campaign-failure .stats-grid, #overlay-gameover.campaign-failure .leaderboard,
+  #overlay-gameover.campaign-failure #run-highlights, #overlay-gameover.campaign-failure #btn-revive,
+  #overlay-gameover.campaign-failure #btn-share { display: none !important; }
+  .level-result-sheet, .relic-collection-sheet {
+    width: min(440px, 100%); max-height: 92dvh; overflow-y: auto;
+    padding: clamp(16px, 4vw, 24px); border: 1px solid rgba(205,157,97,.48);
+    border-radius: 20px; background: linear-gradient(160deg, rgba(42,31,44,.98), rgba(23,20,29,.98));
+    box-shadow: 0 18px 60px rgba(0,0,0,.5), 0 0 36px rgba(191,132,75,.12); text-align: left;
+  }
+  .level-result-kicker { color: #a9d9bf; font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-align: center; }
+  .level-result-sheet h1, .relic-collection-sheet h1 { margin: 7px 0 4px; color: #ffe0b2; font-size: 25px; letter-spacing: .5px; text-align: center; background: none; -webkit-text-fill-color: currentColor; animation: none; }
+  .level-result-sheet .subtitle, .relic-collection-sheet .subtitle { margin-bottom: 14px; text-align: center; text-transform: none; letter-spacing: .2px; line-height: 1.5; }
+  .level-result-track { height: 7px; margin: 12px 0 17px; overflow: hidden; border-radius: 8px; background: rgba(255,255,255,.08); }
+  #level-result-progress-fill { width: 100%; height: 100%; background: linear-gradient(90deg,#9bd8b0,#ffe0a3); }
+  .level-reward-heading { margin: 0 0 4px; color: #ffe0b2; font-size: 15px; }
+  .level-reward-help { margin: 0 0 11px; color: #b7aebc; font-size: 11px; line-height: 1.45; }
+  #level-reward-list, #relic-collection-list { display: grid; gap: 9px; }
+  .level-reward-card, .relic-owned-card {
+    display: grid; grid-template-columns: 40px minmax(0,1fr); align-items: start; gap: 4px 11px;
+    width: 100%; min-height: 74px; padding: 12px; border: 1px solid rgba(193,151,211,.28);
+    border-radius: 13px; color: #eee3ef; background: rgba(255,255,255,.045); text-align: left;
+  }
+  .level-reward-card { cursor: pointer; transition: border-color .16s, background .16s, transform .16s; }
+  .level-reward-card:hover { border-color: rgba(222,178,255,.66); background: rgba(180,140,255,.11); }
+  .level-reward-card:focus-visible, .relic-owned-card:focus-visible { outline: 2px solid #8ad1ff; outline-offset: 2px; }
+  .level-reward-card.selected { border-color: #a9d9bf; background: rgba(120,190,145,.15); }
+  .level-reward-icon { grid-row: 1 / 3; align-self: center; font-size: 25px; text-align: center; }
+  .level-reward-main { min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .level-reward-name { min-width: 0; color: #ffe0b2; font-size: 14px; font-weight: 800; overflow-wrap: anywhere; }
+  .level-reward-type { flex: 0 0 auto; padding: 3px 7px; border: 1px solid rgba(190,170,210,.24); border-radius: 20px; color: #d1bfdc; font-size: 10px; }
+  .level-reward-desc { grid-column: 2; color: #c4b9cb; font-size: 12px; line-height: 1.45; overflow-wrap: anywhere; }
+  .level-reward-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+  .level-reward-actions .btn-primary, .level-reward-actions .btn-secondary { width: 100%; min-height: 46px; margin: 0; padding: 10px 12px; letter-spacing: .2px; }
+  .level-reward-actions .wide { grid-column: 1 / -1; }
+  #level-claim-status { min-height: 18px; margin-top: 9px; color: #a9d9bf; font-size: 12px; text-align: center; }
+  .relic-owned-card { grid-template-columns: 34px minmax(0,1fr) auto; align-items: center; }
+  .relic-owned-card .level-reward-desc { grid-column: 2 / 4; }
+  .relic-equip-button { min-height: 44px; padding: 7px 10px; border: 1px solid rgba(200,160,100,.3); border-radius: 22px; color: #ffe0b2; background: rgba(255,255,255,.06); cursor: pointer; }
+  #overlay-campaign-briefing, #overlay-level-complete, #overlay-relics { z-index: 230; }
+  .campaign-briefing-sheet { width: min(420px, 100%); text-align: left; }
+  .campaign-briefing-sheet h1 { text-align: center; }
+  #campaign-briefing-goal { margin: 13px 0; padding: 12px; border: 1px solid rgba(169,217,191,.28); border-radius: 12px; color: #dcefe3; background: rgba(120,190,145,.08); font-size: 13px; line-height: 1.55; }
+  #campaign-briefing-goal b { color: #ffe0b2; }
+  #overlay-campaign-briefing .btn-primary, #overlay-campaign-briefing .btn-secondary { width: 100%; min-height: 46px; }
+  #campaign-result-summary { margin: 12px 0; padding: 11px 12px; border-radius: 12px; color: #e0d6c5; background: rgba(255,255,255,.045); font-size: 12px; line-height: 1.55; }
+  #btn-claim-reward:disabled, #btn-next-level:disabled { opacity: .42; cursor: not-allowed; }
+  .relic-equip-button[aria-pressed="true"] { color: #102018; background: #a9d9bf; border-color: #a9d9bf; font-weight: 800; }
+  #overlay-relics .relic-collection-sheet { width: min(480px, 100%); }
+  #overlay-relics .relic-collection-sheet h1 { text-align: center; }
+  #campaign-empty-state, #relic-empty-state { padding: 18px 12px; color: #c9c0ce; font-size: 13px; line-height: 1.5; text-align: center; }
+  .mode-section-label { width: min(360px, 100%); margin: 8px 0 5px; color: #9ebed0; font-size: 10px; font-weight: 800; letter-spacing: 1.25px; text-align: left; }
+  #campaign-collection-count { font-variant-numeric: tabular-nums; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      scroll-behavior: auto !important;
+      animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+      transition-duration: .01ms !important;
+    }
+  }
+  @media (max-width: 390px) {
+    #campaign-card { padding: 12px; }
+    .level-result-sheet, .relic-collection-sheet { padding: 15px 13px; border-radius: 16px; }
+    .level-reward-card { grid-template-columns: 32px minmax(0,1fr); gap: 4px 8px; padding: 10px; }
+    .level-reward-name { font-size: 13px; }
+    .level-reward-desc { font-size: 11px; }
+    .level-reward-actions { grid-template-columns: 1fr; }
+    .level-reward-actions .wide { grid-column: auto; }
+  }
+  /* Short landscape screens use a compact sidebar so the board and controls stay visible. */
+  @media (orientation: landscape) and (max-height: 520px) and (min-width: 620px) {
+    #app { align-items: stretch; justify-content: stretch; }
+    #game-wrap {
+      width: 100%; max-width: none; height: 100dvh; max-height: none;
+      display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, min(47vw, 390px));
+      grid-template-rows: auto auto auto auto minmax(0, 1fr) auto;
+      column-gap: 6px; row-gap: 2px;
+      padding: max(4px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(4px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+    }
+    #hud { grid-column: 1 / -1; grid-row: 1; flex-direction: row; align-items: center; gap: 8px; padding: 0 2px; }
+    #hud .logo { flex: 0 0 132px; min-height: 44px; padding-right: 0; font-size: 15px; }
+    #hud .scores { flex: 1 1 auto; width: auto; grid-template-columns: repeat(5, minmax(0, 1fr)) 44px 44px; gap: 3px; }
+    #hud .score-box { padding: 2px 1px; }
+    #hud .score-box .label { font-size: 7px; }
+    #hud .score-box .value { font-size: 12px; }
+    #hud #btn-language, #hud #btn-settings { position: static; top: auto; right: auto; width: 44px !important; height: 44px !important; }
+    #vitality-bar-wrap { grid-column: 1; grid-row: 2; padding: 2px 6px 0; }
+    #objective-panel { grid-column: 1; grid-row: 3; min-height: 0; margin: 0 6px; padding: 5px 8px; }
+    #objective-note { min-height: 0; margin-top: 2px; }
+    #powerups { grid-column: 1; grid-row: 4; min-height: 42px; padding: 2px 6px; gap: 5px; overflow-x: auto; }
+    #board-area { grid-column: 2; grid-row: 2 / 7; min-width: 0; min-height: 0; padding: 0; }
+    #controls { grid-column: 1; grid-row: 6; min-width: 0; padding: 2px 6px max(4px, env(safe-area-inset-bottom)); gap: 8px; }
+    #controls .hint { flex: 1 1 auto; min-width: 0; font-size: 10px; line-height: 1.25; }
   }
   /* HUD evolution indicator */
   #hud-evolutions {
@@ -858,6 +1037,9 @@
     transition: all 0.5s ease;
     letter-spacing: 0.5px;
   }
+  #hud #phase-indicator { padding: 2px; border: 0; background: transparent; font-size: 9px; text-shadow: none; }
+  #hud #hud-evolutions { gap: 1px; margin-left: 1px; }
+  #hud .hud-evo-icon { padding: 1px 2px; font-size: 10px; }
   #game-wrap[data-phase="dawn"] #theme-tint {
     background: linear-gradient(180deg, rgba(255,220,140,0.10), rgba(180,140,80,0.06));
   }
@@ -935,54 +1117,66 @@
       <div class="logo">WITHERROOT</div>
       <div class="scores">
         <div class="score-box">
-          <div class="label">Turn</div>
+          <div class="label" data-i18n="hud.turn">Turn</div>
           <div class="value" id="turn">0</div>
         </div>
         <div class="score-box">
-          <div class="label">Score</div>
+          <div class="label" data-i18n="hud.score">Score</div>
           <div class="value" id="score">0</div>
         </div>
         <div class="score-box">
-          <div class="label">Best</div>
+          <div class="label" data-i18n="hud.best">Best</div>
           <div class="value" id="best">0</div>
         </div>
         <!-- v3.6 Phase indicator -->
         <div class="score-box">
-          <div class="label">Phase</div>
+          <div class="label" data-i18n="hud.phase">Phase</div>
           <div id="phase-indicator">🌅 Dawn</div>
           <span id="hud-perks"></span>
           <span id="hud-evolutions"></span>
         </div>
         <div class="score-box" id="combo-box" style="opacity: 0.35;">
-          <div class="label">Combo</div>
+          <div class="label" data-i18n="hud.combo">Combo</div>
           <div class="value" id="combo-val">x0</div>
         </div>
-        <button class="btn-icon" id="btn-settings" title="Settings" style="width: 32px; height: 32px; font-size: 14px;">⚙</button>
+        <button class="btn-icon" id="btn-language" title="Switch language" aria-label="Switch language" style="width: 44px; height: 44px; font-size: 11px;">中文</button>
+        <button class="btn-icon" id="btn-settings" title="Settings" aria-label="Settings" style="width: 44px; height: 44px; font-size: 14px;">⚙</button>
       </div>
     </div>
 
     <!-- Vitality bar -->
     <div id="vitality-bar-wrap">
-      <div class="vitality-label">Vitality</div>
+      <div class="vitality-label" data-i18n="hud.vitality">Vitality</div>
       <div id="vitality-bar"><div id="vitality-fill"></div></div>
+    </div>
+
+    <!-- Early-route objective -->
+    <div id="objective-panel" role="status" aria-live="polite" aria-atomic="true">
+      <div class="objective-label" data-i18n="objective.label">Objective</div>
+      <div class="objective-row">
+        <span class="objective-icon" id="objective-icon" aria-hidden="true">✦</span>
+        <span id="objective-text">Collect Memory Nodes</span>
+        <span id="objective-progress" aria-label="0 / 3">0 / 3</span>
+      </div>
+      <div id="objective-note"></div>
     </div>
 
     <!-- Power-ups -->
     <div id="powerups">
-      <span class="pu-label">Powers</span>
-      <button class="pu-btn" id="pu-prune" title="Prune [1]: Remove a root, refund 1 vitality">
+      <span class="pu-label" data-i18n="hud.powers">Powers</span>
+      <button class="pu-btn" id="pu-prune" title="Prune [1]: Remove a root, refund 1 vitality" data-i18n-title="power.pruneTitle">
         <span class="pu-icon">✂</span><span class="pu-count" id="pu-prune-cnt">0</span>
         <div class="pu-tooltip"><div class="tt-title">✂ PRUNE [1]</div><div class="tt-desc">Remove any root, refund 1 vitality. Useful for rearranging.</div></div>
       </button>
-      <button class="pu-btn" id="pu-ember" title="Ember Burst [2]: Convert adjacent ash to fresh roots">
+      <button class="pu-btn" id="pu-ember" title="Ember Burst [2]: Convert adjacent ash to fresh roots" data-i18n-title="power.emberTitle">
         <span class="pu-icon">✦</span><span class="pu-count" id="pu-ember-cnt">0</span>
         <div class="pu-tooltip"><div class="tt-title">✦ EMBER BURST [2]</div><div class="tt-desc">Click a tile to convert all ash in 3x3 around it to fresh roots. Free!</div></div>
       </button>
-      <button class="pu-btn" id="pu-shield" title="Frost Shield [3]: Skip next frost event">
+      <button class="pu-btn" id="pu-shield" title="Frost Shield [3]: Skip next frost event" data-i18n-title="power.shieldTitle">
         <span class="pu-icon">❖</span><span class="pu-count" id="pu-shield-cnt">0</span>
         <div class="pu-tooltip"><div class="tt-title">❖ FROST SHIELD [3]</div><div class="tt-desc">Skip the next frost event. Activates instantly.</div></div>
       </button>
-      <button class="pu-btn" id="pu-recall" title="Recall [4]: Pull all memories 1 tile closer to Heart">
+      <button class="pu-btn" id="pu-recall" title="Recall [4]: Pull all memories 1 tile closer to Heart" data-i18n-title="power.recallTitle">
         <span class="pu-icon">◎</span><span class="pu-count" id="pu-recall-cnt">0</span>
         <div class="pu-tooltip"><div class="tt-title">◎ RECALL [4]</div><div class="tt-desc">Pull all memory nodes 1 tile closer to the Heart. Activates instantly.</div></div>
       </button>
@@ -992,57 +1186,117 @@
     <div id="board-area">
       <canvas id="game"></canvas>
       <div id="combo-flash"></div>
-      <div id="toast"></div>
+      <div id="toast" role="status" aria-live="polite"></div>
     </div>
 
     <!-- Controls -->
     <div id="controls">
-      <button class="btn-icon" id="btn-undo" title="Undo">↶</button>
-      <div class="hint" id="hint">Tap a tile next to your roots to grow</div>
-      <button class="btn-icon" id="btn-sound" title="Toggle Sound">♪</button>
-      <button class="btn-icon" id="btn-restart" title="Restart">⟳</button>
+      <button class="btn-icon" id="btn-undo" title="Undo" aria-label="Undo">↶</button>
+      <div class="hint" id="hint" data-i18n="hint.grow">Tap a tile next to your roots to grow</div>
+      <button class="btn-icon" id="btn-sound" title="Toggle Sound" aria-label="Toggle Sound">♪</button>
+      <button class="btn-icon" id="btn-restart" title="Restart" aria-label="Restart">⟳</button>
     </div>
 
     <!-- Start Overlay -->
     <div class="overlay" id="overlay-start">
+      <div class="start-tools"><button class="btn-icon" id="btn-start-language" type="button" title="Switch language" aria-label="Switch language">EN</button></div>
       <h1>WITHERROOT</h1>
-      <div class="subtitle">Decay · Rebirth · Remember</div>
-      <p>The sun has died. The surface is ash. Deep underground, you tend the <b>last living root</b>. Grow roots to reach scattered <b>Memory Nodes</b> before the <b>Frost</b> reaches your Heart.</p>
-      <div class="mode-select">
-        <button class="mode-btn active" id="mode-normal" data-mode="normal">⚔ NORMAL</button>
-        <button class="mode-btn" id="mode-easy" data-mode="easy">🌱 EASY</button>
-        <button class="mode-btn locked" id="mode-hard" data-mode="hard">🔥 HARD</button>
+      <div class="subtitle" data-i18n="start.subtitle">Decay · Rebirth · Remember</div>
+      <p data-i18n="start.description">在灰烬中培育最后的根系。学习生长与衰败，让灰烬成为下一次生长的力量。</p>
+      <section id="campaign-card" aria-labelledby="campaign-title">
+        <div class="campaign-card-top"><span id="campaign-stage-label" data-i18n="campaign.cardLabel">主线旅程</span><span id="campaign-stage-progress">1 / 5</span></div>
+        <h2 id="campaign-title">灰烬中的第一根</h2>
+        <div id="campaign-description">从一次生长开始，观察根系如何化为灰烬。</div>
+        <div id="campaign-reward-status" aria-live="polite">循序渐进，逐步解锁新机制与局外遗物。</div>
+        <div id="campaign-progress-track" aria-hidden="true"><div id="campaign-progress-fill"></div></div>
+        <button class="btn-primary" id="btn-campaign-play" data-i18n="campaign.start">▶ 开始第 1 关</button>
+        <button class="btn-secondary" id="btn-open-relics" style="width:100%; min-height:44px; margin-top:8px;" data-i18n="campaign.collectionButton">✦ 遗物收藏 0</button>
+      </section>
+      <details id="start-more-options">
+        <summary data-i18n="campaign.moreOptions">更多玩法与资料</summary>
+        <div class="more-options-body">
+          <div class="mode-section-label" data-i18n="campaign.freePlayLabel">自由模式</div>
+          <div class="mode-select">
+            <button class="mode-btn active" id="mode-tutorial" data-mode="tutorial">✦ TUTORIAL</button>
+            <button class="mode-btn" id="mode-easy" data-mode="easy">🌱 EASY</button>
+            <button class="mode-btn" id="mode-normal" data-mode="normal">⚔ NORMAL</button>
+            <button class="mode-btn locked" id="mode-hard" data-mode="hard">🔥 HARD</button>
+          </div>
+          <div id="difficulty-note" data-i18n="difficulty.tutorialNote">A calm, fixed first garden. Learn one mechanic at a time.</div>
+          <button class="btn-primary" id="btn-play" data-i18n="button.freePlay">▶ 自由开始</button>
+          <button class="btn-secondary hidden" id="btn-resume" style="background: rgba(140,255,170,0.12); border-color: rgba(140,255,170,0.4); color: #aaffc8;" data-i18n="button.resume">📅 Resume Game</button>
+          <button class="btn-secondary" id="btn-daily" style="background: rgba(140,220,255,0.12); border-color: rgba(140,220,255,0.35); color: #b0e0ff;" data-i18n="button.daily">📅 Daily Challenge</button>
+          <button class="btn-secondary" id="btn-achievements">🏆 <span data-i18n="button.achievements">Achievements</span> <span id="ach-count-start">0</span>/<span id="ach-total-start">0</span></button>
+          <button class="btn-secondary" id="btn-codex" style="background: rgba(200,140,80,0.12); border-color: rgba(200,140,80,0.35); color: #ffd0a0;">📖 <span data-i18n="button.codex">Memory Codex</span> <span id="codex-count-start">0</span>/<span id="codex-total-start">12</span></button>
+          <button class="btn-secondary" id="btn-stats">📊 <span data-i18n="button.stats">Statistics</span></button>
+          <div class="how-to" data-i18n="start.howTo">
+            <b>Tap</b> a tile next to your roots to grow ·
+            <b>Decaying roots</b> turn to <b>Ash</b> ·
+            <b>Ash</b> gives free growth nearby ·
+            Reach <b>Memory Nodes</b> before frost comes ·
+            Form <b>Constellations</b> (■ ▲ ✚ ◆ ━) for bonus rewards ·
+            <b>Genesis Echoes</b> at turns 15/30/45/60/75/90 offer fateful choices ·
+            <b>Meta Levels</b> grant permanent bonuses ·
+            <b>Adaptive Difficulty</b> auto-tunes to your skill · <b>Streaks</b> grant XP bonuses ·
+            <b>Garden Phases</b> shift the world from Dawn to Twilight to Eclipse ·
+            <b>Hard Mode</b> (Meta L3) and <b>Perks</b> (Meta L5) reward mastery ·
+            <b>Evolutions</b> grant survivor-like upgrade choices every 3 memories ·
+            <b>Ambient Soundscape</b> evolves with each Garden Phase
+          </div>
+          <div id="tip-of-day" style="margin-top: 14px; font-size: 11px; color: #8ad1ff; font-style: italic; max-width: 320px; opacity: 0.85;">Tip: ...</div>
+          <!-- v3.4 Meta-Progression display -->
+          <div id="meta-progress-wrap">
+            <div>✨ Meta Level <b id="meta-level-display">1</b> · <span id="meta-xp-display">0 / 800 XP</span></div>
+            <div id="meta-progress-bar"><div id="meta-progress-fill" style="width: 0%;"></div></div>
+          </div>
+          <!-- v3.5 DDA + Streak bar -->
+          <div id="dda-streak-bar">
+            <span class="dda-badge" id="dda-badge">⚖ Adaptive</span>
+            <span class="streak-badge" id="streak-badge">🔥 Streak 0</span>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="overlay hidden" id="overlay-campaign-briefing" role="dialog" aria-modal="true" aria-labelledby="campaign-briefing-title" aria-describedby="campaign-briefing-copy">
+      <div class="level-result-sheet campaign-briefing-sheet">
+        <div class="level-result-kicker" id="campaign-briefing-kicker">第 1 关 · 机制教学</div>
+        <h1 id="campaign-briefing-title">灰烬中的第一根</h1>
+        <div class="subtitle" id="campaign-briefing-copy">先学会生长，再观察根系衰败。</div>
+        <div id="campaign-briefing-goal"><b>本关目标</b><br>利用一格灰烬，完成一次免费的生长。</div>
+        <button class="btn-primary" id="btn-campaign-briefing-start" data-i18n="campaign.briefingStart">▶ 开始本关</button>
+        <button class="btn-secondary" id="btn-campaign-briefing-menu" data-i18n="campaign.briefingMenu">返回菜单</button>
       </div>
-      <button class="btn-primary" id="btn-play">▶ BEGIN</button>
-      <button class="btn-secondary hidden" id="btn-resume" style="background: rgba(140,255,170,0.12); border-color: rgba(140,255,170,0.4); color: #aaffc8;">📅 Resume Game</button>
-      <button class="btn-secondary" id="btn-daily" style="background: rgba(140,220,255,0.12); border-color: rgba(140,220,255,0.35); color: #b0e0ff;">📅 Daily Challenge</button>
-      <button class="btn-secondary" id="btn-achievements">🏆 Achievements <span id="ach-count-start">0</span>/<span id="ach-total-start">0</span></button>
-      <button class="btn-secondary" id="btn-codex" style="background: rgba(200,140,80,0.12); border-color: rgba(200,140,80,0.35); color: #ffd0a0;">📖 Memory Codex <span id="codex-count-start">0</span>/<span id="codex-total-start">12</span></button>
-      <button class="btn-secondary" id="btn-stats">📊 Statistics</button>
-      <div class="how-to">
-        <b>Tap</b> a tile next to your roots to grow ·
-        <b>Decaying roots</b> turn to <b>Ash</b> ·
-        <b>Ash</b> gives free growth nearby ·
-        Reach <b>Memory Nodes</b> before frost comes ·
-        Form <b>Constellations</b> (■ ▲ ✚ ◆ ━) for bonus rewards ·
-        <b>Genesis Echoes</b> at turns 15/30/45/60/75/90 offer fateful choices ·
-        <b>Meta Levels</b> grant permanent bonuses ·
-        <b>Adaptive Difficulty</b> auto-tunes to your skill · <b>Streaks</b> grant XP bonuses ·
-        <b>Garden Phases</b> shift the world from Dawn to Twilight to Eclipse ·
-        <b>Hard Mode</b> (Meta L3) and <b>Perks</b> (Meta L5) reward mastery ·
-        <b>Evolutions</b> grant survivor-like upgrade choices every 3 memories ·
-        <b>Ambient Soundscape</b> evolves with each Garden Phase
+    </div>
+
+    <div class="overlay hidden" id="overlay-level-complete" role="dialog" aria-modal="true" aria-labelledby="campaign-result-title" aria-describedby="campaign-result-subtitle">
+      <div class="level-result-sheet">
+        <div class="level-result-kicker" id="campaign-result-kicker">关卡完成</div>
+        <h1 id="campaign-result-title">根系初生</h1>
+        <div class="subtitle" id="campaign-result-subtitle">你掌握了灰烬循环。</div>
+        <div class="level-result-track"><div id="level-result-progress-fill"></div></div>
+        <div id="campaign-result-summary"></div>
+        <h2 class="level-reward-heading" id="campaign-reward-heading" data-i18n="campaign.rewardHeading">选择一件局外遗物</h2>
+        <p class="level-reward-help" id="campaign-reward-help" data-i18n="campaign.rewardHelp">领取后会加入收藏，并自动装备到下一关。每关奖励只领取一次。</p>
+        <div id="level-reward-list" role="group" aria-label="关卡奖励"></div>
+        <div id="campaign-empty-state" class="hidden"></div>
+        <div class="level-reward-actions">
+          <button class="btn-primary wide" id="btn-claim-reward" disabled data-i18n="campaign.claim">领取所选遗物</button>
+          <button class="btn-primary wide hidden" id="btn-next-level" data-i18n="campaign.next">▶ 下一关</button>
+          <button class="btn-secondary" id="btn-retry-campaign" data-i18n="campaign.retry">↻ 重试本关</button>
+          <button class="btn-secondary" id="btn-campaign-result-menu" data-i18n="campaign.menu">返回主菜单</button>
+        </div>
+        <div id="level-claim-status" role="status" aria-live="polite"></div>
       </div>
-      <div id="tip-of-day" style="margin-top: 14px; font-size: 11px; color: #8ad1ff; font-style: italic; max-width: 320px; opacity: 0.85;">Tip: ...</div>
-      <!-- v3.4 Meta-Progression display -->
-      <div id="meta-progress-wrap">
-        <div>✨ Meta Level <b id="meta-level-display">1</b> · <span id="meta-xp-display">0 / 800 XP</span></div>
-        <div id="meta-progress-bar"><div id="meta-progress-fill" style="width: 0%;"></div></div>
-      </div>
-      <!-- v3.5 DDA + Streak bar -->
-      <div id="dda-streak-bar">
-        <span class="dda-badge" id="dda-badge">⚖ Adaptive</span>
-        <span class="streak-badge" id="streak-badge">🔥 Streak 0</span>
+    </div>
+
+    <div class="overlay hidden" id="overlay-relics" role="dialog" aria-modal="true" aria-labelledby="relics-title" aria-describedby="relics-subtitle">
+      <div class="relic-collection-sheet">
+        <h1 id="relics-title" data-i18n="campaign.collectionTitle">遗物收藏</h1>
+        <div class="subtitle" id="relics-subtitle" data-i18n="campaign.collectionSubtitle">已领取的进化奖励。每关可装备一件，它会在主线中生效。</div>
+        <div id="relic-collection-list"></div>
+        <div id="campaign-empty-state-template" class="hidden" data-i18n="campaign.collectionEmpty">尚无遗物。完成主线关卡即可领取。</div>
+        <button class="btn-primary" id="btn-close-relics" style="width:100%; min-height:46px; margin-top:14px;" data-i18n="campaign.close">✓ 关闭</button>
       </div>
     </div>
 
@@ -1050,9 +1304,9 @@
     <div class="overlay hidden" id="overlay-pause">
       <h1 style="font-size: 28px;">⏸ PAUSED</h1>
       <div class="subtitle" id="pause-subtitle">Take a breath</div>
-      <button class="btn-primary" id="btn-pause-resume">▶ RESUME</button>
-      <button class="btn-secondary" id="btn-pause-settings">⚙ SETTINGS</button>
-      <button class="btn-secondary" id="btn-pause-ach">🏆 ACHIEVEMENTS</button>
+      <button class="btn-primary" id="btn-pause-resume" data-i18n="button.resumeShort">▶ RESUME</button>
+      <button class="btn-secondary" id="btn-pause-settings" data-i18n="button.settings">⚙ SETTINGS</button>
+      <button class="btn-secondary" id="btn-pause-ach" data-i18n="button.achievementsUpper">🏆 ACHIEVEMENTS</button>
       <button class="btn-secondary" id="btn-pause-codex" style="background: rgba(200,140,80,0.12); border-color: rgba(200,140,80,0.3); color: #ffd0a0;">📖 CODEX</button>
       <button class="btn-secondary" id="btn-pause-stats">📊 STATISTICS</button>
       <button class="btn-secondary" id="btn-pause-restart" style="background: rgba(220,180,80,0.12); border-color: rgba(220,180,80,0.3); color: #ffd9a0;">⟳ RESTART</button>
@@ -1124,11 +1378,21 @@
       <button class="btn-secondary" id="btn-go-menu" style="margin-top: 10px; background: rgba(220,80,80,0.1); border-color: rgba(220,80,80,0.25); color: #ffaaaa;">⏏ MAIN MENU</button>
     </div>
 
+    <!-- Deadlock recovery overlay -->
+    <div class="overlay hidden" id="overlay-stuck" role="dialog" aria-modal="true" aria-labelledby="stuck-title" aria-describedby="stuck-sub">
+      <h1 id="stuck-title" data-i18n="stuck.title">NO PATH FORWARD</h1>
+      <div class="subtitle" id="stuck-sub" data-i18n="stuck.subtitle">The garden has no legal moves</div>
+      <p data-i18n="stuck.body">No growth, memory, or recovery action is available. Try a fresh garden and use the tutorial route to get started.</p>
+      <button class="btn-primary" id="btn-stuck-retry" data-i18n="stuck.retry">▶ RETRY LEVEL</button>
+      <button class="btn-secondary" id="btn-stuck-easy" data-i18n="stuck.easy" style="margin-top: 10px; background: rgba(140,255,170,0.12); border-color: rgba(140,255,170,0.35); color: #aaffc8;">🌱 SWITCH TO EASY</button>
+      <button class="btn-secondary" id="btn-stuck-menu" data-i18n="stuck.menu" style="margin-top: 10px; background: rgba(220,80,80,0.1); border-color: rgba(220,80,80,0.25); color: #ffaaaa;">⏏ MAIN MENU</button>
+    </div>
+
     <!-- Tutorial overlay (first play only) -->
-    <div class="overlay hidden" id="overlay-tutorial">
-      <h1 style="font-size: 26px;">HOW TO PLAY</h1>
-      <div class="subtitle">Decay is your resource</div>
-      <div style="text-align: left; max-width: 360px; width: 100%; font-size: 12px; line-height: 1.7; color: #c0b89c;">
+    <div class="overlay hidden" id="overlay-tutorial" role="dialog" aria-modal="true" aria-labelledby="tutorial-title" aria-describedby="tutorial-subtitle">
+      <h1 style="font-size: 26px;" id="tutorial-title" data-i18n="tutorial.title">HOW TO PLAY</h1>
+      <div class="subtitle" id="tutorial-subtitle" data-i18n="tutorial.subtitle">Decay is your resource</div>
+      <div style="text-align: left; max-width: 360px; width: 100%; font-size: 12px; line-height: 1.7; color: #c0b89c;" data-i18n="tutorial.body">
         <div style="margin-bottom: 10px;"><b style="color: #ffd9a0;">1. Grow</b> — Tap any tile next to your roots (orange) to extend. Costs 1 vitality.</div>
         <div style="margin-bottom: 10px;"><b style="color: #ffd9a0;">2. Reach Memories</b> — Glowing blue nodes give +5 vitality and +100 score. Grow a root next to them to collect.</div>
         <div style="margin-bottom: 10px;"><b style="color: #ffd9a0;">3. Decay → Ash</b> — Roots live 6 turns. Number shows turns left. Decayed roots become ash.</div>
@@ -1142,52 +1406,57 @@
         <div style="margin-bottom: 10px;"><b style="color: #ffd9a0;">11. Keyboard</b> — Use <b>Arrow keys / WASD</b> to move cursor, <b>Space / Enter</b> to grow, <b>1-4</b> for powers, <b>P</b> to pause, <b>U</b> to undo, <b>H</b> for help.</div>
         <div style="margin-bottom: 10px;"><b style="color: #ffd0a0;">12. Memory Codex</b> — Each memory you collect may reveal a fragment of the lost world. Open the Codex from the start screen to read what you've recovered. There are 12 fragments in total — can you find them all?</div>
       </div>
-      <button class="btn-primary" id="btn-tutorial-ok" style="margin-top: 14px;">▶ GOT IT</button>
+      <button class="btn-primary" id="btn-tutorial-ok" data-i18n="tutorial.ok" style="margin-top: 14px;">▶ START LESSON</button>
+      <button class="btn-secondary" id="btn-tutorial-skip" data-i18n="tutorial.skip" style="margin-top: 10px;">↷ SKIP TO EASY</button>
     </div>
 
     <!-- Settings overlay -->
     <div class="overlay hidden" id="overlay-settings">
-      <h1 style="font-size: 24px;">SETTINGS</h1>
-      <div class="subtitle">Tune your experience</div>
+      <h1 style="font-size: 24px;" data-i18n="settings.title">SETTINGS</h1>
+      <div class="subtitle" data-i18n="settings.subtitle">Tune your experience</div>
       <div style="width: 100%; max-width: 320px;">
         <div class="setting-row">
-          <span>Sound Effects</span>
+          <span data-i18n="settings.language">Language</span>
+          <button class="toggle-btn" id="set-language" data-i18n="settings.languageButton">中文</button>
+        </div>
+        <div class="setting-row">
+          <span data-i18n="settings.sfx">Sound Effects</span>
           <button class="toggle-btn" id="set-sfx">ON</button>
         </div>
         <div class="setting-row">
-          <span>Ambient Music</span>
+          <span data-i18n="settings.music">Ambient Music</span>
           <button class="toggle-btn" id="set-music">ON</button>
         </div>
         <div class="setting-row">
-          <span>Screen Shake</span>
+          <span data-i18n="settings.shake">Screen Shake</span>
           <button class="toggle-btn" id="set-shake">ON</button>
         </div>
         <div class="setting-row">
-          <span>Particles</span>
+          <span data-i18n="settings.particles">Particles</span>
           <button class="toggle-btn" id="set-particles">ON</button>
         </div>
         <div class="setting-row">
-          <span>Haptics (Mobile)</span>
+          <span data-i18n="settings.haptics">Haptics (Mobile)</span>
           <button class="toggle-btn" id="set-haptics">ON</button>
         </div>
         <div class="setting-row">
-          <span>Color Blind Mode</span>
+          <span data-i18n="settings.colorblind">Color Blind Mode</span>
           <button class="toggle-btn" id="set-colorblind">OFF</button>
         </div>
         <div class="setting-row">
-          <span>Large Text</span>
+          <span data-i18n="settings.largetext">Large Text</span>
           <button class="toggle-btn" id="set-largetext">OFF</button>
         </div>
         <div class="setting-row">
-          <span>Tutorial</span>
-          <button class="toggle-btn" id="set-reset-tut">SHOW AGAIN</button>
+          <span data-i18n="settings.tutorial">Tutorial</span>
+          <button class="toggle-btn" id="set-reset-tut" data-i18n="settings.showAgain">SHOW AGAIN</button>
         </div>
         <div class="setting-row">
-          <span>Interactive Guide</span>
-          <button class="toggle-btn" id="set-replay-onboarding" style="background: rgba(255,208,160,0.15); border-color: rgba(255,208,160,0.4); color: #ffd0a0;">▶ REPLAY</button>
+          <span data-i18n="settings.guide">Interactive Guide</span>
+          <button class="toggle-btn" id="set-replay-onboarding" data-i18n="settings.replay" style="background: rgba(255,208,160,0.15); border-color: rgba(255,208,160,0.4); color: #ffd0a0;">▶ REPLAY</button>
         </div>
         <div class="setting-row" style="flex-direction: column; align-items: stretch; gap: 4px;">
-          <span>Theme (unlock via Meta Levels)</span>
+          <span data-i18n="settings.theme">Theme (unlock via Meta Levels)</span>
           <div class="theme-selector" id="theme-selector">
             <button class="theme-btn" data-theme="default">Default</button>
             <button class="theme-btn locked" data-theme="amber">Amber</button>
@@ -1197,10 +1466,10 @@
         </div>
       </div>
       <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 12px;">
-        <button class="btn-secondary" id="btn-settings-ach">🏆 Achievements</button>
-        <button class="btn-secondary" id="btn-settings-stats">📊 Stats</button>
+        <button class="btn-secondary" id="btn-settings-ach" data-i18n="settings.ach">🏆 Achievements</button>
+        <button class="btn-secondary" id="btn-settings-stats" data-i18n="settings.stats">📊 Stats</button>
       </div>
-      <button class="btn-primary" id="btn-settings-close" style="margin-top: 12px;">✓ CLOSE</button>
+      <button class="btn-primary" id="btn-settings-close" data-i18n="settings.close" style="margin-top: 12px;">✓ CLOSE</button>
     </div>
 
     <div class="footer-note">v3.9 · AMBIENT SOUNDSCAPE</div>
@@ -1216,10 +1485,10 @@
     </div>
 
     <!-- v3.8 Evolution selection modal -->
-    <div id="evolution-overlay">
+    <div id="evolution-overlay" role="dialog" aria-modal="true" aria-labelledby="evolution-title" aria-describedby="evolution-subtitle">
       <div class="evolution-modal">
-        <div class="evolution-modal-title">⚡ Evolution — Choose 1</div>
-        <div class="evolution-modal-sub">A passive power that shapes your run</div>
+        <div class="evolution-modal-title" id="evolution-title" data-i18n="evolution.title">⚡ Evolution — Choose 1</div>
+        <div class="evolution-modal-sub" id="evolution-subtitle" data-i18n="evolution.subtitle">A passive power that shapes your run</div>
         <div id="evolution-list"></div>
       </div>
     </div>
@@ -1249,7 +1518,7 @@
     <!-- v3.1 Onboarding / interactive tutorial -->
     <div id="onboarding-spotlight" class="hidden"></div>
     <div id="onboarding-arrow" class="hidden"></div>
-    <div id="onboarding-tooltip" class="hidden">
+    <div id="onboarding-tooltip" class="hidden" role="dialog" aria-live="polite" aria-label="Interactive tutorial">
       <div class="ob-step-num" id="ob-step-num">Step 1 / 10</div>
       <div class="ob-title" id="ob-title">Welcome</div>
       <div class="ob-body" id="ob-body">...</div>
@@ -1334,6 +1603,284 @@
       if (typeof obj === 'function') obj.apply(window.CrazyGames.SDK, args);
     } catch (e) { /* silent */ }
   }
+  // ---------- Localization ----------
+  // Chinese is the first-visit default; explicit player choices are persisted.
+  const I18N = {
+    en: {
+      'hud.turn': 'Turn', 'hud.score': 'Score', 'hud.best': 'Best', 'hud.phase': 'Phase',
+      'hud.combo': 'Combo', 'hud.vitality': 'Vitality', 'hud.powers': 'Powers',
+      'hud.memoryDistance': 'Memory {distance} tiles', 'hud.frostIn': '❄ Frost in {turns} turn{plural}',
+      'hud.frostImminent': '⚠ FROST IMMINENT ({turns})', 'hud.shieldReady': '❖ Shield ready ({turns})',
+      'hud.next': 'next: {direction}', 'hud.ashGrowthTip': ' · Ash gives free growth',
+      'game.boardLabel': 'Game board. Use the arrow keys or WASD to move, then Enter or Space to grow.',
+      'campaign.cardLabel': 'MAIN JOURNEY', 'campaign.moreOptions': 'More modes & extras', 'campaign.freePlayLabel': 'FREE PLAY · OPTIONAL CHALLENGE',
+      'campaign.start': '▶ START LEVEL {level}', 'campaign.resumeReward': '✦ CLAIM LEVEL REWARD',
+      'campaign.collectionButton': '✦ Relic Collection {count}',
+      'campaign.level1.title': 'Ash, Then New Growth', 'campaign.level1.desc': 'Grow one root, let it return to ash, then use that ash to grow for free.',
+      'campaign.level1.brief': 'Only growth and ash are active here. Roots decay after six turns; a green-outlined tile is free to grow.',
+      'campaign.level1.goal': 'Let a root become ash, then grow once on a green-outlined tile beside it. That growth costs no vitality.',
+      'campaign.level2.title': 'A Trace of Memory', 'campaign.level2.desc': 'Reach the glowing memory node and restore a little vitality.',
+      'campaign.level2.brief': 'A memory node is collected when a living root touches it. Frost is still absent.',
+      'campaign.level2.goal': 'Collect 1 glowing memory node. It restores vitality and scores points.',
+      'campaign.level3.title': 'The First Frost', 'campaign.level3.desc': 'Read the frost warning and grow through its first slow wave.',
+      'campaign.level3.brief': 'Frost freezes an outer edge. Its pace is slow and predictable; this level introduces only the first wave.',
+      'campaign.level3.goal': 'Survive until the first frost wave at turn 10.',
+      'campaign.level4.title': 'A Tool for the Roots', 'campaign.level4.desc': 'Use a Prune charge to clear a root and recover vitality.',
+      'campaign.level4.brief': 'You begin with one Prune charge. Select it, then tap a normal root (not the Heart).',
+      'campaign.level4.goal': 'Use Prune once. It removes a root and returns 1 vitality.',
+      'campaign.level5.title': 'The Living Cycle', 'campaign.level5.desc': 'Bring growth, ash, and memory together in one guided route.',
+      'campaign.level5.brief': 'The core loop is yours. A gentle frost remains, while memories and your equipped relic support the route.',
+      'campaign.level5.goal': 'Collect 3 memory nodes. Ash-adjacent growth is a free way to conserve vitality.',
+      'campaign.briefingStart': '▶ PLAY THIS LEVEL', 'campaign.briefingMenu': 'BACK TO MENU',
+      'campaign.briefingGoalTitle': 'LEVEL GOAL', 'campaign.frostLocked': 'Frost is not active in this level.',
+      'campaign.resultKicker': 'LEVEL COMPLETE', 'campaign.resultSubtitle': 'The next part of the garden is ready.',
+      'campaign.failedTitle': 'The roots need another try', 'campaign.failedSubtitle': 'No reward was lost. Restart this level and try a different route.',
+      'campaign.resultSummary': '{memories} memories · {turns} turns · {score} score',
+      'campaign.rewardHeading': 'Choose one out-of-run relic',
+      'campaign.rewardHelp': 'Claim it into your collection. It equips for the next campaign level. Each level reward is one-time.',
+      'campaign.claim': 'CLAIM SELECTED RELIC', 'campaign.claimed': 'Claimed: {name}. It is equipped for the next level.',
+      'campaign.alreadyClaimed': 'This level reward was already claimed. You can replay without earning it again.',
+      'campaign.next': '▶ NEXT LEVEL', 'campaign.freePlay': '▶ UNLOCK FREE PLAY',
+      'campaign.retry': '↻ RETRY LEVEL', 'campaign.menu': 'RETURN TO MENU',
+      'campaign.completeTitle': 'The Garden Is Yours', 'campaign.completeDesc': 'All five guided levels are complete. Free Play is unlocked.',
+      'campaign.progressComplete': '5 / 5 · Campaign complete', 'campaign.relicsEquipped': 'Equipped relic: {name}',
+      'campaign.noRelic': 'No relic equipped yet. A claimed relic can support later levels.',
+      'campaign.collectionTitle': 'Relic Collection', 'campaign.collectionSubtitle': 'Evolution rewards live here between levels. Equip one relic for the campaign.',
+      'campaign.collectionEmpty': 'No relics yet. Clear a campaign level to claim one.',
+      'campaign.equip': 'EQUIP', 'campaign.equipped': 'EQUIPPED', 'campaign.close': '✓ CLOSE',
+      'campaign.collectionCount': '✦ Relic Collection {count}', 'campaign.freeUnlocked': 'Guided route complete · Free Play unlocked',
+      'campaign.levelLabel': 'LEVEL {level} · GUIDED ROUTE', 'campaign.levelProgress': 'Level {level} of 5',
+      'campaign.frostInfo': '❄ Frost arrives every {turns} turns', 'campaign.rewardUnavailable': 'No new relic is available in this reward pool.',
+      'objective.label': 'Objective', 'objective.collect': 'Collect Memory Nodes',
+      'objective.tutorialNote': 'Follow the safe route and reach the next glowing node.',
+      'objective.easyNote': 'The first three nodes are a gentle warm-up.',
+      'objective.tutorialComplete': 'Tutorial route complete — keep practicing or return for a harder mode.',
+      'objective.easyComplete': 'Early route complete — free growth is now unlocked.',
+      'objective.routeComplete': 'Early route complete — continue growing freely.',
+      'objective.dailyNote': 'Daily Challenge has no guided early-route target.',
+      'hint.grow': 'Tap a tile next to your roots to grow',
+      'start.subtitle': 'Decay · Rebirth · Remember',
+      'start.description': 'Grow the last living roots through ash. Learn the growth-and-decay cycle one new mechanic at a time.',
+      'start.howTo': '<b>Grow</b> beside a root · Roots eventually become <b>Ash</b> · Growing beside ash is <b>free</b> · Clear guided levels to unlock one mechanic and reward at a time.',
+      'difficulty.tutorialNote': 'A calm, fixed first garden. Learn one mechanic at a time.',
+      'difficulty.easyNote': 'More vitality and slower frost. A relaxed run for learning routes.',
+      'difficulty.normalNote': 'The intended challenge: decay, frost, and memories compete for your turns.',
+      'difficulty.hardNote': 'Fast frost, less vitality, and bonus XP. For experienced keepers.',
+      'button.begin': '▶ BEGIN', 'button.freePlay': '▶ FREE PLAY', 'button.resume': '📅 Resume Game', 'button.daily': '📅 Daily Challenge',
+      'button.achievements': 'Achievements', 'button.codex': 'Memory Codex', 'button.stats': 'Statistics',
+      'button.resumeShort': '▶ RESUME', 'button.settings': '⚙ SETTINGS',
+      'button.achievementsUpper': '🏆 ACHIEVEMENTS', 'button.codexUpper': '📖 CODEX',
+      'button.statsUpper': '📊 STATISTICS', 'button.restartUpper': '⟳ RESTART', 'button.quitUpper': '⏏ QUIT TO MENU',
+      'power.pruneTitle': 'Prune [1]: Remove a root, refund 1 vitality',
+      'power.emberTitle': 'Ember Burst [2]: Convert adjacent ash to fresh roots',
+      'power.shieldTitle': 'Frost Shield [3]: Skip next frost event',
+      'power.recallTitle': 'Recall [4]: Pull all memories 1 tile closer to Heart',
+      'dynamic.cannotGrow': 'Cannot grow here', 'dynamic.notEnough': 'Not enough vitality',
+      'dynamic.tutorialComplete': '✦ Tutorial complete — choose Easy when you are ready',
+      'dynamic.tutorialHint1': 'Lesson 1/3 · Grow a root next to the Heart',
+      'dynamic.tutorialHint2': 'Lesson 2/3 · Reach the glowing Memory',
+      'dynamic.tutorialHint3': 'Lesson 3/3 · Ash makes nearby growth free',
+      'dynamic.memoryRecovered': 'Memory recovered +5 vitality',
+      'dynamic.modeTutorial': '✦ Tutorial: fixed board, slower frost, guided goals',
+      'dynamic.modeEasy': '🌱 Easy: more vitality, slower frost',
+      'dynamic.modeNormal': '⚔ Normal: the intended challenge',
+      'dynamic.modeHard': '🔥 Hard: faster frost, less vitality, +50% XP',
+      'dynamic.hardLocked': '🔒 Reach Meta Level 3 to unlock HARD mode',
+      'dynamic.firstRunForced': 'First run starts in Tutorial. Skip it to enter Easy.',
+      'dynamic.noMovesPending': 'No legal moves detected. Recovery options in 3 seconds.',
+      'stuck.title': 'NO PATH FORWARD', 'stuck.subtitle': 'The garden has no legal moves',
+      'stuck.body': 'No growth, memory, or recovery action is available. Try a fresh garden and use the tutorial route to get started.',
+      'stuck.retry': '▶ RETRY LEVEL', 'stuck.easy': '🌱 SWITCH TO EASY', 'stuck.menu': '⏏ MAIN MENU',
+      'tutorial.skip': '↷ SKIP TO EASY',
+      'evolution.title': '⚡ EVOLUTION — CHOOSE 1', 'evolution.subtitle': 'A passive power that shapes your run', 'evolution.review': '⚡ EVOLUTIONS',
+      'evolution.passive': '◯ Passive', 'evolution.instant': '⚡ Instant',
+      'evolution.thornskin.name': 'Thornskin', 'evolution.thornskin.desc': 'Roots resist 1 frost hit (recharge 5 turns)',
+      'evolution.photosynthesis.name': 'Photosynthesis', 'evolution.photosynthesis.desc': '+1 vitality every 5 turns',
+      'evolution.mycelial_network.name': 'Mycelial Network', 'evolution.mycelial_network.desc': 'Adjacent roots share +1 vitality per turn (split)',
+      'evolution.crystallization.name': 'Crystallization', 'evolution.crystallization.desc': 'Decayed roots become crystal, +3 score/turn each',
+      'evolution.echo_amplifier.name': 'Echo Amplifier', 'evolution.echo_amplifier.desc': 'Next Echo choice +50% vitality bonus',
+      'evolution.constellation_sight.name': 'Constellation Sight', 'evolution.constellation_sight.desc': 'Constellation bonuses +25%',
+      'evolution.frost_ward.name': 'Frost Ward', 'evolution.frost_ward.desc': 'Immune to next frost (one-shot, refreshes every 15 turns)',
+      'evolution.memory_echo.name': 'Memory Echo', 'evolution.memory_echo.desc': 'Spawn 2 extra memory nodes immediately',
+      'evolution.phoenix_bloom.name': 'Phoenix Bloom', 'evolution.phoenix_bloom.desc': 'Revive with 5 vitality on death (one-shot, refreshes every 25 turns)',
+      'evolution.time_dilation.name': 'Time Dilation', 'evolution.time_dilation.desc': 'Frost interval +2 (slower frost)',
+      'phase.dawn': 'Dawn', 'phase.twilight': 'Twilight', 'phase.eclipse': 'Eclipse',
+      'phase.dawnLore': 'The garden awakens under a soft gold light.',
+      'phase.twilightLore': 'Amber shadows lengthen. The world grows hungry.',
+      'phase.eclipseLore': 'The sun dies. Constellations burn brighter in the dark.',
+      'tutorial.title': 'HOW TO PLAY', 'tutorial.subtitle': 'Decay is your resource',
+      'tutorial.body': '<div style="margin-bottom: 10px;"><b style="color: #ffd9a0;">1. Grow</b> — Tap an empty tile beside your roots. Each new root costs 1 vitality.</div><div style="margin-bottom: 10px;"><b style="color: #ffd9a0;">2. Decay</b> — Roots age as turns pass and eventually become ash.</div><div style="margin-bottom: 10px;"><b style="color: #ffd9a0;">3. Reuse ash</b> — Grow beside ash to make that growth free. This is the heart of the cycle.</div>',
+      'tutorial.ok': '▶ GOT IT',
+      'settings.title': 'SETTINGS', 'settings.subtitle': 'Tune your experience',
+      'settings.language': 'Language', 'settings.languageButton': '中文',
+      'settings.sfx': 'Sound Effects', 'settings.music': 'Ambient Music', 'settings.shake': 'Screen Shake',
+      'settings.particles': 'Particles', 'settings.haptics': 'Haptics (Mobile)', 'settings.colorblind': 'Color Blind Mode',
+      'settings.largetext': 'Large Text', 'settings.theme': 'Theme (unlock via Meta Levels)', 'settings.ach': '🏆 Achievements', 'settings.stats': '📊 Stats',
+      'settings.close': '✓ CLOSE', 'settings.tutorial': 'Tutorial', 'settings.showAgain': 'SHOW AGAIN',
+      'settings.guide': 'Interactive Guide', 'settings.replay': '▶ REPLAY',
+      'mode.tutorial': '✦ TUTORIAL', 'mode.easy': '🌱 EASY', 'mode.normal': '⚔ NORMAL', 'mode.hard': '🔥 HARD'
+    },
+    zh: {
+      'hud.turn': '回合', 'hud.score': '得分', 'hud.best': '最高', 'hud.phase': '阶段',
+      'hud.combo': '连击', 'hud.vitality': '生命力', 'hud.powers': '能力',
+      'hud.memoryDistance': '记忆节点距核心 {distance} 格', 'hud.frostIn': '❄ 距离霜冻还有 {turns} 回合',
+      'hud.frostImminent': '⚠ 霜冻即将到来（{turns}）', 'hud.shieldReady': '❖ 霜盾待命（{turns}）',
+      'hud.next': '下一次：{direction}', 'hud.ashGrowthTip': ' · 灰烬旁可免费生长',
+      'game.boardLabel': '游戏棋盘。使用方向键或 WASD 移动，再按回车或空格生长。',
+      'campaign.cardLabel': '主线旅程', 'campaign.moreOptions': '更多玩法与资料', 'campaign.freePlayLabel': '自由模式 · 可选挑战',
+      'campaign.start': '▶ 开始第 {level} 关', 'campaign.resumeReward': '✦ 领取本关奖励',
+      'campaign.collectionButton': '✦ 遗物收藏 {count}',
+      'campaign.level1.title': '灰烬中的新生', 'campaign.level1.desc': '先让根生长、衰败成灰，再借灰烬完成一次免费生长。',
+      'campaign.level1.brief': '本关只开放生长与灰烬。根系会在 6 回合后化灰；绿色边框的格子表示可以免费生长。',
+      'campaign.level1.goal': '等一根根化为灰烬，再点击灰烬旁绿色边框的格子，完成一次免费生长。',
+      'campaign.level2.title': '记忆的微光', 'campaign.level2.desc': '找到发光的记忆节点，为根系恢复一些生命力。',
+      'campaign.level2.brief': '活根触碰发光的记忆节点即可收集。本关仍没有霜冻。',
+      'campaign.level2.goal': '收集 1 个发光的记忆节点，获得生命力与分数。',
+      'campaign.level3.title': '初遇霜冻', 'campaign.level3.desc': '读懂霜冻提示，在缓慢而可预期的节奏中迎接第一波霜冻。',
+      'campaign.level3.brief': '霜冻会从棋盘外缘开始冻结。本关放慢节奏，只体验第一波。',
+      'campaign.level3.goal': '存活至第 10 回合，观察第一波霜冻。',
+      'campaign.level4.title': '根系的工具', 'campaign.level4.desc': '使用一次修剪能力，清理一根根并取回生命力。',
+      'campaign.level4.brief': '开局获得 1 次修剪。选中修剪后，点击普通根系（不能选核心）。',
+      'campaign.level4.goal': '使用一次修剪。它会移除一根根，并返还 1 点生命力。',
+      'campaign.level5.title': '生生不息', 'campaign.level5.desc': '在最后一段引导路线中，把生长、灰烬与记忆连成循环。',
+      'campaign.level5.brief': '你已经掌握核心循环。本关加入温和霜冻，记忆与已装备遗物会帮助你前进。',
+      'campaign.level5.goal': '收集 3 个记忆节点。善用灰烬旁的免费生长，节省生命力。',
+      'campaign.briefingStart': '▶ 开始本关', 'campaign.briefingMenu': '返回菜单',
+      'campaign.briefingGoalTitle': '本关目标', 'campaign.frostLocked': '本关尚未开启霜冻。',
+      'campaign.resultKicker': '关卡完成', 'campaign.resultSubtitle': '花园的下一段旅程已经开启。',
+      'campaign.failedTitle': '根系还需要一次尝试', 'campaign.failedSubtitle': '奖励进度不会丢失。重试本关，换一条生长路线。',
+      'campaign.resultSummary': '记忆 {memories} 个 · {turns} 回合 · {score} 分',
+      'campaign.rewardHeading': '选择一件局外遗物',
+      'campaign.rewardHelp': '领取后加入收藏，并自动装备到下一关。每关奖励仅可领取一次。',
+      'campaign.claim': '领取所选遗物', 'campaign.claimed': '已领取：{name}。它会在下一关自动装备。',
+      'campaign.alreadyClaimed': '本关奖励已领取。你仍可重玩本关，但不会重复获得奖励。',
+      'campaign.next': '▶ 前往下一关', 'campaign.freePlay': '▶ 解锁自由模式',
+      'campaign.retry': '↻ 重试本关', 'campaign.menu': '返回主菜单',
+      'campaign.completeTitle': '花园属于你了', 'campaign.completeDesc': '五段引导旅程已完成，自由模式现已开放。',
+      'campaign.progressComplete': '5 / 5 · 主线已完成', 'campaign.relicsEquipped': '已装备遗物：{name}',
+      'campaign.noRelic': '暂未装备遗物。领取后可在后续主线中使用。',
+      'campaign.collectionTitle': '遗物收藏', 'campaign.collectionSubtitle': '进化奖励在关卡之间领取。主线每关可装备一件遗物。',
+      'campaign.collectionEmpty': '还没有遗物。完成主线关卡即可领取。',
+      'campaign.equip': '装备', 'campaign.equipped': '已装备', 'campaign.close': '✓ 关闭',
+      'campaign.collectionCount': '✦ 遗物收藏 {count}', 'campaign.freeUnlocked': '主线已完成 · 自由模式已解锁',
+      'campaign.levelLabel': '第 {level} 关 · 引导路线', 'campaign.levelProgress': '第 {level} / 5 关',
+      'campaign.frostInfo': '❄ 霜冻每 {turns} 回合来临', 'campaign.rewardUnavailable': '当前奖励池中没有可领取的新遗物。',
+      'objective.label': '当前目标', 'objective.collect': '收集记忆节点',
+      'objective.tutorialNote': '沿着安全路线前进，找到下一个发光节点。',
+      'objective.easyNote': '前 3 个节点是温和的热身阶段。',
+      'objective.tutorialComplete': '教学路线完成——可以继续练习，也可以返回挑战更高难度。',
+      'objective.easyComplete': '前期引导完成——现在进入自由生长。',
+      'objective.routeComplete': '前期路线完成——继续自由延伸根系。',
+      'objective.dailyNote': '每日挑战不设置前期引导目标。',
+      'hint.grow': '点击根旁的格子来生长',
+      'start.subtitle': '腐朽 · 新生 · 记忆',
+      'start.description': '在灰烬中培育最后的根系。循序渐进地学习生长与衰败，让灰烬成为下一次生长的力量。',
+      'start.howTo': '<b>在根旁生长</b> · 根系会逐渐衰败成<b>灰烬</b> · <b>灰烬旁生长免费</b> · 完成主线关卡，逐步解锁机制与局外奖励。',
+      'difficulty.tutorialNote': '固定地图、节奏舒缓的第一关，一次只学习一个机制。',
+      'difficulty.easyNote': '生命力更多、霜冻更慢，适合熟悉路线。',
+      'difficulty.normalNote': '标准挑战：在衰败、霜冻和记忆之间安排每一步。',
+      'difficulty.hardNote': '霜冻更快、生命力更少，并获得额外经验。适合熟练玩家。',
+      'button.begin': '▶ 开始', 'button.freePlay': '▶ 自由模式', 'button.resume': '📅 继续游戏', 'button.daily': '📅 每日挑战',
+      'button.achievements': '成就', 'button.codex': '记忆图鉴', 'button.stats': '统计',
+      'button.resumeShort': '▶ 继续', 'button.settings': '⚙ 设置',
+      'button.achievementsUpper': '🏆 成就', 'button.codexUpper': '📖 图鉴',
+      'button.statsUpper': '📊 统计', 'button.restartUpper': '⟳ 重开', 'button.quitUpper': '⏏ 返回菜单',
+      'power.pruneTitle': '修剪 [1]：移除一根根，返还 1 点生命力',
+      'power.emberTitle': '余烬爆发 [2]：将附近灰烬转为新根',
+      'power.shieldTitle': '霜盾 [3]：跳过下一次霜冻',
+      'power.recallTitle': '召回 [4]：让所有记忆向核心靠近 1 格',
+      'dynamic.cannotGrow': '这里不能生长', 'dynamic.notEnough': '生命力不足',
+      'dynamic.tutorialComplete': '✦ 教学完成——准备好后可以挑战简单模式',
+      'dynamic.tutorialHint1': '教学 1/3 · 在核心旁生长一根根',
+      'dynamic.tutorialHint2': '教学 2/3 · 触碰发光的记忆节点',
+      'dynamic.tutorialHint3': '教学 3/3 · 灰烬旁的生长是免费的',
+      'dynamic.memoryRecovered': '找回记忆 +5 生命力',
+      'dynamic.modeTutorial': '✦ 教学：固定地图、霜冻更慢、目标清晰',
+      'dynamic.modeEasy': '🌱 简单：生命力更多、霜冻更慢',
+      'dynamic.modeNormal': '⚔ 普通：游戏的标准挑战',
+      'dynamic.modeHard': '🔥 困难：霜冻更快、生命力更少、经验 +50%',
+      'dynamic.hardLocked': '🔒 达到元等级 3 后解锁困难模式',
+      'dynamic.firstRunForced': '首次游戏将从教学开始。跳过后直接进入简单模式。',
+      'dynamic.noMovesPending': '检测不到可行动作，3 秒后提供恢复选项。',
+      'stuck.title': '前方无路', 'stuck.subtitle': '当前花园已经没有可执行的操作',
+      'stuck.body': '现在无法生长、找回记忆或使用有效的恢复能力。重新开始一局，建议先从教学路线熟悉玩法。',
+      'stuck.retry': '▶ 重试本关', 'stuck.easy': '🌱 切换简单模式', 'stuck.menu': '⏏ 返回菜单',
+      'tutorial.skip': '↷ 跳过教学，进入简单',
+      'evolution.title': '⚡ 进化——选择 1 项', 'evolution.subtitle': '选择一个塑造本局策略的被动能力', 'evolution.review': '⚡ 进化回顾',
+      'evolution.passive': '◯ 被动', 'evolution.instant': '⚡ 立即生效',
+      'evolution.thornskin.name': '荆棘之肤', 'evolution.thornskin.desc': '根系抵挡 1 次霜冻（每 5 回合补充）',
+      'evolution.photosynthesis.name': '光合作用', 'evolution.photosynthesis.desc': '每 5 回合获得 +1 生命力',
+      'evolution.mycelial_network.name': '菌丝网络', 'evolution.mycelial_network.desc': '相邻根系每回合共享 +1 生命力（分摊）',
+      'evolution.crystallization.name': '晶化', 'evolution.crystallization.desc': '衰败的根变成水晶，每个每回合 +3 得分',
+      'evolution.echo_amplifier.name': '回响增幅', 'evolution.echo_amplifier.desc': '下一次回响选择的生命力奖励 +50%',
+      'evolution.constellation_sight.name': '星图视界', 'evolution.constellation_sight.desc': '星图奖励 +25%',
+      'evolution.frost_ward.name': '霜冻结界', 'evolution.frost_ward.desc': '免疫下一次霜冻（一次性，每 15 回合补充）',
+      'evolution.memory_echo.name': '记忆回响', 'evolution.memory_echo.desc': '立即额外生成 2 个记忆节点',
+      'evolution.phoenix_bloom.name': '凤凰绽放', 'evolution.phoenix_bloom.desc': '死亡时以 5 点生命力复苏（一次性，每 25 回合补充）',
+      'evolution.time_dilation.name': '时间缓滞', 'evolution.time_dilation.desc': '霜冻间隔 +2（霜冻变慢）',
+      'phase.dawn': '黎明', 'phase.twilight': '暮光', 'phase.eclipse': '日蚀',
+      'phase.dawnLore': '柔和的金色光线中，花园开始苏醒。',
+      'phase.twilightLore': '琥珀色的阴影拉长了，世界开始饥渴。',
+      'phase.eclipseLore': '太阳熄灭，黑暗中的星图燃烧得更加明亮。',
+      'tutorial.title': '玩法说明', 'tutorial.subtitle': '腐朽也是资源',
+      'tutorial.body': '<div style="margin-bottom: 10px;"><b style="color: #ffd9a0;">1. 生长</b>——点击根旁空格，新长出的根消耗 1 点生命力。</div><div style="margin-bottom: 10px;"><b style="color: #ffd9a0;">2. 衰败</b>——根会随回合老化，最终变成灰烬。</div><div style="margin-bottom: 10px;"><b style="color: #ffd9a0;">3. 再利用灰烬</b>——在灰烬旁生长不消耗生命力，这是整个循环的核心。</div>',
+      'tutorial.ok': '▶ 明白了',
+      'settings.title': '设置', 'settings.subtitle': '调整你的体验',
+      'settings.language': '语言', 'settings.languageButton': 'EN',
+      'settings.sfx': '音效', 'settings.music': '环境音乐', 'settings.shake': '屏幕震动',
+      'settings.particles': '粒子效果', 'settings.haptics': '触感反馈（移动端）', 'settings.colorblind': '色盲模式',
+      'settings.largetext': '大字体', 'settings.theme': '主题（通过元等级解锁）', 'settings.ach': '🏆 成就', 'settings.stats': '📊 统计',
+      'settings.close': '✓ 关闭', 'settings.tutorial': '基础教程', 'settings.showAgain': '再次显示',
+      'settings.guide': '交互式引导', 'settings.replay': '▶ 重播',
+      'mode.tutorial': '✦ 教学', 'mode.easy': '🌱 简单', 'mode.normal': '⚔ 普通', 'mode.hard': '🔥 困难'
+    }
+  };
+  let language = 'zh';
+  function t(key) { return (I18N[language] && I18N[language][key]) || I18N.en[key] || key; }
+  function applyLanguage() {
+    document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en';
+    document.querySelectorAll('[data-i18n]').forEach((el) => { el.innerHTML = t(el.dataset.i18n); });
+    document.querySelectorAll('[data-i18n-title]').forEach((el) => { el.title = t(el.dataset.i18nTitle); });
+    const languageButton = document.getElementById('btn-language');
+    if (languageButton) { languageButton.textContent = t('settings.languageButton'); languageButton.title = language === 'zh' ? '切换语言' : 'Switch language'; languageButton.setAttribute('aria-label', languageButton.title); }
+    const startLanguageButton = document.getElementById('btn-start-language');
+    if (startLanguageButton) { startLanguageButton.textContent = t('settings.languageButton'); startLanguageButton.title = language === 'zh' ? '切换语言' : 'Switch language'; startLanguageButton.setAttribute('aria-label', startLanguageButton.title); }
+    const modeLabels = { tutorial: 'mode.tutorial', easy: 'mode.easy', normal: 'mode.normal', hard: 'mode.hard' };
+    Object.keys(modeLabels).forEach((mode) => { const el = document.querySelector('[data-mode="' + mode + '"]'); if (el) el.textContent = t(modeLabels[mode]); });
+    const title = language === 'zh' ? 'WITHERROOT - 腐朽与新生' : 'WITHERROOT - Decay to Rebirth';
+    document.title = title;
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.content = language === 'zh' ? 'WITHERROOT——在灰烬中延伸根系、寻找记忆、守护核心的末日解谜游戏。' : 'WITHERROOT - A post-apocalyptic root growth puzzle. Grow roots through ash, harvest memory nodes before frost consumes the heart. Decay becomes resource.';
+    const skipButton = document.getElementById('ob-btn-skip');
+    if (skipButton) skipButton.textContent = language === 'zh' ? '跳过教学' : 'Skip Tutorial';
+    const tipEl = document.getElementById('tip-of-day');
+    if (tipEl) tipEl.textContent = language === 'zh' ? '提示：先完成教学关，再挑战更高难度。' : 'Tip: Start with Tutorial, then move up when the route feels familiar.';
+    if (typeof evolutionOfferedIds !== 'undefined' && evolutionOfferedIds.length > 0) renderEvolutionModal(evolutionOfferedIds);
+    if (typeof updateEvolutionHUD === 'function') updateEvolutionHUD();
+    if (typeof updatePhaseIndicator === 'function') updatePhaseIndicator();
+    if (typeof updateFirstRunUI === 'function') updateFirstRunUI();
+    if (typeof updateObjectiveUI === 'function') updateObjectiveUI(false);
+    if (typeof updateCampaignHomeUI === 'function') updateCampaignHomeUI();
+    const gameCanvas = document.getElementById('game');
+    if (gameCanvas) gameCanvas.setAttribute('aria-label', t('game.boardLabel'));
+    if (typeof renderRelicCollection === 'function' && !document.getElementById('overlay-relics').classList.contains('hidden')) renderRelicCollection();
+    if (typeof renderCampaignLevelComplete === 'function' && !document.getElementById('overlay-level-complete').classList.contains('hidden')) renderCampaignLevelComplete(campaignStage);
+    if (elRunHighlights && !elRunHighlights.classList.contains('hidden') && typeof renderRunHighlights === 'function') renderRunHighlights();
+  }
+  function toggleLanguage() {
+    language = language === 'en' ? 'zh' : 'en';
+    try { localStorage.setItem('witherroot_language', language); } catch (e) {}
+    const query = new URLSearchParams(window.location.search);
+    if (query.has('lang')) {
+      query.set('lang', language);
+      const search = query.toString();
+      history.replaceState(null, '', location.pathname + (search ? '?' + search : '') + location.hash);
+    }
+    applyLanguage();
+    updateDifficultyNote();
+    updateTutorialHint();
+    if (onboardingActive && onboardingStepIdx >= 0) showOnboardingStep(ONBOARDING_STEPS[onboardingStepIdx]);
+  }
 
   // ---------- Configuration ----------
   const GRID = 9;                    // 9x9 grid
@@ -1352,33 +1899,442 @@
   const VITALITY_LOW_THRESHOLD = 5;
   const FROST_INTERVAL_MIN = 3;      // difficulty cap: frost never faster than this
   const FROST_SPEEDUP_TURN = 10;    // every N turns, frost interval decreases by 1
+  const NO_MOVES_DELAY_MS = 3000;  // give the player a moment before offering recovery
 
-  // ---------- Difficulty helpers (Easy / Normal / Hard) ----------
-  // Easy mode: more vitality, slower frost, more lenient speedup
-  // Hard mode (v3.7): less vitality, faster frost, but +50% XP
+  const CAMPAIGN_LEVELS = [
+    { goal: 'ash', target: 1, vitality: 40, memories: 0, memoryInterval: 999, frostInterval: 0, powers: false },
+    { goal: 'memory', target: 1, vitality: 40, memories: 1, memoryInterval: 999, frostInterval: 0, powers: false },
+    { goal: 'turn', target: 10, vitality: 38, memories: 1, memoryInterval: 999, frostInterval: 10, powers: false },
+    { goal: 'power', target: 1, vitality: 38, memories: 1, memoryInterval: 999, frostInterval: 10, powers: true },
+    { goal: 'memory', target: 3, vitality: 36, memories: 2, memoryInterval: 4, frostInterval: 9, powers: true }
+  ];
+  const CAMPAIGN_STORAGE_KEY = 'witherroot_campaign_v1';
+  let campaignMode = false;
+  let campaignStage = 1;
+  let campaignLevelResolved = false;
+  let selectedCampaignReward = null;
+  let campaignProgress = { unlockedLevel: 1, clearedLevels: [], claimedRewards: {}, relics: [], equippedRelic: '', pendingLevel: 0, pendingRewards: [], pendingStats: null };
+
+  function getCampaignLevel() { return CAMPAIGN_LEVELS[campaignStage - 1] || null; }
+  function loadCampaignProgress() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(CAMPAIGN_STORAGE_KEY) || 'null');
+      if (!saved || typeof saved !== 'object') return;
+      const relics = Array.isArray(saved.relics) ? saved.relics.filter(id => typeof id === 'string') : [];
+      const clearedLevels = Array.isArray(saved.clearedLevels) ? saved.clearedLevels.filter(n => Number.isInteger(n) && n >= 1 && n <= CAMPAIGN_LEVELS.length) : [];
+      campaignProgress = {
+        unlockedLevel: Math.max(1, Math.min(CAMPAIGN_LEVELS.length + 1, Number(saved.unlockedLevel) || 1)),
+        clearedLevels: Array.from(new Set(clearedLevels)),
+        claimedRewards: saved.claimedRewards && typeof saved.claimedRewards === 'object' ? saved.claimedRewards : {},
+        relics,
+        equippedRelic: relics.includes(saved.equippedRelic) ? saved.equippedRelic : '',
+        pendingLevel: Number.isInteger(saved.pendingLevel) ? saved.pendingLevel : 0,
+        pendingRewards: Array.isArray(saved.pendingRewards) ? saved.pendingRewards.filter(id => typeof id === 'string') : [],
+        pendingStats: saved.pendingStats && typeof saved.pendingStats === 'object' ? saved.pendingStats : null
+      };
+    } catch (e) { /* keep an empty campaign when storage is unavailable */ }
+  }
+  function saveCampaignProgress() {
+    try { localStorage.setItem(CAMPAIGN_STORAGE_KEY, JSON.stringify(campaignProgress)); } catch (e) {}
+  }
+
+  // ---------- Difficulty helpers (Tutorial / Easy / Normal / Hard) ----------
+  // Tutorial is a fixed, low-pressure first level. It is intentionally
+  // generous so the player can learn the loop before frost becomes urgent.
   function getStartVitality() {
+    if (campaignMode && getCampaignLevel()) return getCampaignLevel().vitality;
+    if (isTutorialMode()) return 40;
     if (difficultyMode === 'easy') return 32;
-    if (difficultyMode === 'hard') return START_VITALITY - 2; // 26
+    if (difficultyMode === 'hard') return START_VITALITY - 2;
     return START_VITALITY;
   }
+  function getOpeningVitality() {
+    if (campaignMode && getCampaignLevel()) return getCampaignLevel().vitality;
+    return difficultyMode === 'easy' ? 36 : getStartVitality();
+  }
+  function formatI18n(key, values) {
+    return Object.keys(values || {}).reduce((text, name) => {
+      return text.replace(new RegExp('\\{' + name + '\\}', 'g'), String(values[name]));
+    }, t(key));
+  }
+  function isEasyEarlyRoute() {
+    return difficultyMode === 'easy' && memoriesCollected < EARLY_OBJECTIVE_TARGET;
+  }
   function getBaseFrostInterval() {
-    if (difficultyMode === 'easy') return 7;
-    if (difficultyMode === 'hard') return FROST_INTERVAL - 3; // 7 (frost faster)
+    if (campaignMode) return getCampaignLevel() && getCampaignLevel().frostInterval || 999;
+    if (isTutorialMode()) return 12;
+    if (difficultyMode === 'easy') return isEasyEarlyRoute() ? 9 : 7;
+    if (difficultyMode === 'hard') return 3;
     return FROST_INTERVAL;
   }
   function getFrostMinInterval() {
-    if (difficultyMode === 'easy') return 4;
-    if (difficultyMode === 'hard') return FROST_INTERVAL_MIN - 1; // 2 (very aggressive)
+    if (campaignMode) return getCampaignLevel() && getCampaignLevel().frostInterval || 999;
+    if (isTutorialMode()) return 9;
+    if (difficultyMode === 'easy') return isEasyEarlyRoute() ? 6 : 4;
+    if (difficultyMode === 'hard') return FROST_INTERVAL_MIN - 1;
     return FROST_INTERVAL_MIN;
   }
   function getFrostSpeedupTurn() {
-    if (difficultyMode === 'easy') return 15;
-    if (difficultyMode === 'hard') return FROST_SPEEDUP_TURN + 2; // less speedup (already hard)
+    if (campaignMode) return 999;
+    if (isTutorialMode()) return 999;
+    if (difficultyMode === 'easy') return isEasyEarlyRoute() ? 20 : 15;
+    if (difficultyMode === 'hard') return 8;
     return FROST_SPEEDUP_TURN;
   }
   function getMemorySpawnInterval() {
-    if (difficultyMode === 'easy') return 3;
+    if (campaignMode) return getCampaignLevel() ? getCampaignLevel().memoryInterval : 999;
+    if (isTutorialMode()) return 999;
+    if (difficultyMode === 'easy') return isEasyEarlyRoute() ? 4 : 3;
     return MEMORY_SPAWN_INTERVAL;
+  }
+  function isTutorialMode() { return !campaignMode && difficultyMode === 'tutorial'; }
+  function getCampaignObjectiveValue() {
+    if (!campaignMode || !getCampaignLevel()) return 0;
+    const goal = getCampaignLevel().goal;
+    if (goal === 'ash') return ashFreeGrowCount;
+    if (goal === 'memory') return memoriesCollected;
+    if (goal === 'turn') return turn;
+    if (goal === 'power') return powersUsedThisRun;
+    return 0;
+  }
+  function updateObjectiveUI(announce) {
+    const panel = document.getElementById('objective-panel');
+    const textEl = document.getElementById('objective-text');
+    const progressEl = document.getElementById('objective-progress');
+    const noteEl = document.getElementById('objective-note');
+    if (!panel || !textEl || !progressEl || !noteEl) return;
+    if (dailyMode) {
+      panel.classList.add('hidden');
+      return;
+    }
+    panel.classList.remove('hidden');
+    if (campaignMode && getCampaignLevel()) {
+      const config = getCampaignLevel();
+      const current = Math.min(getCampaignObjectiveValue(), config.target);
+      const complete = current >= config.target;
+      panel.classList.toggle('complete', complete);
+      textEl.textContent = t('campaign.level' + campaignStage + '.goal');
+      noteEl.textContent = '';
+      progressEl.textContent = current + ' / ' + config.target;
+      progressEl.setAttribute('aria-label', current + ' / ' + config.target);
+      if (announce && complete && !campaignLevelResolved) flashToast(t('campaign.resultKicker'), 1700);
+      return;
+    }
+    const current = Math.min(memoriesCollected, EARLY_OBJECTIVE_TARGET);
+    const complete = current >= EARLY_OBJECTIVE_TARGET;
+    panel.classList.toggle('complete', complete);
+    textEl.textContent = complete
+      ? (isTutorialMode() ? t('objective.tutorialComplete') : difficultyMode === 'easy' ? t('objective.easyComplete') : t('objective.routeComplete'))
+      : t('objective.collect');
+    noteEl.textContent = complete
+      ? ''
+      : (isTutorialMode() ? t('objective.tutorialNote') : difficultyMode === 'easy' ? t('objective.easyNote') : '');
+    progressEl.textContent = current + ' / ' + EARLY_OBJECTIVE_TARGET;
+    progressEl.setAttribute('aria-label', current + ' / ' + EARLY_OBJECTIVE_TARGET);
+    if (announce && complete && objectiveToastStage < EARLY_OBJECTIVE_TARGET) {
+      flashToast(isTutorialMode() ? t('objective.tutorialComplete') : difficultyMode === 'easy' ? t('objective.easyComplete') : t('objective.routeComplete'), 2600);
+    }
+    objectiveToastStage = Math.max(objectiveToastStage, current);
+  }
+  function updateCampaignHomeUI() {
+    const titleEl = document.getElementById('campaign-title');
+    const descEl = document.getElementById('campaign-description');
+    const statusEl = document.getElementById('campaign-reward-status');
+    const stageEl = document.getElementById('campaign-stage-progress');
+    const fillEl = document.getElementById('campaign-progress-fill');
+    const startBtn = document.getElementById('btn-campaign-play');
+    const collectionBtn = document.getElementById('btn-open-relics');
+    if (!titleEl || !startBtn) return;
+    const pendingLevel = campaignProgress.pendingLevel;
+    const level = pendingLevel || Math.min(campaignProgress.unlockedLevel, CAMPAIGN_LEVELS.length);
+    const finished = campaignProgress.unlockedLevel > CAMPAIGN_LEVELS.length;
+    if (finished) {
+      titleEl.textContent = t('campaign.completeTitle');
+      descEl.textContent = t('campaign.completeDesc');
+      stageEl.textContent = t('campaign.progressComplete');
+      statusEl.textContent = t('campaign.freeUnlocked');
+      fillEl.style.width = '100%';
+      startBtn.textContent = t('campaign.freePlay');
+      startBtn.dataset.campaignAction = 'free';
+    } else {
+      titleEl.textContent = t('campaign.level' + level + '.title');
+      descEl.textContent = t('campaign.level' + level + '.desc');
+      stageEl.textContent = formatI18n('campaign.levelProgress', { level });
+      fillEl.style.width = (Math.max(0, campaignProgress.unlockedLevel - 1) / CAMPAIGN_LEVELS.length * 100) + '%';
+      if (pendingLevel) {
+        statusEl.textContent = t('campaign.resultKicker') + ' · ' + t('campaign.resumeReward');
+        startBtn.textContent = t('campaign.resumeReward');
+        startBtn.dataset.campaignAction = 'reward';
+      } else {
+        statusEl.textContent = campaignProgress.equippedRelic && EVOLUTIONS[campaignProgress.equippedRelic]
+          ? formatI18n('campaign.relicsEquipped', { name: getEvolutionName(campaignProgress.equippedRelic) })
+          : t('campaign.noRelic');
+        startBtn.textContent = formatI18n('campaign.start', { level });
+        startBtn.dataset.campaignAction = 'start';
+      }
+    }
+    if (collectionBtn) {
+      collectionBtn.textContent = formatI18n('campaign.collectionCount', { count: campaignProgress.relics.length });
+    }
+  }
+  function renderRelicCollection() {
+    const list = document.getElementById('relic-collection-list');
+    if (!list) return;
+    if (!campaignProgress.relics.length) {
+      list.innerHTML = '<div id="relic-empty-state">' + t('campaign.collectionEmpty') + '</div>';
+      return;
+    }
+    list.innerHTML = campaignProgress.relics.map(id => {
+      const evo = EVOLUTIONS[id];
+      if (!evo) return '';
+      const equipped = campaignProgress.equippedRelic === id;
+      return '<div class="relic-owned-card">' +
+        '<span class="level-reward-icon" aria-hidden="true">' + evo.icon + '</span>' +
+        '<div class="level-reward-main"><span class="level-reward-name">' + getEvolutionName(id) + '</span><span class="level-reward-type">' + getEvolutionType(id) + '</span></div>' +
+        '<button class="relic-equip-button" data-relic="' + id + '" aria-pressed="' + equipped + '">' + t(equipped ? 'campaign.equipped' : 'campaign.equip') + '</button>' +
+        '<div class="level-reward-desc">' + getEvolutionDesc(id) + '</div></div>';
+    }).join('');
+    list.querySelectorAll('[data-relic]').forEach(button => {
+      button.addEventListener('click', () => {
+        campaignProgress.equippedRelic = button.dataset.relic;
+        saveCampaignProgress();
+        renderRelicCollection();
+        updateCampaignHomeUI();
+        flashToast(formatI18n('campaign.relicsEquipped', { name: getEvolutionName(button.dataset.relic) }), 1800);
+      });
+    });
+  }
+  function openRelicCollection() {
+    renderRelicCollection();
+    document.getElementById('overlay-relics').classList.remove('hidden');
+    document.getElementById('btn-close-relics').focus();
+  }
+  function campaignReturnToMenu() {
+    clearNoMovesTimer();
+    document.getElementById('overlay-campaign-briefing').classList.add('hidden');
+    document.getElementById('overlay-level-complete').classList.add('hidden');
+    document.getElementById('overlay-gameover').classList.add('hidden');
+    document.getElementById('overlay-relics').classList.add('hidden');
+    elOverlayStart.classList.remove('hidden');
+    document.getElementById('overlay-gameover').classList.remove('campaign-failure');
+    document.body.classList.remove('campaign-mode');
+    started = false;
+    gameOver = false;
+    busy = false;
+    campaignMode = false;
+    dailyMode = false;
+    clearSavedGame();
+    stopAmbient();
+    updateObjectiveUI(false);
+    updateCampaignHomeUI();
+    updateFirstRunUI();
+  }
+  function generateCampaignRewards() {
+    const owned = new Set(campaignProgress.relics);
+    const options = Object.keys(EVOLUTIONS).filter(id => !owned.has(id));
+    for (let i = options.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [options[i], options[j]] = [options[j], options[i]];
+    }
+    return options.slice(0, 3);
+  }
+  function renderCampaignLevelComplete(level) {
+    const overlay = document.getElementById('overlay-level-complete');
+    if (!overlay || level < 1 || level > CAMPAIGN_LEVELS.length) return;
+    const claimedId = campaignProgress.claimedRewards[String(level)];
+    const isPending = campaignProgress.pendingLevel === level && campaignProgress.pendingRewards.length > 0;
+    campaignStage = level;
+    const rewardList = document.getElementById('level-reward-list');
+    const emptyState = document.getElementById('campaign-empty-state');
+    const claimButton = document.getElementById('btn-claim-reward');
+    const nextButton = document.getElementById('btn-next-level');
+    document.getElementById('campaign-result-kicker').textContent = t('campaign.resultKicker');
+    document.getElementById('campaign-result-title').textContent = t('campaign.level' + level + '.title');
+    document.getElementById('campaign-result-subtitle').textContent = t('campaign.resultSubtitle');
+    const summaryStats = isPending && campaignProgress.pendingStats ? campaignProgress.pendingStats : { memories: memoriesCollected, turns: turn, score };
+    document.getElementById('campaign-result-summary').textContent = formatI18n('campaign.resultSummary', summaryStats);
+    document.getElementById('campaign-reward-heading').textContent = t('campaign.rewardHeading');
+    rewardList.setAttribute('aria-label', t('campaign.rewardHeading'));
+    document.getElementById('campaign-reward-help').textContent = t('campaign.rewardHelp');
+    document.getElementById('btn-retry-campaign').textContent = t('campaign.retry');
+    document.getElementById('btn-campaign-result-menu').textContent = t('campaign.menu');
+    document.getElementById('level-result-progress-fill').style.width = '100%';
+    claimButton.classList.toggle('hidden', !isPending);
+    claimButton.disabled = true;
+    nextButton.classList.toggle('hidden', isPending);
+    nextButton.textContent = level >= CAMPAIGN_LEVELS.length ? t('campaign.freePlay') : t('campaign.next');
+    if (isPending) {
+      selectedCampaignReward = campaignProgress.pendingRewards.includes(selectedCampaignReward)
+        ? selectedCampaignReward : campaignProgress.pendingRewards[0];
+      emptyState.classList.add('hidden');
+      rewardList.classList.remove('hidden');
+      rewardList.innerHTML = campaignProgress.pendingRewards.map(id => {
+        const evo = EVOLUTIONS[id];
+        if (!evo) return '';
+        return '<button type="button" class="level-reward-card' + (id === selectedCampaignReward ? ' selected' : '') + '" data-campaign-reward="' + id + '" aria-pressed="' + (id === selectedCampaignReward) + '">' +
+          '<span class="level-reward-icon" aria-hidden="true">' + evo.icon + '</span><span class="level-reward-main"><span class="level-reward-name">' + getEvolutionName(id) + '</span><span class="level-reward-type">' + getEvolutionType(id) + '</span></span><span class="level-reward-desc">' + getEvolutionDesc(id) + '</span></button>';
+      }).join('');
+      rewardList.querySelectorAll('[data-campaign-reward]').forEach(button => {
+        button.addEventListener('click', () => {
+          selectedCampaignReward = button.dataset.campaignReward;
+          rewardList.querySelectorAll('[data-campaign-reward]').forEach(card => {
+            const selected = card.dataset.campaignReward === selectedCampaignReward;
+            card.classList.toggle('selected', selected);
+            card.setAttribute('aria-pressed', String(selected));
+          });
+          claimButton.disabled = false;
+        });
+      });
+      claimButton.disabled = false;
+      document.getElementById('level-claim-status').textContent = '';
+    } else {
+      selectedCampaignReward = null;
+      rewardList.innerHTML = '';
+      rewardList.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      emptyState.textContent = claimedId && EVOLUTIONS[claimedId]
+        ? formatI18n('campaign.claimed', { name: getEvolutionName(claimedId) })
+        : t('campaign.alreadyClaimed');
+      if (!claimedId) emptyState.textContent = t('campaign.rewardUnavailable');
+      document.getElementById('level-claim-status').textContent = '';
+    }
+    overlay.classList.remove('hidden');
+    (isPending ? claimButton : nextButton).focus();
+  }
+  function completeCampaignLevel() {
+    if (!campaignMode || campaignLevelResolved || !started) return;
+    campaignLevelResolved = true;
+    gameOver = true;
+    busy = true;
+    clearNoMovesTimer();
+    clearSavedGame();
+    stopAmbient();
+    safeSdk('game.gameplayStop');
+    if (!campaignProgress.clearedLevels.includes(campaignStage)) {
+      campaignProgress.clearedLevels.push(campaignStage);
+      if (!campaignProgress.claimedRewards[String(campaignStage)]) {
+        campaignProgress.pendingLevel = campaignStage;
+        campaignProgress.pendingRewards = generateCampaignRewards();
+        campaignProgress.pendingStats = { memories: memoriesCollected, turns: turn, score };
+      }
+      if (campaignStage === 1) {
+        tutorialSeen = true;
+        try { localStorage.setItem('witherroot_tutorial_seen', '1'); } catch (e) {}
+        markFirstRunTutorialResolved();
+      }
+      saveCampaignProgress();
+    }
+    renderCampaignLevelComplete(campaignStage);
+  }
+  function checkCampaignCompletion() {
+    if (!campaignMode || campaignLevelResolved || !started || gameOver || !getCampaignLevel()) return;
+    if (getCampaignObjectiveValue() >= getCampaignLevel().target) completeCampaignLevel();
+  }
+  function claimCampaignReward() {
+    const level = campaignProgress.pendingLevel;
+    const id = selectedCampaignReward;
+    if (!level || !id || !campaignProgress.pendingRewards.includes(id) || !EVOLUTIONS[id]) return;
+    campaignProgress.claimedRewards[String(level)] = id;
+    if (!campaignProgress.relics.includes(id)) campaignProgress.relics.push(id);
+    campaignProgress.equippedRelic = id;
+    campaignProgress.unlockedLevel = Math.max(campaignProgress.unlockedLevel, Math.min(CAMPAIGN_LEVELS.length + 1, level + 1));
+    campaignProgress.pendingLevel = 0;
+    campaignProgress.pendingRewards = [];
+    campaignProgress.pendingStats = null;
+    saveCampaignProgress();
+    document.getElementById('level-claim-status').textContent = formatI18n('campaign.claimed', { name: getEvolutionName(id) });
+    renderCampaignLevelComplete(level);
+    updateCampaignHomeUI();
+    sfxCollect();
+  }
+  function startCampaignLevel(level) {
+    if (level > CAMPAIGN_LEVELS.length) {
+      campaignMode = false;
+      difficultyMode = 'easy';
+      try { localStorage.setItem('witherroot_difficulty', difficultyMode); } catch (e) {}
+      campaignReturnToMenu();
+      startGame();
+      return;
+    }
+    if (level > campaignProgress.unlockedLevel) {
+      flashToast(language === 'zh' ? '请先完成前一关' : 'Clear the previous level first', 1800);
+      return;
+    }
+    dismissNoMovesPrompt();
+    campaignMode = true;
+    campaignStage = level;
+    campaignLevelResolved = false;
+    selectedCampaignReward = null;
+    dailyMode = false;
+    difficultyMode = 'tutorial';
+    document.body.classList.add('campaign-mode');
+    document.getElementById('overlay-level-complete').classList.add('hidden');
+    document.getElementById('overlay-gameover').classList.add('hidden');
+    document.getElementById('overlay-gameover').classList.remove('campaign-failure');
+    elOverlayStart.classList.add('hidden');
+    clearRng();
+    applyPerks([]);
+    actuallyStartGame();
+  }
+  function showCampaignBriefing() {
+    if (!campaignMode) return;
+    const config = getCampaignLevel();
+    document.getElementById('campaign-briefing-kicker').textContent = formatI18n('campaign.levelLabel', { level: campaignStage });
+    document.getElementById('campaign-briefing-title').textContent = t('campaign.level' + campaignStage + '.title');
+    document.getElementById('campaign-briefing-copy').textContent = t('campaign.level' + campaignStage + '.brief');
+    document.getElementById('campaign-briefing-goal').innerHTML = '<b>' + t('campaign.briefingGoalTitle') + '</b><br>' + t('campaign.level' + campaignStage + '.goal');
+    if (config.frostInterval) {
+      document.getElementById('campaign-briefing-copy').textContent += ' ' + formatI18n('campaign.frostInfo', { turns: config.frostInterval });
+    }
+    busy = true;
+    document.getElementById('overlay-campaign-briefing').classList.remove('hidden');
+    document.getElementById('btn-campaign-briefing-start').focus();
+  }
+  function closeCampaignBriefing() {
+    document.getElementById('overlay-campaign-briefing').classList.add('hidden');
+    busy = false;
+    updateHUD();
+    scheduleNoMovesCheck();
+    if (canvas) canvas.focus();
+  }
+  function trapDialogFocus(dialog) {
+    if (!dialog) return;
+    dialog.addEventListener('keydown', event => {
+      if (event.key === 'Tab') {
+        const focusable = Array.from(dialog.querySelectorAll('button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])'))
+          .filter(element => !element.closest('.hidden') && element.getClientRects().length > 0);
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        if (dialog.id === 'overlay-campaign-briefing' || dialog.id === 'overlay-level-complete') campaignReturnToMenu();
+        else if (dialog.id === 'overlay-relics') {
+          dialog.classList.add('hidden');
+          document.getElementById('btn-open-relics').focus();
+        }
+      }
+    });
+  }
+  function updateDifficultyNote() {
+    const note = document.getElementById('difficulty-note');
+    if (!note) return;
+    if (isFirstRunTutorialRequired()) {
+      note.textContent = t('dynamic.firstRunForced');
+      return;
+    }
+    const key = difficultyMode === 'tutorial' ? 'difficulty.tutorialNote' :
+      difficultyMode === 'easy' ? 'difficulty.easyNote' :
+      difficultyMode === 'hard' ? 'difficulty.hardNote' : 'difficulty.normalNote';
+    note.textContent = t(key);
+  }
+  function updateTutorialHint() {
+    if (!elHint || !isTutorialMode() || !started || gameOver) return;
+    const key = memoriesCollected <= 0 ? 'dynamic.tutorialHint1' :
+      memoriesCollected === 1 ? 'dynamic.tutorialHint2' : 'dynamic.tutorialHint3';
+    elHint.textContent = t(key);
   }
   // v3.7: Hard mode XP multiplier
   function getDifficultyXPMultiplier() {
@@ -1447,6 +2403,16 @@
   }
   function getCurrentPhase() { return currentPhase; }
   function getPhaseConfig() { return PHASES[currentPhase]; }
+  function getPhaseName(phaseId) { return t('phase.' + phaseId); }
+  function getPhaseLore(phaseId) { return t('phase.' + phaseId + 'Lore'); }
+  function updatePhaseIndicator() {
+    const config = PHASES[currentPhase];
+    const phaseEl = document.getElementById('phase-indicator');
+    if (!config || !phaseEl) return;
+    phaseEl.textContent = config.icon + ' ' + getPhaseName(currentPhase);
+    phaseEl.style.color = config.accent;
+    phaseEl.style.textShadow = '0 0 8px ' + config.accent;
+  }
 
   function updatePhase() {
     const newPhase = getPhaseForTurn(turn);
@@ -1462,14 +2428,9 @@
     // Visual: update game-wrap data-phase attribute (drives CSS tint)
     document.getElementById('game-wrap').setAttribute('data-phase', toPhase);
     // HUD indicator update
-    const phaseEl = document.getElementById('phase-indicator');
-    if (phaseEl) {
-      phaseEl.textContent = config.icon + ' ' + config.name;
-      phaseEl.style.color = config.accent;
-      phaseEl.style.textShadow = '0 0 8px ' + config.accent;
-    }
+    updatePhaseIndicator();
     // Toast with lore line
-    flashToast(config.icon + ' ' + config.name.toUpperCase() + ' · ' + config.loreLine, 3200);
+    flashToast(config.icon + ' ' + getPhaseName(toPhase).toUpperCase() + ' · ' + getPhaseLore(toPhase), 3200);
     // Phase transition sound chord
     const baseFreq = (toPhase === 'dawn') ? 261.63 : (toPhase === 'twilight') ? 220.00 : 174.61;
     playTone(baseFreq, 0.5, 'sine', 0.18);
@@ -1893,6 +2854,9 @@
   let gameOver = false;
   let started = false;
   let busy = false;
+  let noMovesTimer = null;
+  let noMovesPromptOpen = false;
+  let noMovesFocusReturn = null;
   let history = [];        // undo stack
   let particles = [];
   let comboCount = 0;
@@ -1916,14 +2880,18 @@
   let achievements = {};        // id -> true
   // Settings
   let settings = { sfx: true, music: true, shake: true, particles: true, haptics: true, colorblind: false, largetext: false };
-  let difficultyMode = 'normal';  // 'normal' or 'easy'
+  let difficultyMode = 'tutorial';  // 'tutorial', 'easy', 'normal', or 'hard'
   // Tutorial
   let tutorialSeen = false;
+  let firstRunTutorialResolved = false;
+  const EARLY_OBJECTIVE_TARGET = 3;
+  let objectiveToastStage = 0;
   // Daily challenge state
   let dailyMode = false;
   let dailySeed = 0;
   let dailyKey = '';
   let dailyCompleted = {};  // {dateKey: score}
+  let tutorialMemoryStage = 0;
 
   // ---------- DOM ----------
   let elScore, elBest, elTurn, elVitFill, elHint, elToast, elComboFlash;
@@ -1936,7 +2904,7 @@
   let elSetColorblind, elSetLargetext;
   let elOverlayAch, elAchList, elAchProgress, elAchTotal;
   let elOverlayStats;
-  let elOverlayPause, elRunHighlights;
+  let elOverlayPause, elOverlayStuck, elRunHighlights;
 
   // ---------- Utility ----------
   function hexToRgb(hex) {
@@ -1986,6 +2954,7 @@
   // ---------- Init ----------
   function init() {
     canvas = document.getElementById('game');
+    canvas.tabIndex = 0;
     ctx = canvas.getContext('2d');
     elScore = document.getElementById('score');
     elBest = document.getElementById('best');
@@ -2022,6 +2991,7 @@
     elAchTotal = document.getElementById('ach-total');
     elOverlayStats = document.getElementById('overlay-stats');
     elOverlayPause = document.getElementById('overlay-pause');
+    elOverlayStuck = document.getElementById('overlay-stuck');
     elRunHighlights = document.getElementById('run-highlights');
 
     // Power-up buttons
@@ -2030,14 +3000,29 @@
       elPuCounts[t] = document.getElementById('pu-' + t + '-cnt');
     });
 
-    // Load persisted state
+    // A language query string lets each portfolio locale open the right copy.
+    // The in-game toggle updates the same parameter so the choice survives refresh.
+    const requestedLanguage = new URLSearchParams(window.location.search).get('lang');
+    try {
+      const savedLanguage = localStorage.getItem('witherroot_language');
+      language = (requestedLanguage === 'en' || requestedLanguage === 'zh')
+        ? requestedLanguage
+        : (savedLanguage === 'en' || savedLanguage === 'zh' ? savedLanguage : 'zh');
+      localStorage.setItem('witherroot_language', language);
+    } catch (e) {
+      language = requestedLanguage === 'en' || requestedLanguage === 'zh' ? requestedLanguage : 'zh';
+    }
+    if (language !== 'en' && language !== 'zh') language = 'zh';
+    applyLanguage();
     best = parseInt(localStorage.getItem('witherroot_best') || '0', 10) || 0;
     elBest.textContent = best;
     try { settings = Object.assign(settings, JSON.parse(localStorage.getItem('witherroot_settings') || '{}')); } catch (e) {}
     try { achievements = JSON.parse(localStorage.getItem('witherroot_ach') || '{}'); } catch (e) {}
-    tutorialSeen = localStorage.getItem('witherroot_tutorial_seen') === '1';
+    resetSessionStateOnBoot();
+    loadCampaignProgress();
     loadCodex();
     loadOnboardingState();
+    loadFirstRunTutorialState();
     loadStats();
     try { dailyCompleted = JSON.parse(localStorage.getItem('witherroot_daily') || '{}'); } catch (e) {}
     try { totalAshGrowth = parseInt(localStorage.getItem('witherroot_ash_total') || '0', 10) || 0; } catch (e) {}
@@ -2047,14 +3032,14 @@
     try { metaXP = parseInt(localStorage.getItem('witherroot_meta_xp') || '0', 10) || 0; metaLevel = getMetaLevelFromXP(metaXP); } catch (e) {}
     // Restore saved theme
     try { currentTheme = localStorage.getItem('witherroot_theme') || 'default'; applyTheme(currentTheme); } catch (e) {}
-    try { difficultyMode = localStorage.getItem('witherroot_difficulty') || 'normal'; } catch (e) {}
-    if (difficultyMode !== 'easy' && difficultyMode !== 'normal' && difficultyMode !== 'hard') difficultyMode = 'normal';
-    // v3.7: If hard is selected but not unlocked, fall back to normal
-    if (difficultyMode === 'hard' && !isHardUnlocked()) difficultyMode = 'normal';
+    difficultyMode = 'tutorial';
+    try { localStorage.setItem('witherroot_difficulty', difficultyMode); } catch (e) {}
+    enforceFirstRunTutorial();
     // Restore mode button selection
     document.querySelectorAll('.mode-btn').forEach(b => {
       b.classList.toggle('active', b.dataset.mode === difficultyMode);
     });
+    updateFirstRunUI();
     applySettingsToUI();
     // Update achievement counter on start screen
     const achIds = Object.keys(ACHIEVEMENTS);
@@ -2067,7 +3052,7 @@
     // Rotating tip-of-day on start screen
     const tipEl = document.getElementById('tip-of-day');
     if (tipEl) {
-      const tips = [
+      const tips = language === 'zh' ? ['提示：先完成教学关，再挑战更高难度。'] : [
         'Tip: Ash tiles make adjacent growth free — chain them for combos.',
         'Tip: Decaying roots (orange-brown) can\'t sprout new growth. Plan ahead.',
         'Tip: Frost Shield negates one frost wave — save it for emergencies.',
@@ -2099,6 +3084,10 @@
     updateMetaUI();
     refreshThemeSelector();
     refreshHardButton();
+    updateCampaignHomeUI();
+    if (campaignProgress.pendingLevel && campaignProgress.pendingRewards.length) {
+      document.getElementById('btn-campaign-play').focus();
+    }
 
     resize();
     // Throttle resize to avoid layout thrash during continuous drag/rotate.
@@ -2127,16 +3116,31 @@
     }, { passive: false });
 
     document.getElementById('btn-play').addEventListener('click', () => {
-      if (hasSavedGame()) {
-        // Custom confirm via toast + button re-arm
-        confirmDiscard('Discard saved game and start a new one?', () => {
-          clearSavedGame();
-          startGame();
-        });
-      } else {
-        startGame();
-      }
+      clearSavedGame();
+      startGame();
     });
+    document.getElementById('btn-campaign-play').addEventListener('click', () => {
+      const action = document.getElementById('btn-campaign-play').dataset.campaignAction;
+      if (action === 'reward') renderCampaignLevelComplete(campaignProgress.pendingLevel);
+      else if (action === 'free') startCampaignLevel(CAMPAIGN_LEVELS.length + 1);
+      else startCampaignLevel(campaignProgress.unlockedLevel);
+    });
+    document.getElementById('btn-open-relics').addEventListener('click', openRelicCollection);
+    document.getElementById('btn-close-relics').addEventListener('click', () => {
+      document.getElementById('overlay-relics').classList.add('hidden');
+      document.getElementById('btn-open-relics').focus();
+    });
+    document.getElementById('btn-campaign-briefing-start').addEventListener('click', closeCampaignBriefing);
+    document.getElementById('btn-campaign-briefing-menu').addEventListener('click', campaignReturnToMenu);
+    document.getElementById('btn-claim-reward').addEventListener('click', claimCampaignReward);
+    document.getElementById('btn-next-level').addEventListener('click', () => {
+      const nextLevel = campaignStage + 1;
+      if (nextLevel > CAMPAIGN_LEVELS.length) startCampaignLevel(CAMPAIGN_LEVELS.length + 1);
+      else startCampaignLevel(nextLevel);
+    });
+    document.getElementById('btn-retry-campaign').addEventListener('click', () => startCampaignLevel(campaignStage));
+    document.getElementById('btn-campaign-result-menu').addEventListener('click', campaignReturnToMenu);
+    ['overlay-campaign-briefing', 'overlay-level-complete', 'overlay-relics'].forEach(id => trapDialogFocus(document.getElementById(id)));
     document.getElementById('btn-resume').addEventListener('click', resumeSavedGame);
     document.getElementById('btn-daily').addEventListener('click', () => {
       if (hasSavedGame()) {
@@ -2149,8 +3153,20 @@
       }
     });
     document.getElementById('btn-retry').addEventListener('click', () => {
+      dismissNoMovesPrompt();
       clearSavedGame();
-      startGame();
+      if (campaignMode) startCampaignLevel(campaignStage);
+      else startGame();
+    });
+    document.getElementById('btn-stuck-retry').addEventListener('click', () => {
+      restartAfterNoMoves('current');
+    });
+    document.getElementById('btn-stuck-easy').addEventListener('click', () => {
+      restartAfterNoMoves('easy');
+    });
+    document.getElementById('btn-stuck-menu').addEventListener('click', () => {
+      dismissNoMovesPrompt();
+      quitToMenu();
     });
     document.getElementById('btn-achievements').addEventListener('click', openAchievements);
     document.getElementById('btn-ach-close').addEventListener('click', closeAchievements);
@@ -2160,11 +3176,16 @@
     document.getElementById('btn-stats-close').addEventListener('click', closeStats);
     document.getElementById('btn-stats-reset').addEventListener('click', resetStats);
     document.getElementById('btn-restart').addEventListener('click', () => {
-      if (started) { resetBoard(); stopAmbient(); startAmbient(); clearSavedGame(); }
+      if (started) {
+        if (campaignMode) startCampaignLevel(campaignStage);
+        else { resetBoard(); stopAmbient(); startAmbient(); clearSavedGame(); }
+      }
     });
     document.getElementById('btn-undo').addEventListener('click', undo);
     document.getElementById('btn-revive').addEventListener('click', revive);
     document.getElementById('btn-sound').addEventListener('click', toggleSound);
+    document.getElementById('btn-language').addEventListener('click', toggleLanguage);
+    document.getElementById('btn-start-language').addEventListener('click', toggleLanguage);
     // Settings button: opens pause menu if game is running, otherwise opens settings overlay
     document.getElementById('btn-settings').addEventListener('click', () => {
       if (started && !gameOver) {
@@ -2175,6 +3196,8 @@
     });
     document.getElementById('btn-settings-close').addEventListener('click', closeSettings);
     document.getElementById('btn-tutorial-ok').addEventListener('click', closeTutorial);
+    document.getElementById('btn-tutorial-skip').addEventListener('click', skipTutorialToEasy);
+    document.getElementById('set-language').addEventListener('click', toggleLanguage);
     elSetSfx.addEventListener('click', () => toggleSetting('sfx'));
     elSetMusic.addEventListener('click', () => toggleSetting('music'));
     elSetShake.addEventListener('click', () => toggleSetting('shake'));
@@ -2196,9 +3219,14 @@
     document.querySelectorAll('.mode-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const mode = btn.dataset.mode;
+        if (isFirstRunTutorialRequired() && mode !== 'tutorial') {
+          flashToast(t('dynamic.firstRunForced'), 2200);
+          sfxClick();
+          return;
+        }
         // v3.7: Hard mode locked behind Meta L3
         if (mode === 'hard' && !isHardUnlocked()) {
-          flashToast('🔒 Reach Meta Level 3 to unlock HARD mode', 2200);
+          flashToast(t('dynamic.hardLocked'), 2200);
           sfxClick();
           return;
         }
@@ -2206,9 +3234,11 @@
         btn.classList.add('active');
         difficultyMode = mode;
         try { localStorage.setItem('witherroot_difficulty', difficultyMode); } catch (e) {}
-        const msg = mode === 'easy' ? '🌱 EASY mode: more vitality, slower frost'
-                  : mode === 'hard' ? '🔥 HARD mode: faster frost, less vit, +50% XP'
-                  : '⚔ NORMAL mode';
+        const msg = mode === 'tutorial' ? t('dynamic.modeTutorial')
+                  : mode === 'easy' ? t('dynamic.modeEasy')
+                  : mode === 'hard' ? t('dynamic.modeHard')
+                  : t('dynamic.modeNormal');
+        updateFirstRunUI();
         flashToast(msg, 1600);
         sfxClick();
       });
@@ -2236,8 +3266,8 @@
       elOverlayPause.classList.add('hidden');
       clearSavedGame();
       stopAmbient();
-      resetBoard();
-      startAmbient();
+      if (campaignMode) startCampaignLevel(campaignStage);
+      else { resetBoard(); startAmbient(); }
       flashToast('Game restarted', 1200);
     });
     document.getElementById('btn-pause-quit').addEventListener('click', quitToMenu);
@@ -2281,11 +3311,27 @@
 
     // ESC cancels active power; number keys 1-4 activate powers; U = undo
     document.addEventListener('keydown', (e) => {
+      if (noMovesPromptOpen) {
+        if (e.key === 'Tab') {
+          const dialog = document.getElementById('overlay-stuck');
+          const focusable = dialog ? Array.from(dialog.querySelectorAll('button:not([disabled])')) : [];
+          if (focusable.length > 0) {
+            const current = document.activeElement;
+            const index = focusable.indexOf(current);
+            const next = e.shiftKey
+              ? focusable[(index <= 0 ? focusable.length : index) - 1]
+              : focusable[(index + 1) % focusable.length];
+            e.preventDefault();
+            next.focus();
+          }
+        }
+        return;
+      }
       if (e.key === 'Escape' && activePower) { cancelPower(); return; }
       if (e.key === 'u' || e.key === 'U') { undo(); return; }
       // P or Esc to pause/resume game
       if (e.key === 'p' || e.key === 'P') {
-        if (started && !gameOver) {
+        if (started && !gameOver && !noMovesPromptOpen) {
           const pauseEl = document.getElementById('overlay-pause');
           if (pauseEl && pauseEl.classList.contains('hidden')) pauseGame();
           else resumeGame();
@@ -2336,10 +3382,7 @@
     initCrazySDK();
     resetBoard();          // initialize board so render loop has valid state
     started = false;       // but don't allow input until user clicks BEGIN
-    // Show resume button if a saved game exists
-    if (hasSavedGame()) {
-      document.getElementById('btn-resume').classList.remove('hidden');
-    }
+    // A fresh browser boot intentionally never exposes Resume; long-term data remains intact.
 
     // ---------- Auto-pause + save on tab hide / app switch ----------
     // Mobile browsers throttle/suspend rAF and audio when hidden; we must
@@ -2541,8 +3584,56 @@
     }
   }
   // ---------- Tutorial ----------
+  function loadFirstRunTutorialState() {
+    let stored = false;
+    try { stored = localStorage.getItem('witherroot_tutorial_level_resolved') === '1'; } catch (e) {}
+    if (!stored && campaignProgress.clearedLevels.includes(1)) {
+      stored = true;
+      try { localStorage.setItem('witherroot_tutorial_level_resolved', '1'); } catch (e) {}
+    }
+    // Existing players who already saw the previous static tutorial or onboarding
+    // are not trapped by the new first-run gate or shown the new guide again.
+    if (!stored && tutorialSeen) {
+      onboardingComplete = true;
+      try { localStorage.setItem('witherroot_onboarding_done', '1'); } catch (e) {}
+    }
+    if (!stored && (tutorialSeen || onboardingComplete)) {
+      stored = true;
+      try { localStorage.setItem('witherroot_tutorial_level_resolved', '1'); } catch (e) {}
+    }
+    firstRunTutorialResolved = stored;
+  }
+  function isFirstRunTutorialRequired() {
+    return !firstRunTutorialResolved && !dailyMode;
+  }
+  function markFirstRunTutorialResolved() {
+    firstRunTutorialResolved = true;
+    try { localStorage.setItem('witherroot_tutorial_level_resolved', '1'); } catch (e) {}
+    updateFirstRunUI();
+  }
+  function enforceFirstRunTutorial() {
+    if (!isFirstRunTutorialRequired()) return;
+    difficultyMode = 'tutorial';
+    try { localStorage.setItem('witherroot_difficulty', difficultyMode); } catch (e) {}
+  }
+  function updateFirstRunUI() {
+    const required = isFirstRunTutorialRequired();
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+      const isTutorial = btn.dataset.mode === 'tutorial';
+      const locked = required && !isTutorial;
+      btn.disabled = locked;
+      btn.classList.toggle('first-run-locked', locked);
+      if (locked) btn.setAttribute('aria-disabled', 'true');
+      else btn.removeAttribute('aria-disabled');
+      btn.classList.toggle('active', btn.dataset.mode === difficultyMode);
+    });
+    updateDifficultyNote();
+  }
   function showTutorialIfNeeded() {
+    if (dailyMode) return;
+    clearNoMovesTimer();
     if (!tutorialSeen) {
+      busy = true;
       elOverlayTutorial.classList.remove('hidden');
       // After the static tutorial is dismissed, the interactive onboarding will auto-start (closeTutorial triggers it)
     } else if (shouldStartOnboarding()) {
@@ -2558,7 +3649,31 @@
     // v3.1: Start interactive onboarding after the static tutorial is dismissed (first-time players)
     if (shouldStartOnboarding()) {
       setTimeout(() => startOnboarding(), 600);
-    }
+    } else restoreGameplayInput();
+  }
+  function skipTutorialToEasy() {
+    clearNoMovesTimer();
+    tutorialSeen = true;
+    try { localStorage.setItem('witherroot_tutorial_seen', '1'); } catch (e) {}
+    onboardingActive = false;
+    onboardingStepIdx = -1;
+    document.getElementById('overlay-tutorial').classList.add('hidden');
+    document.getElementById('onboarding-spotlight').classList.add('hidden');
+    document.getElementById('onboarding-tooltip').classList.add('hidden');
+    document.getElementById('onboarding-arrow').classList.add('hidden');
+    markOnboardingComplete();
+    markFirstRunTutorialResolved();
+    difficultyMode = 'easy';
+    try { localStorage.setItem('witherroot_difficulty', difficultyMode); } catch (e) {}
+    resetBoard();
+    started = true;
+    busy = false;
+    gameStartTime = Date.now();
+    updateFirstRunUI();
+    updateHUD();
+    if (settings.music) startAmbient();
+    flashToast(language === 'zh' ? '已跳过教学，进入简单模式' : 'Tutorial skipped — Easy mode started', 2200);
+    sfxClick();
   }
   function resetTutorial() {
     tutorialSeen = false;
@@ -2729,7 +3844,7 @@
     const wrap = document.getElementById('board-area');
     const w = wrap.clientWidth - 8;
     const h = wrap.clientHeight - 8;
-    const size = Math.max(220, Math.min(w, h, 540));
+    const size = Math.max(GRID, Math.min(w, h, 540));
     gridPx = Math.floor(size);
     cellSize = Math.floor(gridPx / GRID);
     const realSize = cellSize * GRID;
@@ -2743,9 +3858,16 @@
   }
 
   function startGame() {
+    dismissNoMovesPrompt();
+    campaignMode = false;
+    document.body.classList.remove('campaign-mode');
+    // This is a normal run entry. Clear Daily before applying the first-run gate
+    // so a previous Daily Challenge cannot bypass the mandatory tutorial.
+    dailyMode = false;
+    enforceFirstRunTutorial();
+    updateFirstRunUI();
     elOverlayStart.classList.add('hidden');
     elOverlayGO.classList.add('hidden');
-    dailyMode = false;
     clearRng();
     // v3.7: Show perk selection before starting (if slots unlocked)
     if (getPerkSlotCount() > 0) {
@@ -2762,18 +3884,27 @@
     resetBoard();
     started = true;
     gameStartTime = Date.now();
+    if (campaignMode && campaignStage > 1 && campaignProgress.equippedRelic && EVOLUTIONS[campaignProgress.equippedRelic]) {
+      applyEvolution(campaignProgress.equippedRelic, [campaignProgress.equippedRelic], { fromRelic: true });
+    }
+    updateHUD();
     // Initialize audio on first user gesture (browser policy)
     initAudio();
     resumeAudio();
     if (settings.music) startAmbient();
     safeSdk('game.gameplayStart');
-    // Show tutorial on first play
-    showTutorialIfNeeded();
+    if (campaignMode) showCampaignBriefing();
+    else showTutorialIfNeeded();
   }
   function startDaily() {
+    dismissNoMovesPrompt();
+    campaignMode = false;
+    document.body.classList.remove('campaign-mode');
     elOverlayStart.classList.add('hidden');
     elOverlayGO.classList.add('hidden');
     dailyMode = true;
+    // Daily Challenge is an explicit alternate entry and is not forced through first-run Tutorial.
+    if (!firstRunTutorialResolved && difficultyMode === 'tutorial') difficultyMode = 'normal';
     dailySeed = getDailySeed();
     dailyKey = getDailyKey();
     seedRng(dailySeed);
@@ -2807,6 +3938,9 @@
   }
 
   function resetBoard() {
+    clearNoMovesTimer();
+    noMovesPromptOpen = false;
+    if (elOverlayStuck) elOverlayStuck.classList.add('hidden');
     board = [];
     for (let r = 0; r < GRID; r++) {
       const row = [];
@@ -2817,17 +3951,21 @@
     }
     // Place Heart Root at center
     board[HEART_R][HEART_C] = { type: T_HEART, age: 0 };
-    // Place 2-3 stones as obstacles (avoid center 3x3)
-    let placed = 0;
-    while (placed < 3) {
-      const r = randi(0, GRID-1), c = randi(0, GRID-1);
-      if (Math.abs(r - HEART_R) < 2 && Math.abs(c - HEART_C) < 2) continue;
-      if (board[r][c].type !== T_EMPTY) continue;
-      board[r][c] = { type: T_STONE, age: 0 };
-      placed++;
+    // Early campaign routes stay open so the lesson itself remains the challenge.
+    if (!isTutorialMode() && !(campaignMode && campaignStage < 5)) {
+      let placed = 0;
+      while (placed < 3) {
+        const r = randi(0, GRID-1), c = randi(0, GRID-1);
+        if (Math.abs(r - HEART_R) < 2 && Math.abs(c - HEART_C) < 2) continue;
+        if (board[r][c].type !== T_EMPTY) continue;
+        board[r][c] = { type: T_STONE, age: 0 };
+        placed++;
+      }
     }
     memoryNodes = [];
-    vitality = getStartVitality();
+    tutorialMemoryStage = 0;
+    objectiveToastStage = 0;
+    vitality = getOpeningVitality();
     score = 0;
     turn = 0;
     memoriesCollected = 0;
@@ -2850,6 +3988,7 @@
     // Note: activePerks is set by applyPerks() called before resetBoard in startGame; do not reset here
     // v3.8: Reset Evolution state
     activeEvolutions = [];
+    evolutionOfferedIds = [];
     evolutionChoicesHistory = [];
     memoriesForEvolution = 0;
     evolutionsThisRun = 0;
@@ -2859,17 +3998,12 @@
       phoenix_charges: 0, phoenix_lastRecharge: 0,
       echo_amplifier_charges: 0
     };
+    document.getElementById('evolution-overlay').classList.remove('active');
     updateEvolutionHUD();
     // v3.6: Reset phase to Dawn at start of new run
     currentPhase = 'dawn';
     document.getElementById('game-wrap').setAttribute('data-phase', 'dawn');
-    const dawnCfg = PHASES.dawn;
-    const phaseEl0 = document.getElementById('phase-indicator');
-    if (phaseEl0) {
-      phaseEl0.textContent = dawnCfg.icon + ' ' + dawnCfg.name;
-      phaseEl0.style.color = dawnCfg.accent;
-      phaseEl0.style.textShadow = '0 0 8px ' + dawnCfg.accent;
-    }
+    updatePhaseIndicator();
     // v3.3: Reset echo state
     echoesExperienced = 0;
     echoSeenIds = [];
@@ -2881,21 +4015,40 @@
     // v3.4: Reset run-scoped echo/constellation tracking for recap
     echoChoicesHistory = [];
     constellationFormedTypes = { square: 0, triangle: 0, cross: 0, diamond: 0, line: 0 };
-    // v3.4: Apply meta-progression bonuses
-    applyMetaBonuses();
+    // Guided campaign levels use fixed budgets; Meta bonuses remain in Free Play.
+    if (!campaignMode) applyMetaBonuses();
     // Reset per-run tracking
     runMaxCombo = 0;
     runAchUnlocked = [];
     runStartTime = Date.now();
     runPowerUsedFlags = { prune: false, ember: false, shield: false, recall: false };
     // Easy mode bonus: start with 1 Shield charge
-    if (difficultyMode === 'easy') {
+    if (!campaignMode && difficultyMode === 'easy') {
       powerups.shield = 1;
     }
-    spawnMemoryNode();
-    spawnMemoryNode();
+    if (campaignMode) {
+      const config = getCampaignLevel();
+      if (config && config.memories > 0) {
+        if (!placeTutorialMemory(1, 4)) spawnMemoryNode();
+        for (let i = 1; i < config.memories; i++) spawnMemoryNode();
+      }
+      if (campaignStage === 4) powerups[PU_PRUNE] = 1;
+    } else if (isTutorialMode()) {
+      placeTutorialMemory(1, 4);
+    } else {
+      spawnMemoryNode();
+      spawnMemoryNode();
+    }
     updateHUD();
-    elHint.textContent = 'Tap a tile next to your roots to grow';
+    elHint.textContent = isTutorialMode() ? t('dynamic.tutorialHint1') : t('hint.grow');
+  }
+
+  function placeTutorialMemory(r, c) {
+    if (!inBounds(r, c) || board[r][c].type !== T_EMPTY) return false;
+    board[r][c] = { type: T_MEMORY, age: 0 };
+    memoryNodes.push({ r, c });
+    tutorialMemoryStage++;
+    return true;
   }
 
   // ---------- Memory nodes ----------
@@ -2944,15 +4097,201 @@
     return true;
   }
 
+  function canCollectMemoryAt(r, c) {
+    if (!inBounds(r, c) || board[r][c].type !== T_MEMORY) return false;
+    return neighbors(r, c).some(([nr, nc]) => {
+      const type = board[nr][nc].type;
+      return type === T_HEART || (type === T_ROOT && board[nr][nc].age < ROOT_DECAY_START);
+    });
+  }
+
+  function cloneBoardState(source) {
+    return source.map(row => row.map(cell => ({ type: cell.type, age: cell.age })));
+  }
+
+  function computeGrowCostOnBoard(state, r, c) {
+    let cost = GROW_COST;
+    for (const [nr, nc] of neighbors(r, c)) {
+      if (state[nr][nc].type === T_ASH) cost -= ASH_DISCOUNT;
+    }
+    return Math.max(0, cost);
+  }
+
+  function canGrowAtOnBoard(state, r, c) {
+    if (!inBounds(r, c) || state[r][c].type !== T_EMPTY) return false;
+    return neighbors(r, c).some(([nr, nc]) => {
+      const type = state[nr][nc].type;
+      return type === T_HEART || (type === T_ROOT && state[nr][nc].age < ROOT_DECAY_START);
+    });
+  }
+
+  function canCollectMemoryAtOnBoard(state, nodes, r, c) {
+    if (!inBounds(r, c) || state[r][c].type !== T_MEMORY) return false;
+    return neighbors(r, c).some(([nr, nc]) => {
+      const type = state[nr][nc].type;
+      return type === T_HEART || (type === T_ROOT && state[nr][nc].age < ROOT_DECAY_START);
+    });
+  }
+
+  function hasImmediateLegalAction(state, nodes, availableVitality) {
+    for (let r = 0; r < GRID; r++) {
+      for (let c = 0; c < GRID; c++) {
+        if (canGrowAtOnBoard(state, r, c) && availableVitality >= computeGrowCostOnBoard(state, r, c)) return true;
+        if (canCollectMemoryAtOnBoard(state, nodes, r, c)) return true;
+      }
+    }
+    return false;
+  }
+
+  function canPruneRecover() {
+    if (powerups[PU_PRUNE] <= 0) return false;
+    for (let r = 0; r < GRID; r++) {
+      for (let c = 0; c < GRID; c++) {
+        if (board[r][c].type !== T_ROOT) continue;
+        const simulated = cloneBoardState(board);
+        simulated[r][c] = { type: T_EMPTY, age: 0 };
+        if (hasImmediateLegalAction(simulated, memoryNodes, vitality + 1)) return true;
+      }
+    }
+    return false;
+  }
+
+  function canEmberRecover() {
+    if (powerups[PU_EMBER] <= 0) return false;
+    for (let r = 0; r < GRID; r++) {
+      for (let c = 0; c < GRID; c++) {
+        const simulated = cloneBoardState(board);
+        let ignited = false;
+        for (let dr = -1; dr <= 1; dr++) {
+          for (let dc = -1; dc <= 1; dc++) {
+            const nr = r + dr, nc = c + dc;
+            if (inBounds(nr, nc) && simulated[nr][nc].type === T_ASH) {
+              simulated[nr][nc] = { type: T_ROOT, age: 0 };
+              ignited = true;
+            }
+          }
+        }
+        if (ignited && hasImmediateLegalAction(simulated, memoryNodes, vitality)) return true;
+      }
+    }
+    return false;
+  }
+
+  function canRecallRecover() {
+    if (powerups[PU_RECALL] <= 0 || memoryNodes.length === 0) return false;
+    const simulated = cloneBoardState(board);
+    const simulatedNodes = memoryNodes.map(m => ({ r: m.r, c: m.c }));
+    for (const m of simulatedNodes) {
+      const dr = HEART_R - m.r;
+      const dc = HEART_C - m.c;
+      let nr = m.r, nc = m.c;
+      if (Math.abs(dr) >= Math.abs(dc) && dr !== 0) nr = m.r + Math.sign(dr);
+      else if (dc !== 0) nc = m.c + Math.sign(dc);
+      if (inBounds(nr, nc) && simulated[nr][nc].type === T_EMPTY && !(nr === HEART_R && nc === HEART_C)) {
+        simulated[m.r][m.c] = { type: T_EMPTY, age: 0 };
+        simulated[nr][nc] = { type: T_MEMORY, age: 0 };
+        m.r = nr; m.c = nc;
+      }
+    }
+    return hasImmediateLegalAction(simulated, simulatedNodes, vitality);
+  }
+
+  // A power counts as a recovery route only if its simulated result restores a legal next action.
+  function hasMeaningfulRecoveryPower() {
+    return canPruneRecover() || canEmberRecover() || canRecallRecover();
+  }
+
+  function hasLegalAction() {
+    if (!started || gameOver) return true;
+    return hasImmediateLegalAction(board, memoryNodes, vitality) || hasMeaningfulRecoveryPower();
+  }
+
+  function clearNoMovesTimer() {
+    if (noMovesTimer !== null) {
+      clearTimeout(noMovesTimer);
+      noMovesTimer = null;
+    }
+  }
+
+  function restoreGameplayInput() {
+    if (gameOver || noMovesPromptOpen) return;
+    const tutorialOpen = elOverlayTutorial && !elOverlayTutorial.classList.contains('hidden');
+    busy = !!(echoActive || evolutionOfferedIds.length > 0 || onboardingActive || tutorialOpen);
+  }
+
+  function dismissNoMovesPrompt() {
+    clearNoMovesTimer();
+    noMovesPromptOpen = false;
+    if (elOverlayStuck) elOverlayStuck.classList.add('hidden');
+    if (noMovesFocusReturn && typeof noMovesFocusReturn.focus === 'function' && noMovesFocusReturn.isConnected) {
+      noMovesFocusReturn.focus();
+    }
+    noMovesFocusReturn = null;
+  }
+
+  function restartAfterNoMoves(mode) {
+    const wasDaily = dailyMode;
+    dismissNoMovesPrompt();
+    busy = false;
+    if (campaignMode && mode === 'current') {
+      clearSavedGame();
+      startCampaignLevel(campaignStage);
+      return;
+    }
+    if (campaignMode && mode === 'easy') {
+      campaignMode = false;
+      document.body.classList.remove('campaign-mode');
+    }
+    if (mode === 'easy') {
+      markFirstRunTutorialResolved();
+      difficultyMode = 'easy';
+      try { localStorage.setItem('witherroot_difficulty', difficultyMode); } catch (e) {}
+    }
+    clearSavedGame();
+    if (wasDaily && mode === 'current') startDaily();
+    else startGame();
+  }
+
+  function showNoMovesPrompt() {
+    if (!started || gameOver || busy || hasLegalAction()) return;
+    noMovesFocusReturn = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    noMovesPromptOpen = true;
+    busy = true;
+    activePower = null;
+    canvas.classList.remove('target-mode');
+    if (elOverlayStuck) elOverlayStuck.classList.remove('hidden');
+    stopAmbient();
+    sfxClick();
+    const retryButton = document.getElementById('btn-stuck-retry');
+    if (retryButton) retryButton.focus();
+  }
+
+  function scheduleNoMovesCheck() {
+    if (!started || gameOver || busy || noMovesPromptOpen) {
+      if (gameOver || !started || noMovesPromptOpen) clearNoMovesTimer();
+      return;
+    }
+    if (hasLegalAction()) {
+      clearNoMovesTimer();
+      return;
+    }
+    if (elHint) elHint.textContent = t('dynamic.noMovesPending');
+    if (noMovesTimer !== null) return;
+    noMovesTimer = setTimeout(() => {
+      noMovesTimer = null;
+      showNoMovesPrompt();
+    }, NO_MOVES_DELAY_MS);
+  }
+
   function growRoot(r, c) {
     if (gameOver || busy) return false;
     if (!canGrowAt(r, c)) {
-      flashToast('Cannot grow here');
+      flashToast(t('dynamic.cannotGrow'));
       return false;
     }
     const cost = computeGrowCost(r, c);
     if (vitality < cost) {
-      flashToast('Not enough vitality');
+      flashToast(t('dynamic.notEnough'));
       return false;
     }
     // Save state for undo
@@ -2992,6 +4331,7 @@
   }
 
   function checkConstellations(centerR, centerC) {
+    if (campaignMode) return;
     // Only check patterns that include the newly grown root at (centerR, centerC)
     const formed = [];
 
@@ -3371,7 +4711,9 @@
   }
 
   function triggerEcho(ev) {
+    clearNoMovesTimer();
     echoActive = true;
+    busy = true;
     echoSeenIds.push(ev.id);
     echoesExperienced++;
     totalEchoes++;
@@ -3422,6 +4764,7 @@
     // Close modal
     document.getElementById('echo-overlay').classList.remove('active');
     echoActive = false;
+    restoreGameplayInput();
     // v3.4: Record choice for run recap
     echoChoicesHistory.push({
       echoId: ev.id,
@@ -3527,7 +4870,8 @@
 
     // Frost advancement - dynamic interval (scales with turn for difficulty)
     const frostInterval = currentFrostInterval();
-    if (turn > 0 && turn % frostInterval === 0) {
+    const frostEnabled = !campaignMode || !!(getCampaignLevel() && getCampaignLevel().frostInterval);
+    if (frostEnabled && turn > 0 && turn % frostInterval === 0) {
       if (frostShieldActive) {
         frostShieldActive = false;
         // Dramatic shield absorption effect
@@ -3546,7 +4890,7 @@
         triggerShake(0.6, 8);  // screen shake on frost
         hapticFrost();
       }
-    } else {
+    } else if (frostEnabled) {
       // Frost imminent warning sound
       const turnsToNext = frostInterval - (turn % frostInterval);
       if (turnsToNext === 1) sfxFrostImminent();
@@ -3555,7 +4899,8 @@
     // Spawn new memory nodes (more frequent on Easy mode)
     // v3.7: Memory Hunter perk reduces interval by ×0.67
     const memoryInterval = Math.max(1, Math.round(getMemorySpawnInterval() * perkMemorySpawnIntervalMult()));
-    if (turn - lastMemoryTurn >= memoryInterval && memoryNodes.length < MAX_MEMORY_ON_BOARD) {
+    const memoriesEnabled = !campaignMode || !!(getCampaignLevel() && getCampaignLevel().memories > 0);
+    if (memoriesEnabled && turn - lastMemoryTurn >= memoryInterval && memoryNodes.length < MAX_MEMORY_ON_BOARD) {
       spawnMemoryNode();
       lastMemoryTurn = turn;
     }
@@ -3629,7 +4974,7 @@
       spawnParticles(HEART_R, HEART_C, '#a0e890', 6);
     }
     // v3.4: Meta-progression regen bonus (L10 reward: +1 vitality every 3 turns)
-    const metaRegenBonus = getMetaExtraRegen();
+    const metaRegenBonus = campaignMode ? 0 : getMetaExtraRegen();
     if (metaRegenBonus > 0 && turn > 0 && turn % 3 === 0) {
       vitality = Math.min(vitality + metaRegenBonus, getStartVitality() + maxVitalityBonus + 12);
       spawnParticles(HEART_R, HEART_C, '#80ffd0', 3);
@@ -3651,12 +4996,12 @@
     evoPhoenixRecharge();
 
     // Storm event: rare random event past turn 12 (every 10 turns for more variety)
-    if (turn === 12 || (turn > 12 && turn % 10 === 0)) {
+    if (!campaignMode && (turn === 12 || (turn > 12 && turn % 10 === 0))) {
       triggerStormEvent();
     }
 
     // v3.3: Genesis Echo check (milestone turns 15, 30, 45, 60, 75, 90)
-    checkGenesisEcho();
+    if (!campaignMode) checkGenesisEcho();
 
     // Check lose conditions
     if (vitality <= 0) {
@@ -3842,10 +5187,21 @@
     memoriesCollected++;
     score += MEMORY_SCORE;
 
-    // v3.8: Evolution trigger — every 3 memories
-    memoriesForEvolution++;
-    if (shouldTriggerEvolution()) {
-      triggerEvolutionChoice();
+    // Tutorial lesson order: a fixed route teaches reach -> reward -> ash.
+    if (isTutorialMode()) {
+      if (memoriesCollected === 1) placeTutorialMemory(4, 7);
+      else if (memoriesCollected === 2) placeTutorialMemory(7, 4);
+      else if (memoriesCollected >= 3) {
+        if (isFirstRunTutorialRequired()) markFirstRunTutorialResolved();
+      }
+      updateTutorialHint();
+    }
+    updateObjectiveUI(true);
+
+    // Campaign evolutions are drafted only after a level is cleared.
+    if (!campaignMode) {
+      memoriesForEvolution++;
+      if (shouldTriggerEvolution()) triggerEvolutionChoice();
     }
 
     // Combo system
@@ -3875,7 +5231,7 @@
     lastMemoryTurn = turn;
 
     spawnParticles(r, c, '#8ad1ff', 16);
-    flashToast('Memory recovered +' + MEMORY_REWARD + ' vitality');
+    flashToast(t('dynamic.memoryRecovered'), 1800);
     sfxCollect();
     triggerShake(0.2, 3);
     hapticCollect();
@@ -3905,7 +5261,7 @@
     if (memoriesCollected >= 5 && (Date.now() - runStartTime) <= 90000) checkAchievement('speedrun');
 
     // Award a power-up every N memories collected
-    if (memoriesCollected % PU_AWARD_EVERY_MEMORIES === 0) {
+    if (memoriesCollected % PU_AWARD_EVERY_MEMORIES === 0 && (!campaignMode || (getCampaignLevel() && getCampaignLevel().powers))) {
       awardPowerup();
     }
   }
@@ -3916,11 +5272,15 @@
       flashToast('Start a game first');
       return;
     }
+    if (campaignMode && campaignStage < 4) return;
     if (busy) return;
     if (powerups[type] <= 0) {
       flashToast('No charges for ' + type.toUpperCase());
       return;
     }
+    // Target selection is a deliberate recovery attempt. Pause the pending
+    // deadlock countdown while the player chooses where to use it.
+    clearNoMovesTimer();
     if (activePower === type) {
       // Cancel
       cancelPower();
@@ -3939,6 +5299,9 @@
       hapticPower();
       triggerShake(0.2, 3);
       updatePowerupUI();
+      // Shield only delays frost; it does not restore a legal board action.
+      // Re-run the deadlock check so an active 3-second recovery prompt is not lost.
+      updateHUD();
       checkAchievement('shield_used');
       debouncedSave();
       return;
@@ -3977,8 +5340,11 @@
   function cancelPower() {
     activePower = null;
     canvas.classList.remove('target-mode');
-    elHint.textContent = 'Tap a tile next to your roots to grow';
+    elHint.textContent = isTutorialMode() ? t('dynamic.tutorialHint1') : t('hint.grow');
     updatePowerupUI();
+    // Targeting pauses the deadlock timer; cancelling must resume it if the
+    // board still has no legal move or meaningful recovery action.
+    scheduleNoMovesCheck();
   }
 
   function executePower(r, c) {
@@ -4123,6 +5489,8 @@
   }
 
   function updatePowerupUI() {
+    const powerupRow = document.getElementById('powerups');
+    if (powerupRow) powerupRow.classList.toggle('hidden', campaignMode && campaignStage < 4);
     PU_TYPES.forEach(t => {
       const cnt = powerups[t];
       elPuCounts[t].textContent = cnt;
@@ -4443,6 +5811,20 @@
   let onboardingStepIdx = -1;
   let onboardingAutoAdvanceTriggered = false;  // ensures we only auto-advance once per step
   let onboardingComplete = false;  // persisted - if true, never auto-start again
+  const ONBOARDING_ZH = {
+    welcome: ['欢迎，守根人', '你正在照料一个濒死世界的最后一座花园。我会带你走完第一步。点击<b>下一步</b>开始，也可以随时<b>跳过</b>。'],
+    heart: ['核心', '棋盘中央的<b style="color:#ff80a0;">核心</b>是你的生命源头。<b style="color:#cce8ff;">霜冻</b>触及核心，世界就会结束。'],
+    grow: ['长出第一根根', '点击<b>核心旁边</b>的格子生长，每次消耗<b>1 点生命力</b>。试着点击高亮格。'],
+    vitality: ['生命力就是生命', '顶部的<b style="color:#ffd9a0;">生命力</b>会在生长时减少。找回记忆可以补充生命力。'],
+    memory_spawn: ['记忆出现了', '发光的<b style="color:#8ad1ff;">记忆节点</b>就在这里。让根长到它旁边即可找回，记忆会带来生命力和得分。'],
+    memory_collected: ['找回了一段低语', '很好！每段记忆都属于失落世界的一部分，继续探索吧。'],
+    decay: ['根会衰败', '根会随回合老化，颜色变暗后就快要变成<b style="color:#ffaa50;">灰烬</b>。衰败的根不能继续生长。'],
+    ash: ['灰烬也是礼物', '在<b style="color:#ffaa50;">灰烬</b>旁生长不消耗生命力。腐朽不是终点，而是下一次生长的机会。'],
+    frost_imminent: ['霜冻逼近', '留意提示栏里的<b style="color:#cce8ff;">霜冻倒计时</b>。教学关会放慢它，熟悉后再挑战更高难度。'],
+    powers: ['获得能力', '记忆会奖励能力。修剪可以移除根，霜盾可以跳过一次霜冻，其他能力等你发现。'],
+    constellations: ['神圣星图', '根系组成特定形状会点亮<b style="color:#ffd0a0;">星图</b>，带来额外奖励。先把基础路线走熟。'],
+    complete: ['你已经准备好了', '教学关完成。接下来可以选择<b style="color:#ffd0a0;">简单</b>模式，或回到教学关练习路线。']
+  };
 
   function loadOnboardingState() {
     try { onboardingComplete = localStorage.getItem('witherroot_onboarding_done') === '1'; } catch (e) {}
@@ -4452,10 +5834,12 @@
     try { localStorage.setItem('witherroot_onboarding_done', '1'); } catch (e) {}
   }
   function shouldStartOnboarding() {
-    // Start interactive onboarding if not yet completed and not in daily challenge mode
-    return !onboardingComplete && !dailyMode;
+    // The long advanced guide is deferred until the five short campaign lessons are complete.
+    return !onboardingComplete && !dailyMode && !campaignMode && campaignProgress.unlockedLevel > CAMPAIGN_LEVELS.length;
   }
   function startOnboarding() {
+    clearNoMovesTimer();
+    busy = true;
     onboardingActive = true;
     onboardingStepIdx = -1;
     onboardingAutoAdvanceTriggered = false;
@@ -4470,12 +5854,17 @@
     advanceOnboarding();  // move to step 0
   }
   function skipOnboarding() {
+    if (isFirstRunTutorialRequired()) {
+      skipTutorialToEasy();
+      return;
+    }
     onboardingActive = false;
     onboardingStepIdx = -1;
     document.getElementById('onboarding-spotlight').classList.add('hidden');
     document.getElementById('onboarding-tooltip').classList.add('hidden');
     document.getElementById('onboarding-arrow').classList.add('hidden');
     markOnboardingComplete();
+    restoreGameplayInput();
     flashToast('Tutorial skipped — explore on your own', 2000);
   }
   function advanceOnboarding(triggeredByEvent) {
@@ -4492,6 +5881,7 @@
       document.getElementById('onboarding-tooltip').classList.add('hidden');
       document.getElementById('onboarding-arrow').classList.add('hidden');
       markOnboardingComplete();
+      restoreGameplayInput();
       flashToast('🌱 Tutorial complete — the garden awaits', 2500);
       playTone(660, 0.1, 'triangle', 0.15);
       setTimeout(() => playTone(990, 0.2, 'triangle', 0.18), 100);
@@ -4505,16 +5895,17 @@
     const titleEl = document.getElementById('ob-title');
     const bodyEl = document.getElementById('ob-body');
     const btnNext = document.getElementById('ob-btn-next');
-    if (numEl) numEl.textContent = 'Step ' + (onboardingStepIdx + 1) + ' / ' + ONBOARDING_STEPS.length;
-    if (titleEl) titleEl.textContent = step.title;
-    if (bodyEl) bodyEl.innerHTML = step.body;
+    const localized = language === 'zh' ? ONBOARDING_ZH[step.id] : null;
+    if (numEl) numEl.textContent = (language === 'zh' ? '步骤 ' : 'Step ') + (onboardingStepIdx + 1) + ' / ' + ONBOARDING_STEPS.length;
+    if (titleEl) titleEl.textContent = localized ? localized[0] : step.title;
+    if (bodyEl) bodyEl.innerHTML = localized ? localized[1] : step.body;
     // Button text changes based on autoAdvance
     if (step.autoAdvance && step.autoAdvance.startsWith('on')) {
-      btnNext.textContent = 'Wait for action...';
+      btnNext.textContent = language === 'zh' ? '等待操作…' : 'Wait for action...';
       btnNext.disabled = true;
       btnNext.style.opacity = '0.5';
     } else {
-      btnNext.textContent = (onboardingStepIdx === ONBOARDING_STEPS.length - 1) ? '✓ Finish' : 'Next →';
+      btnNext.textContent = (onboardingStepIdx === ONBOARDING_STEPS.length - 1) ? (language === 'zh' ? '✓ 完成' : '✓ Finish') : (language === 'zh' ? '下一步 →' : 'Next →');
       btnNext.disabled = false;
       btnNext.style.opacity = '1';
     }
@@ -4767,7 +6158,7 @@
       updateHUD();
     } else {
       spawnRipple(clickX, clickY, '#aa3030', false);
-      flashToast('Cannot grow here');
+      flashToast(t('dynamic.cannotGrow'));
     }
   }
 
@@ -5305,6 +6696,7 @@
     }
   };
   let activeEvolutions = [];          // array of evolution IDs for current run
+  let evolutionOfferedIds = [];       // current modal offer, kept for live language switching
   let evolutionChoicesHistory = [];   // {turn, evolutionId, offered: [3 ids]}
   let memoriesForEvolution = 0;       // counter for triggering evolution (resets after each pick)
   let evolutionsThisRun = 0;
@@ -5328,8 +6720,14 @@
   }
   function getEvoStateValue(key) { return evoState[key] || 0; }
   function setEvoStateValue(key, val) { evoState[key] = val; }
+  function getEvolutionName(evoId) { return t('evolution.' + evoId + '.name'); }
+  function getEvolutionDesc(evoId) { return t('evolution.' + evoId + '.desc'); }
+  function getEvolutionType(evoId) {
+    return EVOLUTIONS[evoId] && EVOLUTIONS[evoId].type === 'instant' ? t('evolution.instant') : t('evolution.passive');
+  }
 
   function shouldTriggerEvolution() {
+    if (campaignMode) return false;
     if (evolutionsThisRun >= 5) return false;
     return memoriesForEvolution >= 3;
   }
@@ -5353,24 +6751,11 @@
 
   function showEvolutionModal(offeredIds) {
     const overlay = document.getElementById('evolution-overlay');
-    const list = document.getElementById('evolution-list');
-    if (!overlay || !list) return;
-    list.innerHTML = offeredIds.map(id => {
-      const e = EVOLUTIONS[id];
-      return '<button class="evolution-card" data-evo="' + id + '">' +
-        '<span class="evo-icon">' + e.icon + '</span>' +
-        '<span class="evo-name">' + e.name + '</span>' +
-        '<span class="evo-type">' + (e.type === 'instant' ? '⚡ Instant' : '◯ Passive') + '</span>' +
-        '<span class="evo-desc">' + e.desc + '</span></button>';
-    }).join('');
-    list.querySelectorAll('.evolution-card').forEach(btn => {
-      btn.onclick = () => {
-        const id = btn.dataset.evo;
-        applyEvolution(id, offeredIds);
-        overlay.classList.remove('active');
-        sfxClick();
-      };
-    });
+    if (!overlay) return;
+    evolutionOfferedIds = offeredIds.slice();
+    clearNoMovesTimer();
+    busy = true;
+    renderEvolutionModal(evolutionOfferedIds);
     overlay.classList.add('active');
     // Sound stinger
     playTone(523, 0.2, 'triangle', 0.18);
@@ -5378,20 +6763,48 @@
     setTimeout(() => playTone(784, 0.3, 'triangle', 0.2), 200);
   }
 
-  function applyEvolution(evoId, offeredIds) {
+  function renderEvolutionModal(offeredIds) {
+    const overlay = document.getElementById('evolution-overlay');
+    const list = document.getElementById('evolution-list');
+    if (!overlay || !list) return;
+    list.innerHTML = offeredIds.map(id => {
+      const e = EVOLUTIONS[id];
+      return '<button class="evolution-card" data-evo="' + id + '">' +
+        '<span class="evo-icon">' + e.icon + '</span>' +
+        '<span class="evo-name">' + getEvolutionName(id) + '</span>' +
+        '<span class="evo-type">' + getEvolutionType(id) + '</span>' +
+        '<span class="evo-desc">' + getEvolutionDesc(id) + '</span></button>';
+    }).join('');
+    list.querySelectorAll('.evolution-card').forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.dataset.evo;
+        applyEvolution(id, offeredIds);
+        evolutionOfferedIds = [];
+        overlay.classList.remove('active');
+        restoreGameplayInput();
+        updateHUD();
+        sfxClick();
+      };
+    });
+  }
+
+  function applyEvolution(evoId, offeredIds, options) {
     if (!EVOLUTIONS[evoId] || activeEvolutions.includes(evoId)) return;
+    const fromRelic = !!(options && options.fromRelic);
     activeEvolutions.push(evoId);
-    evolutionChoicesHistory.push({ turn: turn, evolutionId: evoId, offered: offeredIds.slice() });
-    evolutionsThisRun++;
-    totalEvolutions++;
-    try { localStorage.setItem('witherroot_evo_total', String(totalEvolutions)); } catch (e) {}
+    if (!fromRelic) {
+      evolutionChoicesHistory.push({ turn: turn, evolutionId: evoId, offered: offeredIds.slice() });
+      evolutionsThisRun++;
+      totalEvolutions++;
+      try { localStorage.setItem('witherroot_evo_total', String(totalEvolutions)); } catch (e) {}
+    }
     const e = EVOLUTIONS[evoId];
     // Apply instant effects
     if (e.type === 'instant') {
       if (evoId === 'memory_echo') {
         spawnMemoryNode();
         spawnMemoryNode();
-        flashToast('📚 Memory Echo · 2 memory nodes spawned', 1800);
+        if (!fromRelic) flashToast('📚 ' + getEvolutionName(evoId) + ' · ' + getEvolutionDesc(evoId), 1800);
       }
     } else {
       // Initialize passive state
@@ -5399,22 +6812,25 @@
       else if (evoId === 'frost_ward') { evoState.frost_ward_charges = 1; evoState.frost_ward_lastRecharge = turn; }
       else if (evoId === 'phoenix_bloom') { evoState.phoenix_charges = 1; evoState.phoenix_lastRecharge = turn; }
       else if (evoId === 'echo_amplifier') { evoState.echo_amplifier_charges = 1; }
-      flashToast(e.icon + ' ' + e.name + ' · ' + e.desc, 2200);
+      if (!fromRelic) flashToast(e.icon + ' ' + getEvolutionName(evoId) + ' · ' + getEvolutionDesc(evoId), 2200);
     }
     // Particle burst
-    spawnParticles(HEART_R, HEART_C, '#ffd080', 10);
-    spawnRipple(HEART_C * cellSize + cellSize/2, HEART_R * cellSize + cellSize/2, '#ffd080', true);
-    triggerShake(0.3, 4);
-    hapticPower();
-    // v3.9: Play evolution stinger
-    playStinger('evolution');
+    if (!fromRelic) {
+      spawnParticles(HEART_R, HEART_C, '#ffd080', 10);
+      spawnRipple(HEART_C * cellSize + cellSize/2, HEART_R * cellSize + cellSize/2, '#ffd080', true);
+      triggerShake(0.3, 4);
+      hapticPower();
+      playStinger('evolution');
+    }
     // Reset memory counter
     memoriesForEvolution = 0;
     // Update HUD
     updateEvolutionHUD();
     // Achievements
-    checkAchievement('evolution_first');
-    if (evolutionsThisRun >= 5) checkAchievement('evolution_5');
+    if (!fromRelic) {
+      checkAchievement('evolution_first');
+      if (evolutionsThisRun >= 5) checkAchievement('evolution_5');
+    }
   }
 
   function updateEvolutionHUD() {
@@ -5425,7 +6841,7 @@
     } else {
       hudEl.innerHTML = activeEvolutions.map(id => {
         const e = EVOLUTIONS[id];
-        return e ? '<span class="hud-evo-icon" title="' + e.name + ': ' + e.desc + '">' + e.icon + '</span>' : '';
+        return e ? '<span class="hud-evo-icon" role="img" aria-label="' + getEvolutionName(id) + ': ' + getEvolutionDesc(id) + '" title="' + getEvolutionName(id) + ': ' + getEvolutionDesc(id) + '">' + e.icon + '</span>' : '';
       }).join('');
     }
   }
@@ -5541,6 +6957,40 @@
 
   // ---------- Game state persistence (resume on refresh) ----------
   let saveTimer = null;
+  function resetSessionStateOnBoot() {
+    // Refresh discards only the active board. Campaign unlocks, claimed relics,
+    // preferences, achievements, and the player's chosen language persist.
+    clearSavedGame();
+    try {
+      localStorage.setItem('witherroot_difficulty', 'tutorial');
+    } catch (e) {}
+    tutorialSeen = false;
+    onboardingComplete = false;
+    firstRunTutorialResolved = false;
+    difficultyMode = 'tutorial';
+    dailyMode = false;
+    objectiveToastStage = 0;
+    clearNoMovesTimer();
+    noMovesPromptOpen = false;
+    noMovesFocusReturn = null;
+    onboardingActive = false;
+    onboardingStepIdx = -1;
+    const hiddenOverlays = [
+      elOverlayGO, elOverlayPause, elOverlaySettings, elOverlayAch, elOverlayStats,
+      elOverlayStuck, elOverlayTutorial
+    ];
+    hiddenOverlays.forEach((overlay) => { if (overlay) overlay.classList.add('hidden'); });
+    ['evolution-overlay', 'echo-overlay'].forEach((id) => {
+      const overlay = document.getElementById(id);
+      if (overlay) overlay.classList.remove('active');
+    });
+    ['onboarding-spotlight', 'onboarding-tooltip', 'onboarding-arrow'].forEach((id) => {
+      const overlay = document.getElementById(id);
+      if (overlay) overlay.classList.add('hidden');
+    });
+    const resumeButton = document.getElementById('btn-resume');
+    if (resumeButton) resumeButton.classList.add('hidden');
+  }
   function saveGameState() {
     if (!started || gameOver) return;
     try {
@@ -5630,12 +7080,29 @@
   }
 
   function endGame(reason) {
-    // v3.8: Phoenix Bloom evolution — revive with 5 vitality (one-shot)
+    clearNoMovesTimer();
+    noMovesPromptOpen = false;
+    if (elOverlayStuck) elOverlayStuck.classList.add('hidden');
+    // An equipped Phoenix relic still gets its one rescue in the campaign.
     if (!gameOver && evoPhoenixCheck()) {
       gameOver = false;
       busy = false;
       updateHUD();
-      return;  // Don't proceed with game over
+      return;
+    }
+    if (campaignMode) {
+      gameOver = true;
+      busy = true;
+      clearSavedGame();
+      safeSdk('game.gameplayStop');
+      stopAmbient();
+      elGOTitle.textContent = t('campaign.failedTitle');
+      elGOSub.textContent = t('campaign.failedSubtitle');
+      document.getElementById('btn-retry').textContent = t('campaign.retry');
+      document.getElementById('btn-go-menu').textContent = t('campaign.menu');
+      elOverlayGO.classList.add('campaign-failure');
+      elOverlayGO.classList.remove('hidden');
+      return;
     }
     gameOver = true;
     busy = true;
@@ -5729,10 +7196,10 @@
     }
     // v3.8: Evolution choices recap
     if (evolutionChoicesHistory.length > 0) {
-      rows.push('<div class="rh-title" style="margin-top: 8px;">⚡ EVOLUTIONS</div>');
+      rows.push('<div class="rh-title" style="margin-top: 8px;">' + t('evolution.review') + '</div>');
       evolutionChoicesHistory.forEach(e => {
         const evo = EVOLUTIONS[e.evolutionId];
-        if (evo) rows.push('<div class="rh-row" style="font-size: 11px;"><span style="opacity: 0.8;">T' + e.turn + ' ' + evo.icon + ' ' + evo.name + '</span><b>' + (evo.type === 'instant' ? '⚡' : '◯') + '</b></div>');
+        if (evo) rows.push('<div class="rh-row" style="font-size: 11px;"><span style="opacity: 0.8;">T' + e.turn + ' ' + evo.icon + ' ' + getEvolutionName(e.evolutionId) + '</span><b>' + getEvolutionType(e.evolutionId) + '</b></div>');
       });
     }
     // v3.4: Meta XP gained this run
@@ -5752,6 +7219,7 @@
   // ---------- Pause / Resume / Quit / Share ----------
   function pauseGame() {
     if (!started || gameOver) return;
+    clearNoMovesTimer();
     elOverlayPause.classList.remove('hidden');
     // Update pause subtitle with current game state
     const subEl = document.getElementById('pause-subtitle');
@@ -5764,19 +7232,33 @@
   function resumeGame() {
     elOverlayPause.classList.add('hidden');
     if (settings.music && started && !gameOver) startAmbient();
+    scheduleNoMovesCheck();
     sfxClick();
   }
   function quitToMenu() {
+    dismissNoMovesPrompt();
     elOverlayPause.classList.add('hidden');
     elOverlayGO.classList.add('hidden');
+    document.getElementById('overlay-campaign-briefing').classList.add('hidden');
+    document.getElementById('overlay-level-complete').classList.add('hidden');
+    document.getElementById('overlay-relics').classList.add('hidden');
+    document.getElementById('overlay-gameover').classList.remove('campaign-failure');
+    document.body.classList.remove('campaign-mode');
     elOverlayStart.classList.remove('hidden');
     started = false;
     gameOver = false;
     busy = false;
+    campaignMode = false;
     stopAmbient();
     clearSavedGame();
+    dailyMode = false;
+    clearRng();
+    updateObjectiveUI(false);
     // Update Resume button visibility
     document.getElementById('btn-resume').classList.add('hidden');
+    enforceFirstRunTutorial();
+    updateFirstRunUI();
+    updateCampaignHomeUI();
     sfxClick();
   }
   function shareScore() {
@@ -5881,7 +7363,8 @@
     elScore.textContent = score;
     elBest.textContent = best;
     elTurn.textContent = turn;
-    const pct = clamp((vitality / START_VITALITY) * 100, 0, 100);
+    updateObjectiveUI(false);
+    const pct = clamp((vitality / getStartVitality()) * 100, 0, 100);
     elVitFill.style.width = pct + '%';
     if (vitality <= VITALITY_LOW_THRESHOLD) {
       elVitFill.classList.add('low');
@@ -5929,15 +7412,21 @@
     // Frost direction indicator (where it will spread from next)
     let frostDirText = '';
     if (turn > 0 && lastFrostDirection) {
-      const dirNames = { top: '↑ top', bottom: '↓ bottom', left: '← left', right: '→ right' };
+      const dirNames = language === 'zh'
+        ? { top: '↑ 上方', bottom: '↓ 下方', left: '← 左侧', right: '→ 右侧' }
+        : { top: '↑ top', bottom: '↓ bottom', left: '← left', right: '→ right' };
       // Predict next direction (avoids repeating)
       const possibleDirs = ['top', 'bottom', 'left', 'right'].filter(d => d !== lastFrostDirection);
       const predictedNext = possibleDirs[0]; // simplified prediction
-      frostDirText = ' · next: ' + (dirNames[predictedNext] || '?');
+      frostDirText = ' · ' + formatI18n('hud.next', { direction: dirNames[predictedNext] || '?' });
     }
-    let frostInfo = '❄ Frost in ' + turnsToNextFrost + ' turn' + (turnsToNextFrost === 1 ? '' : 's') + shieldTxt + frostDirText;
-    if (frostImminent && !frostShieldActive) frostInfo = '⚠ FROST IMMINENT (' + turnsToNextFrost + ')' + frostDirText;
-    else if (frostImminent && frostShieldActive) frostInfo = '❖ Shield ready (' + turnsToNextFrost + ')' + frostDirText;
+    const plural = turnsToNextFrost === 1 ? '' : 's';
+    const frostAvailable = !campaignMode || !!(getCampaignLevel() && getCampaignLevel().frostInterval);
+    let frostInfo = frostAvailable
+      ? formatI18n('hud.frostIn', { turns: turnsToNextFrost, plural: language === 'zh' ? '' : plural }) + shieldTxt + frostDirText
+      : t('campaign.frostLocked');
+    if (frostImminent && !frostShieldActive) frostInfo = formatI18n('hud.frostImminent', { turns: turnsToNextFrost }) + frostDirText;
+    else if (frostImminent && frostShieldActive) frostInfo = formatI18n('hud.shieldReady', { turns: turnsToNextFrost }) + frostDirText;
     // Update canvas border to warn of imminent frost
     if (frostImminent && !frostShieldActive) {
       canvas.style.boxShadow = 'inset 0 0 0 2px rgba(180,220,255,0.7), 0 8px 30px rgba(0,0,0,0.5), 0 0 30px rgba(180,220,255,0.4)';
@@ -5954,12 +7443,14 @@
       if (memoryNodes.length > 0) {
         const m = memoryNodes[0];
         const dist = Math.abs(m.r - HEART_R) + Math.abs(m.c - HEART_C);
-        elHint.textContent = dailyPrefix + 'Memory ' + dist + ' tiles · ' + frostInfo;
+        elHint.textContent = dailyPrefix + formatI18n('hud.memoryDistance', { distance: dist }) + ' · ' + frostInfo;
       } else {
-        elHint.textContent = dailyPrefix + frostInfo + ' · Ash gives free growth';
+        elHint.textContent = dailyPrefix + frostInfo + t('hud.ashGrowthTip');
       }
     }
     updatePowerupUI();
+    checkCampaignCompletion();
+    scheduleNoMovesCheck();
   }
 
   // ---------- Toast / flash ----------
@@ -6042,7 +7533,7 @@
 
   // ---------- Particles ----------
   function spawnParticles(r, c, color, count) {
-    if (!settings.particles) return;
+    if (!settings.particles || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
     const cx = c * cellSize + cellSize / 2;
     const cy = r * cellSize + cellSize / 2;
     for (let i = 0; i < count; i++) {
@@ -6062,7 +7553,7 @@
   let shakeDuration = 0;
   let shakeMaxIntensity = 0;
   function triggerShake(intensity, durationFrames) {
-    if (!settings.shake) return;
+    if (!settings.shake || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
     shakeIntensity = intensity;
     shakeDuration = durationFrames;
     shakeMaxIntensity = intensity;
@@ -7284,7 +8775,7 @@
     applyPhaseConstellationMultiplier: function(base) { return applyPhaseConstellationMultiplier(base); },
     // v3.7 Hard mode + Perk test helpers
     setMode: function(m) {
-      if (m === 'easy' || m === 'normal' || (m === 'hard' && isHardUnlocked())) {
+      if (m === 'tutorial' || m === 'easy' || m === 'normal' || (m === 'hard' && isHardUnlocked())) {
         difficultyMode = m;
         try { localStorage.setItem('witherroot_difficulty', m); } catch (e) {}
         document.querySelectorAll('.mode-btn').forEach(b => { b.classList.toggle('active', b.dataset.mode === m); });

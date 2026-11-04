@@ -39,11 +39,38 @@ const games = [
     image: "/projects/covers/protocol-endgame.png",
     external: true,
   },
+  {
+    number: "04",
+    title: "WITHERROOT — Decay to Rebirth",
+    cnTitle: "WITHERROOT — Decay to Rebirth",
+    description: "A five-stage strategy game about tending roots, preserving memories, and surviving the frost.",
+    cnDescription: "五关渐进式生存策略：培育根系、收集记忆，在灰烬与霜冻中寻找重生。",
+    href: "/project-demos/game0/index.html?lang=zh",
+    enHref: "/project-demos/game0/index.html?lang=en",
+    tone: "witherroot",
+    artLabel: "GROW / REMEMBER",
+    image: "/projects/covers/witherroot-v2.png",
+  },
+  {
+    number: "05",
+    title: "STELLAR FORGE",
+    cnTitle: "STELLAR FORGE",
+    description: "Merge elemental Star Cores, evolve your defenses, and survive the Void's escalating waves.",
+    cnDescription: "融合元素星核、进化防线，在不断升级的虚空浪潮中生存下来。",
+    href: "/project-demos/game1/index.html",
+    enHref: "/project-demos/game1-en/index.html",
+    tone: "stellar",
+    artLabel: "MERGE / EVOLVE",
+    image: "/projects/covers/stellar-forge-v2.png",
+  },
 ];
 
 type Game = (typeof games)[number];
 
 function gameHref(locale: Locale, game: Game) {
+  if (locale === "en" && "enHref" in game && game.enHref) return game.enHref;
+  if (locale !== "en" && "href" in game && (game.tone === "witherroot")) return game.href;
+  if (locale !== "en" && game.tone === "stellar") return game.href;
   return game.external ? game.href : localePath(locale, game.href);
 }
 
@@ -60,7 +87,7 @@ export function GameDemosHub({ locale }: { locale: Locale }) {
           </a>
           <p className="game-hub-kicker">{isEnglish ? "INTERACTIVE LAB · 02" : "INTERACTIVE LAB · 02"}</p>
           <h1>{isEnglish ? "Imaginative experiments." : "奇思妙想"}</h1>
-          <p>{isEnglish ? "Three selected games are open to play, each with its own rhythm, interface, and kind of trouble." : "三款精选游戏现已开放试玩，每个游戏都有自己的节奏、界面和麻烦。"}</p>
+          <p>{isEnglish ? "Five playable experiments, each with its own rhythm, interface, and kind of trouble." : "五款可玩的互动实验，每个都有自己的节奏、界面和麻烦。"}</p>
         </section>
 
         <nav className="game-hub-tabs page-shell" aria-label={isEnglish ? "Game demos" : "游戏 Demo"}>
@@ -90,7 +117,7 @@ export function GameDemosHub({ locale }: { locale: Locale }) {
                 <span className="game-demo-cover-label">{game.artLabel}</span>
               </div>
               <div className="game-demo-copy">
-                <h2>{game.tone === "rules" || isEnglish ? game.title : game.cnTitle}</h2>
+                <h2>{game.title === game.cnTitle || game.tone === "rules" || isEnglish ? game.title : game.cnTitle}</h2>
                 <p>{game.tone === "rules" || isEnglish ? game.description : game.cnDescription}</p>
                 <span className="game-demo-enter">{isEnglish ? "Enter game" : "进入游戏"} <ArrowIcon /></span>
               </div>
@@ -101,7 +128,7 @@ export function GameDemosHub({ locale }: { locale: Locale }) {
         </section>
       </main>
       <footer className="game-hub-footer">
-        <div className="page-shell footer-inner"><span>BLUES‑BERRY / INTERACTIVE LAB</span><span>{isEnglish ? "Three games now playable" : "三款游戏现已开放"}</span></div>
+        <div className="page-shell footer-inner"><span>BLUES‑BERRY / INTERACTIVE LAB</span><span>{isEnglish ? "Five games now playable" : "五款游戏现已开放"}</span></div>
       </footer>
     </>
   );
