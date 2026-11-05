@@ -241,7 +241,7 @@ function BasicsTab() {
 
       <div className="mt-4 p-3 rounded bg-neon-gold/10 border border-neon-gold/30">
         <p className="text-xs text-neon-gold font-body">
-          💡 <b>提示</b>：随波次推进会解锁更多元素，点击 HUD 中元素按钮可手动切换当前投放的元素
+          💡 <b>提示</b>：第 3、5、7、10 波分别解锁水、土、风、雷；点击顶部元素按钮切换当前投放的元素。
         </p>
       </div>
     </div>
@@ -355,6 +355,7 @@ function CombatTab() {
         <Step n={5} text="清空所有敌人 → 进入星核商店" color="#4ECDC4" />
         <Step n={6} text="选择三选一遗物 → 进入下一波" color="#9B59B6" />
       </div>
+      <p className="sf-boss-warning">首领突破防线会立即结束本局；击败第 20 波首领即可获胜。</p>
 
       <SectionTitle icon={<Heart className="w-4 h-4" />} color="#E74C3C" title="敌人类型" />
       <div className="grid grid-cols-2 gap-2 text-xs">

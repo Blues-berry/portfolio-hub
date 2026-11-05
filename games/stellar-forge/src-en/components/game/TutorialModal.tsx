@@ -241,7 +241,7 @@ function BasicsTab() {
 
       <div className="mt-4 p-3 rounded bg-neon-gold/10 border border-neon-gold/30">
         <p className="text-xs text-neon-gold font-body">
-          💡 <b>Tip:</b> More elements unlock as you advance. Select an element in the HUD to choose which one drops next.
+          💡 <b>Tip:</b> Water, Earth, Wind and Lightning become available at waves 3, 5, 7 and 10. Select an element in the HUD to choose which one drops next.
         </p>
       </div>
     </div>
@@ -356,6 +356,7 @@ function CombatTab() {
         <Step n={6} text="Continue to face the next wave." color="#9B59B6" />
       </div>
 
+      <p className="sf-boss-warning">If a boss reaches the core, the run ends immediately. Defeat the Wave 20 boss to win.</p>
       <SectionTitle icon={<Heart className="w-4 h-4" />} color="#E74C3C" title="Enemy Types" />
       <div className="grid grid-cols-2 gap-2 text-xs">
         <EnemyCard color="#9B59B6" name="Grunt" desc="Moves at a steady pace" />

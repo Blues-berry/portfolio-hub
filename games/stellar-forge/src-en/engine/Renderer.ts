@@ -747,10 +747,17 @@ function drawTrack(ctx: CanvasRenderingContext2D, time: number, scene: SceneConf
 
   // 终点（核心，使用场景核心色）
   const pulse = 0.5 + Math.sin(time * 0.005) * 0.5;
+  ctx.fillStyle = scene.coreColor + '22';
+  ctx.fillRect(TRACK_X + 2, TRACK_Y + GRID_PIXEL_H - 26, TRACK_WIDTH - 4, 24);
+  ctx.strokeStyle = scene.coreColor + '99';
+  ctx.beginPath();
+  ctx.moveTo(TRACK_X + 2, TRACK_Y + GRID_PIXEL_H - 26);
+  ctx.lineTo(TRACK_X + TRACK_WIDTH - 2, TRACK_Y + GRID_PIXEL_H - 26);
+  ctx.stroke();
   ctx.fillStyle = scene.coreColor + Math.floor((0.6 + pulse * 0.4) * 255).toString(16).padStart(2, '0');
   ctx.font = 'bold 14px Orbitron';
   ctx.textAlign = 'center';
-  ctx.fillText('CORE', TRACK_X + TRACK_WIDTH / 2, TRACK_Y + 15);
+  ctx.fillText('CORE', TRACK_X + TRACK_WIDTH / 2, TRACK_Y + GRID_PIXEL_H - 10);
 
   // 轨道流光（增加动态感）
   const flowY = (time * 0.05) % GRID_PIXEL_H;

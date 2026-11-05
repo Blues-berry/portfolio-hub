@@ -1874,7 +1874,7 @@
     if (query.has('lang')) {
       query.set('lang', language);
       const search = query.toString();
-      history.replaceState(null, '', location.pathname + (search ? '?' + search : '') + location.hash);
+      try { window.history.replaceState(null, '', location.pathname + (search ? '?' + search : '') + location.hash); } catch (e) {}
     }
     applyLanguage();
     updateDifficultyNote();
@@ -7827,7 +7827,7 @@
     ctx.font = 'bold ' + Math.floor(cellSize * 0.18) + 'px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('ASH', cx, cy + cellSize * 0.3);
+    ctx.fillText(language === 'zh' ? '灰烬' : 'ASH', cx, cy + cellSize * 0.3);
   }
 
   function drawFrost(r, c) {
@@ -7953,6 +7953,17 @@
     ctx.fillStyle = grad;
     ctx.fillRect(x - cellSize * 0.2, y - cellSize * 0.2, cellSize * 1.4, cellSize * 1.4);
 
+    // A broken halo makes collectible memories distinct from ordinary roots.
+    ctx.save();
+    ctx.strokeStyle = 'rgba(172,227,255,' + (0.7 * pulse) + ')';
+    ctx.lineWidth = Math.max(1, cellSize * 0.025);
+    ctx.setLineDash([cellSize * 0.13, cellSize * 0.08]);
+    ctx.lineDashOffset = -pulsePhase * 2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, cellSize * 0.31, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+
     // Diamond shape
     const s = cellSize * 0.18 * (0.9 + pulse * 0.2);
     ctx.fillStyle = '#c0e8ff';
@@ -8039,7 +8050,7 @@
         ctx.font = 'bold ' + Math.floor(cellSize * 0.2) + 'px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
-        ctx.fillText('PRUNE', cx, y + cellSize - 4);
+        ctx.fillText(language === 'zh' ? '修剪' : 'PRUNE', cx, y + cellSize - 4);
       }
       return;
     }
@@ -8072,7 +8083,7 @@
         ctx.font = 'bold ' + Math.floor(cellSize * 0.18) + 'px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
-        ctx.fillText('✦ IGNITE', cx, y + cellSize - 4);
+        ctx.fillText(language === 'zh' ? '✦ 点燃' : '✦ IGNITE', cx, y + cellSize - 4);
       }
       return;
     }
@@ -8098,7 +8109,7 @@
         ctx.font = 'bold ' + Math.floor(cellSize * 0.16) + 'px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
-        ctx.fillText('COLLECT', cx, y + 2);
+        ctx.fillText(language === 'zh' ? '收集' : 'COLLECT', cx, y + 2);
       } else {
         // Show why can't collect - need adjacent root
         ctx.strokeStyle = 'rgba(200,140,140,0.5)';
@@ -8127,7 +8138,7 @@
       if (ok) {
         const labelY = y + cellSize - 4;
         // Background pill for label
-        const labelText = free ? 'FREE!' + (free ? ' ✦' : '') : '-' + cost + ' vit';
+        const labelText = free ? (language === 'zh' ? '免费 ✦' : 'FREE! ✦') : '-' + cost + (language === 'zh' ? ' 生命' : ' vit');
         ctx.font = 'bold ' + Math.floor(cellSize * 0.2) + 'px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
@@ -8142,7 +8153,7 @@
         ctx.font = 'bold ' + Math.floor(cellSize * 0.16) + 'px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
-        ctx.fillText('NEED VIT', cx, y + cellSize - 4);
+        ctx.fillText(language === 'zh' ? '生命不足' : 'NEED VIT', cx, y + cellSize - 4);
       }
     } else if (cell.type === T_EMPTY) {
       // Show why can't grow - too far from live root

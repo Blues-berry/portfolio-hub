@@ -116,7 +116,7 @@ export default function Game() {
       <AchievementToast />
 
       {/* 游戏画布 */}
-      <div className="absolute inset-0 pt-[7.5rem] pb-2 px-2 sm:pt-12">
+      <div className="sf-board-area">
         <GameCanvas />
       </div>
 
