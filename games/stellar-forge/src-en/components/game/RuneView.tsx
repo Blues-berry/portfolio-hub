@@ -29,7 +29,7 @@ export default function RuneView() {
         </div>
       </div>
       <p className="text-gray-400 text-sm font-body mb-3">
-        Each game can equip {MAX_EQUIPPED_RUNES} Runes, must be dropped when killing the boss, elites have a 30% chance of dropping
+        Equip up to {MAX_EQUIPPED_RUNES} runes per run. Bosses always drop a rune; elite enemies have a 30% chance to drop one.
       </p>
 
       {/* 装备槽 */}

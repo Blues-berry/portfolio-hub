@@ -131,7 +131,7 @@ function HomeView({ onStart, onDaily, meta }: { onStart: () => void; onDaily: ()
         transition={{ delay: 0.4 }}
         className="text-gray-400 text-base font-body max-w-md mb-8"
       >
-        Merge star cores, evolve elemental towers, and hold back the Void. Every run makes you stronger.
+        Defend your core for 20 waves. Place and merge elemental towers, then defeat the final boss before it reaches your core.
       </motion.p>
 
       {/* 最高纪录 */}

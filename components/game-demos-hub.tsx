@@ -63,6 +63,30 @@ const games = [
     artLabel: "MERGE / EVOLVE",
     image: "/projects/covers/stellar-forge-v2.png",
   },
+  {
+    number: "06",
+    title: "WITHERROOT: FROSTBOUND",
+    cnTitle: "WITHERROOT: FROSTBOUND",
+    description: "Plan each root before the foretold frost strikes. Collect memories and keep the Heart alive.",
+    cnDescription: "进阶版：预判霜冻方向，规划根系路线，收集记忆并保护核心。",
+    href: "/project-demos/game0-advanced/index.html?lang=zh",
+    enHref: "/project-demos/game0-advanced/index.html?lang=en",
+    tone: "witherroot",
+    artLabel: "PLAN / SURVIVE",
+    image: "/projects/covers/witherroot-frostbound.png",
+  },
+  {
+    number: "07",
+    title: "STELLAR FORGE: LAST STAND",
+    cnTitle: "STELLAR FORGE: LAST STAND",
+    description: "Spend limited deployment charges, merge elemental towers, and defend the core for 20 waves.",
+    cnDescription: "进阶版：管理部署点，融合元素星核，防守核心并迎战第 20 波首领。",
+    href: "/project-demos/game1-advanced/index.html",
+    enHref: "/project-demos/game1-advanced-en/index.html",
+    tone: "stellar",
+    artLabel: "DEPLOY / DEFEND",
+    image: "/projects/covers/stellar-last-stand.png",
+  },
 ];
 
 type Game = (typeof games)[number];
@@ -87,7 +111,7 @@ export function GameDemosHub({ locale }: { locale: Locale }) {
           </a>
           <p className="game-hub-kicker">{isEnglish ? "INTERACTIVE LAB · 02" : "INTERACTIVE LAB · 02"}</p>
           <h1>{isEnglish ? "Imaginative experiments." : "奇思妙想"}</h1>
-          <p>{isEnglish ? "Five playable experiments, each with its own rhythm, interface, and kind of trouble." : "五款可玩的互动实验，每个都有自己的节奏、界面和麻烦。"}</p>
+          <p>{isEnglish ? "Five games, including two new advanced editions to explore." : "五款游戏，包含两款玩法进阶版。"}</p>
         </section>
 
         <nav className="game-hub-tabs page-shell" aria-label={isEnglish ? "Game demos" : "游戏 Demo"}>
@@ -128,7 +152,7 @@ export function GameDemosHub({ locale }: { locale: Locale }) {
         </section>
       </main>
       <footer className="game-hub-footer">
-        <div className="page-shell footer-inner"><span>BLUES‑BERRY / INTERACTIVE LAB</span><span>{isEnglish ? "Five games now playable" : "五款游戏现已开放"}</span></div>
+        <div className="page-shell footer-inner"><span>BLUES‑BERRY / INTERACTIVE LAB</span><span>{isEnglish ? "Five games · Seven playable versions" : "五款游戏 · 七个可玩版本"}</span></div>
       </footer>
     </>
   );

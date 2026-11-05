@@ -41,13 +41,13 @@ export const UPGRADES: UpgradeDef[] = [
   { id: 'startHp2', name: '生命强化 II', description: '起始生命 +1', cost: 150, icon: '❤️' },
   { id: 'startHp3', name: '生命强化 III', description: '起始生命 +1', cost: 400, icon: '❤️' },
   { id: 'startStardust1', name: '初始星尘 I', description: '起始星尘 +30', cost: 40, icon: '✨' },
-  { id: 'startStardust2', name: '初始星尘 II', description: '起始星尘 +50', cost: 120, icon: '✨' },
+  { id: 'startStardust2', name: '初始星尘 II', description: '起始星尘 +30', cost: 120, icon: '✨' },
   { id: 'extraReroll1', name: '额外刷新', description: '商店刷新次数 +1', cost: 80, icon: '🔄' },
   { id: 'startRelic1', name: '起始遗物', description: '开局获得一个随机遗物', cost: 200, icon: '🎁' },
-  { id: 'unlockWater', name: '解锁水元素', description: '游戏可使用水核', cost: 60, icon: '💧' },
-  { id: 'unlockEarth', name: '解锁土元素', description: '游戏可使用岩核', cost: 100, icon: '🪨' },
-  { id: 'unlockAir', name: '解锁风元素', description: '游戏可使用风核', cost: 140, icon: '🌀' },
-  { id: 'unlockLightning', name: '解锁雷元素', description: '游戏可使用雷核', cost: 200, icon: '⚡' },
+  { id: 'unlockWater', name: '起始水元素', description: '每局开始即可使用水核', cost: 60, icon: '💧' },
+  { id: 'unlockEarth', name: '起始土元素', description: '每局开始即可使用土核', cost: 100, icon: '🪨' },
+  { id: 'unlockAir', name: '起始风元素', description: '每局开始即可使用风核', cost: 140, icon: '🌀' },
+  { id: 'unlockLightning', name: '起始雷元素', description: '每局开始即可使用雷核', cost: 200, icon: '⚡' },
 ];
 
 const DEFAULT_META: MetaProgress = {
