@@ -4,7 +4,9 @@ import { ELEMENTS } from '@/data/elements';
 import { RefreshCw, Coins, Heart, Sparkles } from 'lucide-react';
 
 export default function ShopPanel() {
-  const { shopItems, stardust, rerollsLeft, buyShopItem, rerollShop, closeShop } = useGameStore();
+  const { shopItems, stardust, rerollsLeft, buyShopItem, rerollShop, closeShop, grid, ownedRelics } = useGameStore();
+  const gridFull = grid.every(row => row.every(Boolean));
+  const discount = ownedRelics.flatMap(r => r.effects).filter(e => e.type === 'shop-discount').reduce((sum, e) => sum + e.value, 0);
   const isOpen = useGameStore(s => s.status === 'shop');
 
   return (
@@ -42,9 +44,11 @@ export default function ShopPanel() {
               </div>
             </div>
 
+            {gridFull && <p className="text-xs text-gray-400 mb-2">棋盘已满，无法购买星核。</p>}
             <div className="grid grid-cols-5 gap-2">
               {shopItems.map(item => {
-                const canAfford = stardust >= item.price;
+                const finalPrice = Math.max(1, Math.floor(item.price * (1 - discount)));
+                const canAfford = stardust >= finalPrice && !(item.kind === 'orb' && gridFull);
                 return (
                   <button
                     key={item.id}
@@ -95,7 +99,7 @@ export default function ShopPanel() {
                     )}
                     <div className="absolute -bottom-1 -right-1 flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-void-900 border border-neon-gold/50">
                       <Coins className="w-2.5 h-2.5 text-neon-gold" />
-                      <span className="text-[10px] font-display text-neon-gold">{item.price}</span>
+                      <span className="text-[10px] font-display text-neon-gold">{finalPrice}</span>
                     </div>
                   </button>
                 );

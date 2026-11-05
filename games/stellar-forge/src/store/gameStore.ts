@@ -334,6 +334,11 @@ function startWave(state: GameState, waveNum: number) {
   };
   state.wave = waveNum;
   state.status = 'playing';
+  // Give every fresh run the tools needed for later enemy types. Meta unlocks
+  // still let players start with these elements earlier in subsequent runs.
+  const waveElements: [number, ElementType][] = [[3, 'water'], [5, 'earth'], [7, 'air'], [10, 'lightning']];
+  const unlocked = waveElements.filter(([wave, element]) => waveNum >= wave && !state.availableElements.includes(element));
+  if (unlocked.length) state.availableElements = [...state.availableElements, ...unlocked.map(([, element]) => element)];
   // 记录波次开始时的统计（用于结算面板）
   state.waveStartKillCount = state.killCount;
   state.waveStartStardust = state.stardust;
@@ -414,7 +419,9 @@ function updateWaveSpawns(state: GameState, now: number, dt: number): Particle[]
       const eventHpMult = state.currentEvent?.enemyHpMult || 1;
       // 挑战：敌人 HP 倍率（double_boss +50%）
       const challengeHpMult = getChallengeFlagsSafe(state).enemyHpMult ?? 1;
-      const baseHp = scaleEnemyHp(cfg.baseHp, state.wave) * eventHpMult * challengeHpMult;
+      const doubleBoss = (spawn.type === 'boss' || spawn.type === 'maiden') &&
+        !!state.currentChallenge?.modifiers.some(m => m.id === 'double_boss');
+      const baseHp = scaleEnemyHp(cfg.baseHp, state.wave) * eventHpMult * challengeHpMult * (doubleBoss ? 2 : 1);
       const enemy: Enemy = {
         id: uid('enemy'),
         type: spawn.type,
@@ -424,7 +431,7 @@ function updateWaveSpawns(state: GameState, now: number, dt: number): Particle[]
         speed: scaleEnemySpeed(cfg.speed, state.wave),
         effects: [],
         hitFlash: 0,
-        reward: scaleReward(cfg.reward, state.wave),
+        reward: scaleReward(cfg.reward, state.wave) * (doubleBoss ? 2 : 1),
       };
       state.enemies.push(enemy);
       spawn.count -= 1;
@@ -531,6 +538,15 @@ function processCombat(state: GameState, now: number, dt: number): Particle[] {
 
     // 到达终点
     if (enemy.position >= 1) {
+      // Boss 突破防线即失败，不能在存活时被记作已击败。
+      if (enemy.type === 'boss' || enemy.type === 'maiden') {
+        state.hpLostInRun += state.hp;
+        state.hp = 0;
+        enemy.hp = 0;
+        state.screenShake = 0.4;
+        sfx.hurt();
+        continue;
+      }
       const damage = ENEMIES[enemy.type].damage;
       // 检查护盾遗物（免疫一次扣血）
       const shieldIdx = state.ownedRelics.findIndex(r => r.effects.some(e => e.type === 'shield'));
@@ -1365,7 +1381,8 @@ export const useGameStore = create<GameStore>()((set, get) => ({
         ...s,
         grid: newGrid,
         pendingEvolution: null,
-        status: 'playing',
+        status: s.prevStatus === 'shop' ? 'shop' : 'playing',
+        prevStatus: null,
       };
     });
     sfx.evolve();
@@ -1374,7 +1391,10 @@ export const useGameStore = create<GameStore>()((set, get) => ({
   buyShopItem: (itemId) => {
     const state = get();
     const item = state.shopItems.find(i => i.id === itemId);
-    if (!item) return;
+    if (!item || state.status !== 'shop') return;
+    const availableColumns = Array.from({ length: GRID_WIDTH }, (_, col) => col)
+      .filter(col => state.grid.some(row => !row[col]));
+    if (item.kind === 'orb' && (!item.element || availableColumns.length === 0)) return;
     // 商店折扣遗物
     const discount = state.ownedRelics
       .filter(r => r.effects.some(e => e.type === 'shop-discount'))
@@ -1393,8 +1413,23 @@ export const useGameStore = create<GameStore>()((set, get) => ({
         useCodexStore.getState().recordRelic(item.relic.id);
       } else if (item.kind === 'heal') {
         newState.hp = Math.min(s.maxHp, s.hp + 1);
+      } else if (item.kind === 'orb' && item.element) {
+        const col = availableColumns[Math.floor(Math.random() * availableColumns.length)];
+        let row = GRID_HEIGHT - 1;
+        while (row >= 0 && s.grid[row][col]) row--;
+        const now = performance.now();
+        const tier = item.tier ?? 1;
+        newState.grid = s.grid.map(cells => [...cells]);
+        newState.grid[row][col] = {
+          id: uid('orb'), element: item.element, tier, gridX: col, gridY: row,
+          cooldown: 0, attackInterval: getOrbAttackInterval(item.element, tier),
+          lastAttack: now, spawnTime: now,
+        };
+        const { particles } = processMerges(newState, now);
+        newState.particles = [...newState.particles, ...particles];
+        if (newState.status === 'evolution-select') newState.prevStatus = 'shop';
+        recomputeSynergies(newState);
       }
-      // orb 购买后需要手动投放，简化：直接给一个随机位置
       return newState;
     });
     sfx.buy();
@@ -1835,12 +1870,10 @@ export const useGameStore = create<GameStore>()((set, get) => ({
                 // 没有可选遗物，直接下一波
                 startWave(newState, newState.wave + 1);
                 newState.waveClearTime = 0;
-                waveSpawnState = null;
               }
             } else {
               startWave(newState, newState.wave + 1);
               newState.waveClearTime = 0;
-              waveSpawnState = null;
             }
           } else {
             newState.status = 'shop';

@@ -94,7 +94,7 @@ export const MODIFIERS: Record<ModifierId, ChallengeModifier> = {
     description: 'BOSS HP ×2, but reward ×2',
     icon: '👑',
     color: '#FF8E3C',
-    flags: { enemyHpMult: 1.5 },  // 全局 1.5x（包括 BOSS），实际 BOSS 会在 generateWave 时再加成
+    flags: {}, // Boss health and rewards are applied when the enemy spawns.
   },
   gift_of_void: {
     id: 'gift_of_void',
@@ -244,16 +244,19 @@ export function getTodayChallenge(): DailyChallenge {
 export function getChallengeFlags(challenge: DailyChallenge): ChallengeModifierFlags {
   const merged: ChallengeModifierFlags = {};
   for (const mod of challenge.modifiers) {
+    const previousDamage = merged.damageMult;
+    const previousSpeed = merged.enemySpeedMult;
+    const previousStardust = merged.stardustMult;
     Object.assign(merged, mod.flags);
     // 数值类叠加（取最大值或加和）
     if (mod.flags.damageMult) {
-      merged.damageMult = (merged.damageMult ?? 1) * mod.flags.damageMult;
+      merged.damageMult = (previousDamage ?? 1) * mod.flags.damageMult;
     }
     if (mod.flags.enemySpeedMult) {
-      merged.enemySpeedMult = (merged.enemySpeedMult ?? 1) * mod.flags.enemySpeedMult;
+      merged.enemySpeedMult = (previousSpeed ?? 1) * mod.flags.enemySpeedMult;
     }
     if (mod.flags.stardustMult) {
-      merged.stardustMult = (merged.stardustMult ?? 1) * mod.flags.stardustMult;
+      merged.stardustMult = (previousStardust ?? 1) * mod.flags.stardustMult;
     }
   }
   return merged;
