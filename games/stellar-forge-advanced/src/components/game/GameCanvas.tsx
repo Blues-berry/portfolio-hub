@@ -5,6 +5,8 @@ import { GRID_WIDTH } from '@/types/game';
 
 interface GameCanvasProps {
   onCanvasReady?: () => void;
+  recycleMode: boolean;
+  onRecycle: () => void;
 }
 
 interface Flash {
@@ -12,7 +14,7 @@ interface Flash {
   id: number;
 }
 
-export default function GameCanvas({ onCanvasReady }: GameCanvasProps) {
+export default function GameCanvas({ onCanvasReady, recycleMode, onRecycle }: GameCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const hoverColRef = useRef<number>(-1);
@@ -76,14 +78,20 @@ export default function GameCanvas({ onCanvasReady }: GameCanvasProps) {
 
   // 投放并触发视觉反馈
   const dropWithFeedback = useCallback((col: number) => {
+    if (recycleMode) {
+      if (useGameStore.getState().recycleOrb(col)) onRecycle();
+      return;
+    }
+    const before = useGameStore.getState().deploymentCharge;
     useGameStore.getState().dropOrb(col);
+    if (useGameStore.getState().deploymentCharge === before) return;
     const id = Date.now() + Math.random();
     setFlashes(prev => [...prev, { col, id }]);
     // 250ms 后移除
     setTimeout(() => {
       setFlashes(prev => prev.filter(f => f.id !== id));
     }, 250);
-  }, []);
+  }, [recycleMode, onRecycle]);
 
   // 点击投放（点击 canvas 任意位置都会找到最近列）
   const handleClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {

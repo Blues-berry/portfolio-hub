@@ -202,7 +202,7 @@ export default function TutorialModal({ forceOpen, onClose }: TutorialModalProps
 function BasicsTab() {
   return (
     <div className="space-y-4 text-sm text-gray-200 font-body">
-      <p className="sf-boss-warning">Goal: defend the core and defeat the Wave 20 boss. Each placement costs 1 charge; regain 1 every 2 seconds, up to 6. Star Cores attack automatically, and matching neighbors merge.</p>
+      <p className="sf-boss-warning">Goal: defend the core and defeat the Wave 20 boss. Recycle removes the top core of a chosen column for 1 charge. Each placement costs 1 charge; regain 1 every 2 seconds, up to 6. Star Cores attack automatically, and matching neighbors merge.</p>
       <SectionTitle icon={<MousePointerClick className="w-4 h-4" />} color="#FFD166" title="Place Star Cores" />
       <ul className="space-y-2 pl-1">
         <li className="flex gap-2">

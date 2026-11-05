@@ -91,6 +91,7 @@ interface GameStore extends GameState {
   startDailyChallenge: () => void;     // 启动日常挑战模式
   // 操作
   dropOrb: (col: number) => void;
+  recycleOrb: (col: number) => boolean;
   selectRelic: (relic: Relic) => void;
   selectEvolution: (orbId: string, branchId: EvolutionId) => void;
   buyShopItem: (itemId: string) => void;
@@ -1331,6 +1332,21 @@ export const useGameStore = create<GameStore>()((set, get) => ({
     // 检查进化选择
     const after = get();
     if (after.status === 'evolution-select') return;
+  },
+
+  recycleOrb: (col) => {
+    const state = get();
+    if (state.status !== 'playing' || state.deploymentCharge < 1 || col < 0 || col >= GRID_WIDTH) return false;
+    const row = state.grid.findIndex(cells => !!cells[col]);
+    if (row < 0) return false;
+    set(s => {
+      const grid = s.grid.map(cells => [...cells]);
+      grid[row][col] = null;
+      const next = { ...s, grid, deploymentCharge: Math.max(0, s.deploymentCharge - 1) };
+      recomputeSynergies(next);
+      return next;
+    });
+    return true;
   },
 
   selectRelic: (relic) => {
