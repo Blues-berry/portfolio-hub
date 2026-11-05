@@ -41,13 +41,13 @@ export const UPGRADES: UpgradeDef[] = [
   { id: 'startHp2', name: 'Life Enhancement II', description: 'Starting life +1', cost: 150, icon: '❤️' },
   { id: 'startHp3', name: 'Life Enhancement III', description: 'Starting life +1', cost: 400, icon: '❤️' },
   { id: 'startStardust1', name: 'Initial Stardust I', description: 'Starting Stardust +30', cost: 40, icon: '✨' },
-  { id: 'startStardust2', name: 'Initial Stardust II', description: 'Starting Stardust +50', cost: 120, icon: '✨' },
-  { id: 'extraReroll1', name: 'Extra refresh', description: 'Store refresh times +1', cost: 80, icon: '🔄' },
+  { id: 'startStardust2', name: 'Initial Stardust II', description: 'Starting Stardust +30', cost: 120, icon: '✨' },
+  { id: 'extraReroll1', name: 'Extra Reroll', description: 'One extra shop reroll per wave', cost: 80, icon: '🔄' },
   { id: 'startRelic1', name: 'Starting Relic', description: 'Get a random relic at the beginning', cost: 200, icon: '🎁' },
-  { id: 'unlockWater', name: 'Unlock the water element', description: 'The game can use water core', cost: 60, icon: '💧' },
-  { id: 'unlockEarth', name: 'Unlock the Earth Element', description: 'The game can use rock core', cost: 100, icon: '🪨' },
-  { id: 'unlockAir', name: 'Unlock the wind element', description: 'The game can use wind core', cost: 140, icon: '🌀' },
-  { id: 'unlockLightning', name: 'Unlock Thunder Element', description: 'The game can use thunder core', cost: 200, icon: '⚡' },
+  { id: 'unlockWater', name: 'Starting Water', description: 'Start each run with Water unlocked', cost: 60, icon: '💧' },
+  { id: 'unlockEarth', name: 'Starting Earth', description: 'Start each run with Earth unlocked', cost: 100, icon: '🪨' },
+  { id: 'unlockAir', name: 'Starting Wind', description: 'Start each run with Wind unlocked', cost: 140, icon: '🌀' },
+  { id: 'unlockLightning', name: 'Starting Lightning', description: 'Start each run with Lightning unlocked', cost: 200, icon: '⚡' },
 ];
 
 const DEFAULT_META: MetaProgress = {

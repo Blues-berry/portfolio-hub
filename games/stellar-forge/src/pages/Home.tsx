@@ -132,7 +132,7 @@ function HomeView({ onStart, onDaily, meta }: { onStart: () => void; onDaily: ()
         transition={{ delay: 0.4 }}
         className="text-gray-400 text-base font-body max-w-md mb-8"
       >
-        融合星核、进化元素、抵御虚空。每一次死亡，都让你更强。
+        防守核心，坚持 20 波。投放并融合元素星核，在最终首领抵达核心前击败它。
       </motion.p>
 
       {/* 最高纪录 */}

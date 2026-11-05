@@ -2472,6 +2472,8 @@
     return Math.floor(baseBonus * PHASES[currentPhase].constellationMultiplier);
   }
   function currentFrostInterval() {
+    // Guided campaign levels promise a fixed first frost turn.
+    if (campaignMode && getCampaignLevel()) return getCampaignLevel().frostInterval || 999;
     const base = getBaseFrostInterval();
     const min = getFrostMinInterval();
     const speedup = getFrostSpeedupTurn();
@@ -3268,7 +3270,7 @@
       stopAmbient();
       if (campaignMode) startCampaignLevel(campaignStage);
       else { resetBoard(); startAmbient(); }
-      flashToast('Game restarted', 1200);
+      flashToast(language === 'zh' ? '已重新开始' : 'Game restarted', 1200);
     });
     document.getElementById('btn-pause-quit').addEventListener('click', quitToMenu);
     // Game Over new buttons
@@ -3678,7 +3680,7 @@
   function resetTutorial() {
     tutorialSeen = false;
     try { localStorage.removeItem('witherroot_tutorial_seen'); } catch (e) {}
-    flashToast('Tutorial will show next game');
+    flashToast(language === 'zh' ? '下局将显示教学' : 'Tutorial will show next game');
     sfxClick();
   }
   function replayOnboarding() {
@@ -3688,7 +3690,7 @@
     if (started && !gameOver) {
       startOnboarding();
     } else {
-      flashToast('Start a game to replay the tutorial', 2200);
+      flashToast(language === 'zh' ? '请先开始游戏，再重播教学' : 'Start a game to replay the tutorial', 2200);
     }
     sfxClick();
   }
@@ -3836,7 +3838,7 @@
     };
     saveStats();
     renderStats();
-    flashToast('Statistics reset');
+    flashToast(language === 'zh' ? '统计数据已重置' : 'Statistics reset');
     sfxClick();
   }
 
@@ -4698,6 +4700,15 @@
     }
   ];
 
+  const ECHO_ZH = {
+    first_whisper: { title:'最初的低语', body:'寒风穿过冻伤的枝条，轻声问道：守护者，你愿意承载旧日的声音，还是让它们沉寂？', choices:[['✦ 承载声音','<b>生命力上限 +2</b> · <b class="neg">所有根系年龄 +1</b>'],['遮住声音','<b>生命力 +3</b> · <b>分数 +50</b>']] },
+    root_pact: { title:'根系之约', body:'土壤下的根系交织着提出交易：记住失去的一切，或者将力量交给你。', choices:[['根系铭记','<b>生成 2 个记忆节点</b> · <b class="neg">生命力 -3</b>'],['✦ 根系献力','<b>分数 +200</b> · <b>随机能力 +1</b>']] },
+    frost_bargain: { title:'霜冻交易', body:'冰雪中的身影提出交易：拥抱寒冷换取力量，或消耗生命力将霜冻推迟。', choices:[['❖ 拥抱寒冷','<b>生命力 +5</b> · <b class="neg">霜冻提前 2 回合</b>'],['✦ 推迟霜冻','<b>霜冻推迟 2 回合</b> · <b class="neg">生命力 -2</b> · <b>分数 +300</b>']] },
+    star_alignment: { title:'星辰排列', body:'花园上空的星辰排列成图案。与它们共鸣以强化星座，或将星光据为己有。', choices:[['✦ 与星辰共鸣','<b>星座奖励翻倍</b> · <b class="neg">生命力 -3</b>'],['✧ 汲取星光','<b>分数 +500</b> · <b>尝试解锁一段图鉴</b>']] },
+    long_memory: { title:'长久的记忆', body:'花园记得每一根生长过的根系。你要让它们重生，还是带着衰败的记忆继续前行？', choices:[['焕新所有根系','<b>所有根系年龄归零</b>'],['✦ 传承智慧','<b>生命力上限 +5</b> · <b>随机能力 +2</b>']] },
+    hearts_choice: { title:'核心的抉择', body:'核心根系以古老的生命脉动，愿化为生命力的泉源，或记忆的灯塔。', choices:[['♥ 汲取核心之力','<b>生命力 +10</b> · <b>生命力上限 +1</b>'],['✦ 化为灯塔','<b>分数 +1000</b> · <b>解锁一段图鉴</b>']] },
+  };
+
   function getEchoForTurn(t) {
     return ECHO_EVENTS.find(e => e.turn === t);
   }
@@ -4722,16 +4733,18 @@
     // Pause game by setting a flag (but don't open pause menu)
     // Render modal content
     document.getElementById('echo-glyph').textContent = ev.glyph;
-    document.getElementById('echo-title').textContent = ev.title;
-    document.getElementById('echo-subtitle').textContent = 'Genesis Echo · Turn ' + ev.turn;
-    document.getElementById('echo-body').textContent = ev.body;
+    const localizedEcho = language === 'zh' ? ECHO_ZH[ev.id] : null;
+    document.getElementById('echo-title').textContent = localizedEcho ? localizedEcho.title : ev.title;
+    document.getElementById('echo-subtitle').textContent = language === 'zh' ? '创世回响 · 第 ' + ev.turn + ' 回合' : 'Genesis Echo · Turn ' + ev.turn;
+    document.getElementById('echo-body').textContent = localizedEcho ? localizedEcho.body : ev.body;
     const choicesEl = document.getElementById('echo-choices');
     choicesEl.innerHTML = '';
     ev.choices.forEach((choice, idx) => {
       const btn = document.createElement('button');
       btn.className = 'echo-choice';
-      btn.innerHTML = '<div class="echo-choice-label">' + choice.label + '</div>' +
-                      '<div class="echo-choice-effect">' + choice.effectHtml + '</div>';
+      const display = localizedEcho ? localizedEcho.choices[idx] : [choice.label, choice.effectHtml];
+      btn.innerHTML = '<div class="echo-choice-label">' + display[0] + '</div>' +
+                      '<div class="echo-choice-effect">' + display[1] + '</div>';
       btn.onclick = () => applyEchoChoice(ev, idx);
       choicesEl.appendChild(btn);
     });
@@ -4774,7 +4787,9 @@
       turn: ev.turn
     });
     // Feedback
-    flashToast('✧ ' + ev.title + ' — ' + choice.label.replace(/^[^\s]+\s/, ''), 2400);
+    const localizedEcho = language === 'zh' ? ECHO_ZH[ev.id] : null;
+    const displayLabel = localizedEcho ? localizedEcho.choices[choiceIdx][0] : choice.label;
+    flashToast('✧ ' + (localizedEcho ? localizedEcho.title : ev.title) + ' — ' + displayLabel.replace(/^[^\s]+\s/, ''), 2400);
     playTone(523, 0.15, 'triangle', 0.22);
     setTimeout(() => playTone(659, 0.15, 'triangle', 0.22), 100);
     setTimeout(() => playTone(784, 0.2, 'triangle', 0.24), 200);
@@ -4809,13 +4824,13 @@
   function undo() {
     if (gameOver || busy) return;
     if (history.length === 0) {
-      flashToast('Nothing to undo');
+      flashToast(language === 'zh' ? '没有可撤销的操作' : 'Nothing to undo');
       return;
     }
     const s = history.pop();
     restoreState(s);
     updateHUD();
-    flashToast('Undone');
+    flashToast(language === 'zh' ? '已撤销' : 'Undone');
     sfxUndo();
   }
 
@@ -4831,7 +4846,7 @@
     const current = currentFrostInterval();
     if (current < lastFrostInterval) {
       lastFrostInterval = current;
-      flashToast('⚠ FROST INTENSIFIES — every ' + current + ' turns now!');
+      flashToast(language === 'zh' ? '⚠ 霜冻加快：每 ' + current + ' 回合来袭！' : '⚠ FROST INTENSIFIES — every ' + current + ' turns now!');
       triggerShake(0.4, 5);
       sfxFrostImminent();
     }
@@ -4875,7 +4890,7 @@
       if (frostShieldActive) {
         frostShieldActive = false;
         // Dramatic shield absorption effect
-        flashToast('❖ Frost Shield absorbed the frost!');
+        flashToast(language === 'zh' ? '❖ 霜盾抵挡了霜冻！' : '❖ Frost Shield absorbed the frost!');
         // Burst particles around heart
         spawnParticles(HEART_R, HEART_C, '#ffd9a0', 20);
         spawnParticles(HEART_R, HEART_C, '#8ad1ff', 16);
@@ -4959,7 +4974,7 @@
         45: '💫 Turn 45 · Beyond endurance',
         50: '🏆 Turn 50 · Legendary rootkeeper'
       };
-      const msg = milestoneMessages[turn];
+      const msg = language === 'zh' ? '🌿 已坚持 ' + turn + ' 回合' : milestoneMessages[turn];
       if (msg) {
         flashToast(msg, 1800);
         // Small celebratory chime
@@ -5122,7 +5137,7 @@
     const dirs = ['top', 'bottom', 'left', 'right'].filter(d => d !== lastFrostDirection);
     const dir = dirs[randi(0, dirs.length - 1)];
     lastFrostDirection = dir;
-    flashToast('Frost spreads from ' + dir);
+    flashToast(language === 'zh' ? '霜冻从' + ({top:'上方',bottom:'下方',left:'左侧',right:'右侧'}[dir]) + '蔓延' : 'Frost spreads from the ' + dir);
 
     // Frost the entire edge row/col of that direction
     const newFrost = [];
@@ -5269,13 +5284,13 @@
   // ---------- Power-ups ----------
   function onPowerButtonClick(type) {
     if (!started || gameOver) {
-      flashToast('Start a game first');
+      flashToast(language === 'zh' ? '请先开始游戏' : 'Start a game first');
       return;
     }
     if (campaignMode && campaignStage < 4) return;
     if (busy) return;
     if (powerups[type] <= 0) {
-      flashToast('No charges for ' + type.toUpperCase());
+      flashToast(language === 'zh' ? '该能力次数不足' : 'No charges for ' + type.toUpperCase());
       return;
     }
     // Target selection is a deliberate recovery attempt. Pause the pending
@@ -5291,7 +5306,7 @@
       powerups[PU_SHIELD]--;
       frostShieldActive = true;
       powersUsedThisRun++;
-      flashToast('❖ Frost Shield active — next frost skipped');
+      flashToast(language === 'zh' ? '❖ 霜盾已激活，将抵挡下一波霜冻' : '❖ Frost Shield active — next frost skipped');
       // Shield activation sound: warm chime
       playTone(440, 0.15, 'sine', 0.22);
       setTimeout(() => playTone(660, 0.2, 'sine', 0.22), 100);
@@ -5309,13 +5324,13 @@
     // RECALL is instant - no target needed
     if (type === PU_RECALL) {
       if (memoryNodes.length === 0) {
-        flashToast('No memories to recall');
+        flashToast(language === 'zh' ? '没有可召回的记忆节点' : 'No memories to recall');
         return;
       }
       powerups[PU_RECALL]--;
       powersUsedThisRun++;
       doRecall();
-      flashToast('◎ Memories recalled');
+      flashToast(language === 'zh' ? '◎ 已召回记忆节点' : '◎ Memories recalled');
       // Recall sound: shimmering sweep
       playSweep(220, 1100, 0.4, 'sine', 0.2);
       setTimeout(() => playTone(1320, 0.1, 'triangle', 0.15), 400);
@@ -5328,11 +5343,14 @@
     // PRUNE and EMBER need target selection
     activePower = type;
     canvas.classList.add('target-mode');
-    const hintMap = {
+    const hintMap = language === 'zh' ? {
+      [PU_PRUNE]: '✂ 点击根系进行修剪（返还 1 点生命力）',
+      [PU_EMBER]: '✦ 点击格子，将周围 3×3 灰烬转化为根系'
+    } : {
       [PU_PRUNE]: '✂ Click a ROOT to prune it (refund 1 vitality)',
       [PU_EMBER]: '✦ Click a tile to ignite ash in 3x3 around it'
     };
-    elHint.textContent = hintMap[type] + ' · ESC to cancel';
+    elHint.textContent = hintMap[type] + (language === 'zh' ? ' · 按 ESC 取消' : ' · ESC to cancel');
     updatePowerupUI();
     sfxClick();
   }
@@ -5352,7 +5370,7 @@
       if (!inBounds(r, c)) return false;
       const cell = board[r][c];
       if (cell.type !== T_ROOT) {
-        flashToast('Must target a root');
+        flashToast(language === 'zh' ? '请选择一根根系' : 'Must target a root');
         spawnRipple(c * cellSize + cellSize/2, r * cellSize + cellSize/2, '#aa3030', false);
         return false;
       }
@@ -5369,7 +5387,7 @@
       setTimeout(() => playSweep(440, 220, 0.15, 'sawtooth', 0.14), 60);
       hapticAsh();
       triggerShake(0.2, 3);
-      flashToast('✂ Pruned · +1 vitality');
+      flashToast(language === 'zh' ? '✂ 已修剪 · 生命力 +1' : '✂ Pruned · +1 vitality');
       cancelPower();
       updateHUD();
       checkAchievement('prune_used');
@@ -5392,7 +5410,7 @@
         }
       }
       if (ignited === 0) {
-        flashToast('No ash in 3x3 around target');
+        flashToast(language === 'zh' ? '目标周围没有灰烬' : 'No ash in 3x3 around target');
         spawnRipple(c * cellSize + cellSize/2, r * cellSize + cellSize/2, '#aa3030', false);
         return false;
       }
@@ -5407,7 +5425,7 @@
       setTimeout(() => playTone(1320, 0.15, 'sine', 0.16), 350);
       hapticPower();
       triggerShake(0.5, 6);
-      flashToast('✦ ' + ignited + ' ash ignited to roots!');
+      flashToast(language === 'zh' ? '✦ 已将 ' + ignited + ' 处灰烬转化为根系！' : '✦ ' + ignited + ' ash ignited to roots!');
       debouncedSave();
       // Check memories at new roots
       for (let dr = -1; dr <= 1; dr++) {
@@ -5457,7 +5475,7 @@
     if (candidates.length === 0) {
       // All capped - convert to bonus score
       score += 200;
-      flashToast('+200 bonus (powers full)');
+      flashToast(language === 'zh' ? '能力已满，分数 +200' : '+200 bonus (powers full)');
       return;
     }
     const type = candidates[randi(0, candidates.length - 1)];
@@ -5468,7 +5486,7 @@
       [PU_SHIELD]: '❖ FROST SHIELD',
       [PU_RECALL]: '◎ RECALL'
     };
-    flashToast('POWER GAINED: ' + labels[type]);
+    flashToast(language === 'zh' ? '获得能力：' + ({prune:'修剪',ember:'余烬爆发',shield:'霜盾',recall:'召回'}[type] || type) : 'POWER GAINED: ' + labels[type]);
     updatePowerupUI();
     // Flash animation on the awarded button
     const btn = elPuBtns[type];
@@ -5882,7 +5900,7 @@
       document.getElementById('onboarding-arrow').classList.add('hidden');
       markOnboardingComplete();
       restoreGameplayInput();
-      flashToast('🌱 Tutorial complete — the garden awaits', 2500);
+      flashToast(language === 'zh' ? '🌱 教学完成，花园正等待你' : '🌱 Tutorial complete — the garden awaits', 2500);
       playTone(660, 0.1, 'triangle', 0.15);
       setTimeout(() => playTone(990, 0.2, 'triangle', 0.18), 100);
       return;
@@ -6126,7 +6144,7 @@
         advanceTurn();
       } else {
         spawnRipple(clickX, clickY, '#aa3030', false);
-        flashToast('Grow a root next to it first');
+        flashToast(language === 'zh' ? '请先在附近生长根系' : 'Grow a root next to it first');
       }
       return;
     }
@@ -7076,7 +7094,7 @@
     if (settings.music) startAmbient();
     safeSdk('game.gameplayStart');
     updateHUD();
-    flashToast('📅 Game resumed', 1500);
+    flashToast(language === 'zh' ? '📅 游戏已继续' : '📅 Game resumed', 1500);
   }
 
   function endGame(reason) {
@@ -7415,10 +7433,11 @@
       const dirNames = language === 'zh'
         ? { top: '↑ 上方', bottom: '↓ 下方', left: '← 左侧', right: '→ 右侧' }
         : { top: '↑ top', bottom: '↓ bottom', left: '← left', right: '→ right' };
-      // Predict next direction (avoids repeating)
+      // The original mode chooses randomly from the remaining directions.
       const possibleDirs = ['top', 'bottom', 'left', 'right'].filter(d => d !== lastFrostDirection);
-      const predictedNext = possibleDirs[0]; // simplified prediction
-      frostDirText = ' · ' + formatI18n('hud.next', { direction: dirNames[predictedNext] || '?' });
+      frostDirText = language === 'zh'
+        ? ' · 可能方向：' + possibleDirs.map(d => dirNames[d]).join(' / ')
+        : ' · possible: ' + possibleDirs.map(d => dirNames[d]).join(' / ');
     }
     const plural = turnsToNextFrost === 1 ? '' : 's';
     const frostAvailable = !campaignMode || !!(getCampaignLevel() && getCampaignLevel().frostInterval);
