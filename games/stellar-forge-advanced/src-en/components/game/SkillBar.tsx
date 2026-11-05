@@ -2,8 +2,9 @@ import { useGameStore } from '@/store/gameStore';
 import { SKILLS, SKILL_IDS, MAX_ENERGY } from '@/data/skills';
 import { useEffect, useState } from 'react';
 
-export default function SkillBar() {
+export default function SkillBar({ recycleMode, onToggleRecycle }: { recycleMode: boolean; onToggleRecycle: () => void }) {
   const energy = useGameStore(s => s.energy);
+  const deploymentCharge = useGameStore(s => s.deploymentCharge);
   const skillCooldowns = useGameStore(s => s.skillCooldowns);
   const status = useGameStore(s => s.status);
   const activateSkill = useGameStore(s => s.activateSkill);
@@ -114,6 +115,7 @@ export default function SkillBar() {
               </button>
             );
           })}
+          <button type="button" onClick={onToggleRecycle} disabled={!isPlaying || deploymentCharge < 1} aria-pressed={recycleMode} title="Spend 1 deployment charge to remove the top core in a column" style={{width:64,height:64,borderRadius:8,border:recycleMode?'2px solid #ffbe69':'2px solid #6d7c88',background:recycleMode?'#594026':'#141423',color:'#fff0cd',fontSize:11,opacity:isPlaying?1:0.5}}><span style={{display:'block',fontSize:20}}>↶</span>{recycleMode ? 'Pick column' : 'Recycle'}<span style={{display:'block',fontSize:10}}>COST 1</span></button>
         </div>
       </div>
     </div>

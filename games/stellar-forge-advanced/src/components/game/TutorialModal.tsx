@@ -202,7 +202,7 @@ export default function TutorialModal({ forceOpen, onClose }: TutorialModalProps
 function BasicsTab() {
   return (
     <div className="space-y-4 text-sm text-gray-200 font-body">
-      <p className="sf-boss-warning">目标：守住核心并击败第 20 波首领。每次投放消耗 1 点部署能量，2 秒恢复 1 点，最多 6 点。星核自动攻击，相邻同元素星核可融合。</p>
+      <p className="sf-boss-warning">目标：守住核心并击败第 20 波首领。使用拆除可消耗 1 点部署能量，移除指定列最上方的星核。每次投放消耗 1 点部署能量，2 秒恢复 1 点，最多 6 点。星核自动攻击，相邻同元素星核可融合。</p>
       <SectionTitle icon={<MousePointerClick className="w-4 h-4" />} color="#FFD166" title="投放星核" />
       <ul className="space-y-2 pl-1">
         <li className="flex gap-2">

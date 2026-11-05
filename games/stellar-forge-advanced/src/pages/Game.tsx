@@ -26,6 +26,9 @@ export default function Game() {
   const activateSkill = useGameStore(s => s.activateSkill);
   const initializedRef = useRef(false);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [recycleMode, setRecycleMode] = useState(false);
+  const status = useGameStore(s => s.status);
+  useEffect(() => { if (status !== 'playing') setRecycleMode(false); }, [status]);
 
   // 进入页面即开始新一局
   useEffect(() => {
@@ -110,14 +113,14 @@ export default function Game() {
       <WaveEventBanner />
 
       {/* 主动技能栏 */}
-      <SkillBar />
+      <SkillBar recycleMode={recycleMode} onToggleRecycle={() => setRecycleMode(v => !v)} />
 
       {/* 成就解锁通知 */}
       <AchievementToast />
 
       {/* 游戏画布 */}
       <div className="sf-board-area">
-        <GameCanvas />
+        <GameCanvas recycleMode={recycleMode} onRecycle={() => setRecycleMode(false)} />
       </div>
 
       {/* 浮层 */}

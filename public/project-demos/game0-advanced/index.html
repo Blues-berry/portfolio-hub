@@ -4810,20 +4810,31 @@
 
   function snapshotState() {
     return {
-      board: board.map(row => row.map(cell => ({ type: cell.type, age: cell.age }))),
-      memoryNodes: memoryNodes.slice(),
+      board: board.map(row => row.map(cell => ({ ...cell }))),
+      memoryNodes: memoryNodes.map(node => ({ ...node })),
       vitality, score, turn, memoriesCollected,
+      powerups: { ...powerups }, frostShieldActive, powersUsedThisRun,
+      comboCount, lastMemoryTurn, ashFreeGrowCount, currentPhase, lastFrostInterval,
       lastFrostDirection, nextFrostDirection
     };
   }
 
   function restoreState(s) {
-    board = s.board.map(row => row.map(cell => ({ type: cell.type, age: cell.age })));
-    memoryNodes = s.memoryNodes.slice();
+    board = s.board.map(row => row.map(cell => ({ ...cell })));
+    memoryNodes = s.memoryNodes.map(node => ({ ...node }));
     vitality = s.vitality;
     score = s.score;
     turn = s.turn;
     memoriesCollected = s.memoriesCollected;
+    powerups = { ...s.powerups };
+    frostShieldActive = s.frostShieldActive;
+    powersUsedThisRun = s.powersUsedThisRun;
+    comboCount = s.comboCount;
+    lastMemoryTurn = s.lastMemoryTurn;
+    ashFreeGrowCount = s.ashFreeGrowCount;
+    currentPhase = s.currentPhase;
+    lastFrostInterval = s.lastFrostInterval;
+    updatePhaseIndicator();
     lastFrostDirection = s.lastFrostDirection;
     nextFrostDirection = s.nextFrostDirection || chooseNextFrostDirection();
   }
@@ -4838,6 +4849,7 @@
     restoreState(s);
     updateHUD();
     flashToast(language === 'zh' ? '已撤销' : 'Undone');
+    debouncedSave();
     sfxUndo();
   }
 
@@ -5311,6 +5323,8 @@
     }
     // SHIELD is instant - no target needed
     if (type === PU_SHIELD) {
+      history.push(snapshotState());
+      if (history.length > 20) history.shift();
       powerups[PU_SHIELD]--;
       frostShieldActive = true;
       powersUsedThisRun++;
@@ -5335,6 +5349,8 @@
         flashToast(language === 'zh' ? '没有可召回的记忆节点' : 'No memories to recall');
         return;
       }
+      history.push(snapshotState());
+      if (history.length > 20) history.shift();
       powerups[PU_RECALL]--;
       powersUsedThisRun++;
       doRecall();
@@ -5404,6 +5420,7 @@
     }
     if (activePower === PU_EMBER) {
       if (!inBounds(r, c)) return false;
+      const beforeIgnite = snapshotState();
       let ignited = 0;
       // Convert ash in 3x3 around target to fresh roots
       for (let dr = -1; dr <= 1; dr++) {
@@ -5422,7 +5439,7 @@
         spawnRipple(c * cellSize + cellSize/2, r * cellSize + cellSize/2, '#aa3030', false);
         return false;
       }
-      history.push(snapshotState());
+      history.push(beforeIgnite);
       if (history.length > 20) history.shift();
       powerups[PU_EMBER]--;
       powersUsedThisRun++;
@@ -5454,8 +5471,6 @@
 
   function doRecall() {
     // Pull each memory node 1 tile closer to heart (Manhattan direction)
-    history.push(snapshotState());
-    if (history.length > 20) history.shift();
     for (const m of memoryNodes) {
       const dr = HEART_R - m.r;
       const dc = HEART_C - m.c;
@@ -6161,6 +6176,7 @@
       const cost = computeGrowCost(r, c);
       const freeGrow = cost === 0;
       spawnRipple(clickX, clickY, freeGrow ? '#8affae' : '#ffd9a0', true);
+      if (!growRoot(r, c)) return;
       if (freeGrow) {
         ashFreeGrowCount++;
         totalAshGrowth++;
@@ -6178,7 +6194,6 @@
       if (keyboardCursor && keyboardCursor.r === r && keyboardCursor.c === c) {
         checkAchievement('keyboard_master');
       }
-      growRoot(r, c);
       // After growing, check if this new root is adjacent to memory
       checkMemoryAt(r, c);
       updateHUD();
