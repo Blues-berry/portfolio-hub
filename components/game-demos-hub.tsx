@@ -87,6 +87,20 @@ const games = [
     artLabel: "DEPLOY / DEFEND",
     image: "/projects/covers/stellar-last-stand.png",
   },
+  {
+    number: "08", title: "PRISM ROUTE", cnTitle: "PRISM ROUTE",
+    description: "Rotate mirrors to connect the beam to its receiver across eight compact puzzles.",
+    cnDescription: "旋转镜面，让光束抵达接收器，解开八个短关卡。",
+    href: "/project-demos/prism-route/index.html?lang=zh", enHref: "/project-demos/prism-route/index.html?lang=en",
+    tone: "rules", artLabel: "ROTATE / CONNECT", image: "/project-demos/prism-route/cover.svg", external: true,
+  },
+  {
+    number: "09", title: "ORBIT COURIER", cnTitle: "ORBIT COURIER",
+    description: "Switch orbital lanes to collect deliveries and dodge hazards through five stages.",
+    cnDescription: "切换内外轨道，收集包裹、躲避障碍，完成五段配送任务。",
+    href: "/project-demos/orbit-courier/index.html?lang=zh", enHref: "/project-demos/orbit-courier/index.html?lang=en",
+    tone: "stellar", artLabel: "SWITCH / DELIVER", image: "/project-demos/orbit-courier/cover.svg", external: true,
+  },
 ];
 
 type Game = (typeof games)[number];
@@ -111,7 +125,7 @@ export function GameDemosHub({ locale }: { locale: Locale }) {
           </a>
           <p className="game-hub-kicker">{isEnglish ? "INTERACTIVE LAB · 02" : "INTERACTIVE LAB · 02"}</p>
           <h1>{isEnglish ? "Imaginative experiments." : "奇思妙想"}</h1>
-          <p>{isEnglish ? "Five games, including two new advanced editions to explore." : "五款游戏，包含两款玩法进阶版。"}</p>
+          <p>{isEnglish ? "Seven games, including two advanced editions and two new original games." : "七款游戏，包含两款玩法进阶版与两款全新作品。"}</p>
         </section>
 
         <nav className="game-hub-tabs page-shell" aria-label={isEnglish ? "Game demos" : "游戏 Demo"}>
@@ -141,8 +155,8 @@ export function GameDemosHub({ locale }: { locale: Locale }) {
                 <span className="game-demo-cover-label">{game.artLabel}</span>
               </div>
               <div className="game-demo-copy">
-                <h2>{game.title === game.cnTitle || game.tone === "rules" || isEnglish ? game.title : game.cnTitle}</h2>
-                <p>{game.tone === "rules" || isEnglish ? game.description : game.cnDescription}</p>
+                <h2>{game.title === game.cnTitle || game.title === "Beyond the Rules" || isEnglish ? game.title : game.cnTitle}</h2>
+                <p>{game.title === "Beyond the Rules" || isEnglish ? game.description : game.cnDescription}</p>
                 <span className="game-demo-enter">{isEnglish ? "Enter game" : "进入游戏"} <ArrowIcon /></span>
               </div>
               </>
@@ -152,7 +166,7 @@ export function GameDemosHub({ locale }: { locale: Locale }) {
         </section>
       </main>
       <footer className="game-hub-footer">
-        <div className="page-shell footer-inner"><span>BLUES‑BERRY / INTERACTIVE LAB</span><span>{isEnglish ? "Five games · Seven playable versions" : "五款游戏 · 七个可玩版本"}</span></div>
+        <div className="page-shell footer-inner"><span>BLUES‑BERRY / INTERACTIVE LAB</span><span>{isEnglish ? "Seven games · Nine playable versions" : "七款游戏 · 九个可玩版本"}</span></div>
       </footer>
     </>
   );
